@@ -1,10 +1,8 @@
 <script setup>
-import { reactive } from 'vue'
+import { reactive, inject } from 'vue'
 import { createPinia } from 'pinia'
 import { useRouter } from 'vue-router'
 import { mdiAccount, mdiAsterisk, mdiTableBorder } from '@mdi/js'
-import { useLoading } from 'vue3-loading-overlay';
-import 'vue3-loading-overlay/dist/vue3-loading-overlay.css';
 
 
 import SectionFullScreen from '@/components/SectionFullScreen.vue'
@@ -26,9 +24,8 @@ const pinia = createPinia()
 const authStore = useAuthStore(pinia)
 
 const router = useRouter()
-
+let loader = inject('Loader')
 const submit = () => {
-  let loader = useLoading();
   loader.show();
   authStore.login().then(res => {
     loader.hide()

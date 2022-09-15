@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, inject } from 'vue'
 import { createPinia } from 'pinia'
 import { mdiBallot, mdiPlus, mdiTableBorder } from '@mdi/js'
 import { useLoading } from 'vue3-loading-overlay';
@@ -33,7 +33,7 @@ const modalShowCreate = ref(false)
 const modalShowUpdate = ref(false)
 const modalShowDelete = ref(false)
 
-const loading = useLoading();
+const loading = inject('Loader')
 
 // Notification Hide Function
 const hideNotification = () => {

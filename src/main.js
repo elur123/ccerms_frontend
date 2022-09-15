@@ -8,13 +8,22 @@ import { useStyleStore } from '@/stores/style.js'
 import { useLayoutStore } from '@/stores/layout.js'
 import { darkModeKey, styleKey } from '@/config.js'
 
+import { useLoading } from 'vue3-loading-overlay';
+import 'vue3-loading-overlay/dist/vue3-loading-overlay.css';
+
 import './css/main.css'
 
 /* Init Pinia */
 const pinia = createPinia()
 
 /* Create Vue app */
-createApp(App).use(router).use(pinia).mount('#app')
+const app = createApp(App);
+app.use(router);
+app.use(pinia);
+
+app.provide('Loader', useLoading())
+
+app.mount('#app');
 
 /* Init Pinia stores */
 const mainStore = useMainStore(pinia)

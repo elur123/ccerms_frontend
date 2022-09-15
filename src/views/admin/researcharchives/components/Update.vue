@@ -1,9 +1,6 @@
 <script setup>
-import { ref, computed, onMounted  } from 'vue'
+import { ref, computed, onMounted, inject  } from 'vue'
 import { createPinia } from 'pinia'
-import { useLoading } from 'vue3-loading-overlay';
-import 'vue3-loading-overlay/dist/vue3-loading-overlay.css';
-
 
 import BaseDivider from '@/components/BaseDivider.vue'
 import BaseButton from '@/components/BaseButton.vue'
@@ -34,7 +31,7 @@ const fullname = ref('');
 const isShowDeleteModal = ref(false);
 const accountIndex = ref(null)
 
-const loading = useLoading();
+const loading = inject('Loader')
 
 // Props
 const props = defineProps({
