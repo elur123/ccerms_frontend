@@ -8,7 +8,7 @@ export const useScheduleTypeStore = defineStore('scheduletypes', {
     id: '',
     type: '', 
     status: {
-      status: false,
+      status: true,
       success: false,
       message: '',
     }
@@ -24,7 +24,7 @@ export const useScheduleTypeStore = defineStore('scheduletypes', {
         axios.post(`${url}api/scheduletypes`, { type: this.type }).then(res => {
           this.list = res.data.types
           this.status = {
-            status: true,
+            status: false,
             success: res.data.status == 200 ? true : false,
             message: res.data.message,
           }
@@ -32,7 +32,7 @@ export const useScheduleTypeStore = defineStore('scheduletypes', {
           resolve(res)
         }).catch(err => {
           this.status = {
-            status: true,
+            status: false,
             success: false,
             message: 'Server error!',
           }
@@ -49,7 +49,7 @@ export const useScheduleTypeStore = defineStore('scheduletypes', {
         axios.put(`${url}api/scheduletypes/${this.id}`, { type: this.type }).then(res => {
           this.list = res.data.types
           this.status = {
-            status: true,
+            status: false,
             success: res.data.status == 200 ? true : false,
             message: res.data.message,
           }
@@ -57,7 +57,7 @@ export const useScheduleTypeStore = defineStore('scheduletypes', {
           resolve(res)
         }).catch(err => {
           this.status = {
-            status: true,
+            status: false,
             success: false,
             message: 'Server error!',
           }

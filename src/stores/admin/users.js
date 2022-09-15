@@ -2,19 +2,23 @@ import { defineStore } from 'pinia'
 import axios from 'axios'
 import { url } from '@/config.js'
 
-export const useResearcharchiveStore = defineStore('researcharchive', {
+export const useUserStore = defineStore('users', {
   state: () => ({
     list: [],
     request: {
-        title: '',
-        course: '',
-        tags: '',
-        year_from_published: '',
-        year_to_published: '',
-        file: {},
-        adviser: [],
-        panel: [],
-        member: []
+        id: '',
+        firstname: '',
+        middlename: '',
+        lastname: '',
+        suffix: '',
+        gender: '',
+        birtdate: '',
+        telephone_number: '',
+        address: '',
+        email: '',
+        password: '',
+        usertype_id: '',
+        status_id: ''
     },
     status: {
       status: true,
@@ -24,7 +28,7 @@ export const useResearcharchiveStore = defineStore('researcharchive', {
   }),
   actions: {
     fetch() {
-      axios.get(`${url}api/researcharchives`).then(res => {
+      axios.get(`${url}api/users`).then(res => {
         this.list = res.data
       })
     },
@@ -67,15 +71,18 @@ export const useResearcharchiveStore = defineStore('researcharchive', {
     select(item) {
       this.request = {
         id: item.id,
-        title: item.title,
-        course: item.course_id,
-        tags: item.tags,
-        year_from_published: item.year_from_published,
-        year_to_published: item.year_to_published,
-        file: {},
-        adviser: item.adviser,
-        panel: item.panel,
-        member: item.member
+        firstname: item.firstname,
+        middlename: item.middlename,
+        lastname: item.lastname,
+        suffix: item.suffix,
+        gender: item.gender,
+        birtdate: item.birtdate,
+        telephone_number: item.telephone_number,
+        address: item.address,
+        email: item.email,
+        password: item.password,
+        usertype_id: item.usertype_id,
+        status_id: item.status_id
       }
     },
     update() {
@@ -93,7 +100,7 @@ export const useResearcharchiveStore = defineStore('researcharchive', {
         formData.append('panels', JSON.stringify(this.request.panel))
         formData.append('members', JSON.stringify(this.request.member))
 
-        axios.post(`${url}api/researcharchives/${this.request.id}`, formData,
+        axios.post(`${url}api/users/${this.request.id}`, formData,
         { 
           headers: { 'Content-Type': 'multipart/form-data' } 
         }
@@ -124,16 +131,19 @@ export const useResearcharchiveStore = defineStore('researcharchive', {
     },
     clear() {
         this.request = {
-          id: '',
-          title: '',
-          course: '',
-          tags: '',
-          year_from_published: '',
-          year_to_published: '',
-          file: {},
-          adviser: [],
-          panel: [],
-          member: []
+            id: '',
+            firstname: '',
+            middlename: '',
+            lastname: '',
+            suffix: '',
+            gender: '',
+            birtdate: '',
+            telephone_number: '',
+            address: '',
+            email: '',
+            password: '',
+            usertype_id: '',
+            status_id: ''
         }
     },
   }

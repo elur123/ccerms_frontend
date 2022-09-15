@@ -8,7 +8,7 @@ export const useCourseStore = defineStore('course', {
     id: '',
     course: '', 
     status: {
-      status: false,
+      status: true,
       success: false,
       message: '',
     }
@@ -24,7 +24,7 @@ export const useCourseStore = defineStore('course', {
         axios.post(`${url}api/courses`, { course: this.course }).then(res => {
           this.list = res.data.courses
           this.status = {
-            status: true,
+            status: false,
             success: res.data.status == 200 ? true : false,
             message: res.data.message,
           }
@@ -32,7 +32,7 @@ export const useCourseStore = defineStore('course', {
           resolve(res)
         }).catch(err => {
           this.status = {
-            status: true,
+            status: false,
             success: false,
             message: 'Server error!',
           }
@@ -46,10 +46,10 @@ export const useCourseStore = defineStore('course', {
     },
     update() {
       return new Promise((resolve, reject) => {
-        axios.put(`${url}api/courses/${this.id}`, { course: this.course }).then(res => {
+        axios.put(`${url}api/courses/${this.id}`, { id: this.id, course: this.course }).then(res => {
           this.list = res.data.courses
           this.status = {
-            status: true,
+            status: false,
             success: res.data.status == 200 ? true : false,
             message: res.data.message,
           }
@@ -57,7 +57,7 @@ export const useCourseStore = defineStore('course', {
           resolve(res)
         }).catch(err => {
           this.status = {
-            status: true,
+            status: false,
             success: false,
             message: 'Server error!',
           }

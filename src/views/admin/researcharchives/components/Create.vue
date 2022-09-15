@@ -123,6 +123,10 @@ const localDelete = () => {
     }
 }
 
+// Notification Hide Function
+const hideNotification = () => {
+  researchStore.status.status = true
+}
 
 
 </script>
@@ -160,6 +164,7 @@ const localDelete = () => {
       :isDismissed="researchStore.status.status"
       :color="researchStore.status.success ? 'success' : 'danger'"
       :icon="mdiTableBorder"
+      @hide-notification="hideNotification"
     >
       {{ researchStore.status.message }}
     </NotificationBar>

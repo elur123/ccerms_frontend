@@ -71,6 +71,7 @@ export const useMilestoneOneStore = defineStore('milestoneone', {
       return new Promise((resolve, reject) => {
         let formData = new FormData();
         formData.append('_method', 'PUT')
+        formData.append('id', this.request.id)
         formData.append('milestone', this.request.milestone)
         formData.append('file', this.request.file)
         formData.append('milestone_type', this.request.milestone_type)

@@ -76,6 +76,11 @@ const update = () => {
   })
 }
 
+// Notification Hide Function
+const hideNotification = () => {
+  courseStore.status.status = true
+}
+
 </script>
 
 <template>
@@ -121,9 +126,11 @@ const update = () => {
 
   <SectionMain>
     <NotificationBar
-      v-if="courseStore.status.status"
+      v-if="!courseStore.status.status"
+      :isDismissed="courseStore.status.status"
       :color="courseStore.status.success ? 'success' : 'danger'"
       :icon="mdiTableBorder"
+      @hide-notification="hideNotification"
     >
       {{ courseStore.status.message }}
     </NotificationBar>

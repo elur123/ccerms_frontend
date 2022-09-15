@@ -16,20 +16,18 @@ import SectionTitle from '@/components/SectionTitle.vue'
 import SectionTitleBarSub from '@/components/SectionTitleBarSub.vue'
 import NotificationBar from '@/components/NotificationBar.vue'
 
-import Create from '@/views/admin/researcharchives/components/Create.vue'
-import Update from '@/views/admin/researcharchives/components/Update.vue'
-import Table from '@/views/admin/researcharchives/components/Table.vue'
+import Create from '@/views/admin/users/components/Create.vue'
+import Update from '@/views/admin/users/components/Update.vue'
+import Table from '@/views/admin/users/components/Table.vue'
 
 import { useResearcharchiveStore } from '@/stores/admin/researcharchives.js';
-import { useMilestoneTwoStore } from '@/stores/admin/milestonetwo.js';
-import { useCourseStore } from '@/stores/admin/course.js';
+import { useUserStore } from '@/stores/admin/users.js';
 
 const pinia = createPinia()
 
-const titleStack = ref(['Admin', 'Settings', 'Research Archives'])
+const titleStack = ref(['Admin', 'Settings', 'Users'])
 
-const researchStore = useResearcharchiveStore(pinia)
-const courseStore = useCourseStore(pinia)
+const userStore = useUserStore(pinia)
 
 const showCreateSection = ref(false)
 const showUpdateSection = ref(false)
@@ -38,12 +36,11 @@ const modalShowDelete = ref(false)
 
 // Notification Hide Function
 const hideNotification = () => {
-  researchStore.status.status = true
+  userStore.status.status = true
 }
 
 // Get Data
-researchStore.fetch()
-courseStore.fetch()
+userStore.fetch()
 
 
 // Show Create function
@@ -54,7 +51,7 @@ const showCreate = () => {
 
 const archivesCreate = (res) => {
   if (res.status) {
-    researchStore.list = res.list
+    userStore.list = res.list
     showCreateSection.value = false
     showUpdateSection.value = false
   }
@@ -62,7 +59,7 @@ const archivesCreate = (res) => {
 
 const archivesUpdate = (res) => {
   if (res.status) {
-    researchStore.list = res.list
+    userStore.list = res.list
     showCreateSection.value = false
     showUpdateSection.value = false
   }
@@ -78,13 +75,13 @@ const showListSection = () => {
 const select = (item) => {
   showUpdateSection.value = true
   showCreateSection.value = false
-  researchStore.select(item)
+  userStore.select(item)
 }
 
 // Select Course item to delete function
 const selectDelete = (item) => {
   modalShowDelete.value = true
-  researchStore.select(item)
+  userStore.select(item)
 }
 
 
@@ -108,19 +105,18 @@ const selectDelete = (item) => {
   <SectionMain>
 
     <NotificationBar
-      v-if="!researchStore.status.status"
-      :isDismissed="researchStore.status.status"
-      :color="researchStore.status.success ? 'success' : 'danger'"
+      v-if="!userStore.status.status"
+      :isDismissed="userStore.status.status"
+      :color="userStore.status.success ? 'success' : 'danger'"
       :icon="mdiTableBorder"
       @hide-notification="hideNotification"
     >
-      {{ researchStore.status.message }}
+      {{ userStore.status.message }}
     </NotificationBar>
 
     <!-- Create Section -->
     <Create 
       v-if="showCreateSection"
-      :course="courseStore.list"
       @back="showListSection" 
       @archivesCreate="archivesCreate"
     />
@@ -129,7 +125,7 @@ const selectDelete = (item) => {
     <Update 
       v-if="showUpdateSection"
       :course="courseStore.list"
-      :item="researchStore.request"
+      :item="userStore.request"
       @back="showListSection" 
       @archivesUpdate="archivesUpdate"
     />
@@ -137,7 +133,7 @@ const selectDelete = (item) => {
     <!-- List Section -->
     <CardBox
       v-if="!showCreateSection && !showUpdateSection"
-      title="Research Archives List"
+      title="Users List"
       :hasTable="true"
       :icon="mdiBallot"
       :headerIcon="mdiPlus" 
@@ -145,7 +141,7 @@ const selectDelete = (item) => {
     >
       
     <Table 
-      :data="researchStore.list"
+      :data="userStore.list"
       @select-archive="select"
       @destroy-archive="selectDelete"
     />

@@ -73,7 +73,7 @@ const back = () => {
 
 const archivesUpdate = () => {
     loading.show()
-    researchStore.create().then(res => {
+    researchStore.update().then(res => {
         loading.hide()
         emit('archivesUpdate', { status: true, list: res.data.researches });
     }).catch(() => {
@@ -122,17 +122,33 @@ const showModalDelete = (index, type) => {
 
 const localDelete = () => {
     if (accountType.value == 'member') {
-        researchStore.request.member.splice(accountIndex, 1)
+        const find = researchStore.request.member[accountIndex.value];
+        if (find.id !== null) {
+            researchStore.destroy_personnel(find.id, 'researcharchiveamembers')
+        }
+
+        researchStore.request.member.splice(accountIndex.value, 1)
     }
     else if (accountType.value == 'adviser') {
-        researchStore.request.adviser.splice(accountIndex, 1)
+        const find = researchStore.request.adviser[accountIndex.value];
+        if (find.id !== null) {
+            researchStore.destroy_personnel(find.id, 'researcharchiveadvisers')
+        }
+        researchStore.request.adviser.splice(accountIndex.value, 1)
     }
     else {
-        researchStore.request.panel.splice(accountIndex, 1)
+        const find = researchStore.request.panel[accountIndex.value];
+        if (find.id !== null) {
+            researchStore.destroy_personnel(find.id, 'researcharchivepanels')
+        }
+        researchStore.request.panel.splice(accountIndex.value, 1)
     }
 }
 
-
+// Notification Hide Function
+const hideNotification = () => {
+  researchStore.status.status = true
+}
 
 </script>
 <template>
@@ -169,6 +185,7 @@ const localDelete = () => {
       :isDismissed="researchStore.status.status"
       :color="researchStore.status.success ? 'success' : 'danger'"
       :icon="mdiTableBorder"
+      @hide-notification="hideNotification"
     >
       {{ researchStore.status.message }}
     </NotificationBar>
