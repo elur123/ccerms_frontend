@@ -2,10 +2,9 @@ import { defineStore } from 'pinia'
 import axios from 'axios'
 import { url } from '@/config.js'
 
-export const useUserStore = defineStore('users', {
+export const useStudentStore = defineStore('students', {
   state: () => ({
     list: [],
-    access_list: [],
     request: {
         id: '',
         firstname: '',
@@ -19,10 +18,9 @@ export const useUserStore = defineStore('users', {
         email: '',
         password: '',
         file: {},
-        usertype_id: '',
+        usertype_id: 6,
         other_type: '',
         status_id: '',
-        access: [],
     },
     status: {
       status: true,
@@ -32,13 +30,8 @@ export const useUserStore = defineStore('users', {
   }),
   actions: {
     fetch() {
-      axios.get(`${url}api/users`).then(res => {
+      axios.get(`${url}api/students`).then(res => {
         this.list = res.data
-      })
-    },
-    fetchAccessList() {
-      axios.get(`${url}api/useraccess`).then(res => {
-        this.access_list = res.data
       })
     },
     create() {
@@ -59,7 +52,7 @@ export const useUserStore = defineStore('users', {
         formData.append('other_type', this.request.other_type)
         formData.append('status', this.request.status_id)
 
-        axios.post(`${url}api/users`, formData, 
+        axios.post(`${url}api/students`, formData, 
         { 
           headers: { 'Content-Type': 'multipart/form-data' } 
         }
@@ -120,7 +113,7 @@ export const useUserStore = defineStore('users', {
         formData.append('other_type', this.request.other_type)
         formData.append('status', this.request.status_id)
 
-        axios.post(`${url}api/users/${this.request.id}`, formData,
+        axios.post(`${url}api/students/${this.request.id}`, formData,
         { 
           headers: { 'Content-Type': 'multipart/form-data' } 
         }
@@ -163,7 +156,7 @@ export const useUserStore = defineStore('users', {
             email: '',
             password: '',
             file: '',
-            usertype_id: '',
+            usertype_id: 6,
             other_type: '',
             status_id: ''
         }

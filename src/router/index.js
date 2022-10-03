@@ -88,7 +88,7 @@ const routes = [
     },
     path: '/admin/students',
     name: 'admin-students',
-    component: () => import('@/views/admin/course/CourseSettings.vue')
+    component: () => import('@/views/admin/students/Students.vue')
   },
   {
     beforeEnter: adminAuthenticated,

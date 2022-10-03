@@ -83,7 +83,9 @@ const goto = (refName) => {
   </header>
   <main>
     <div class="w-screen h-full">
-      <img class="object-cover" :src="`${url}myfiles/logo/banner_one.png`" alt="ccerms_banner">
+      <div class="background">
+        <img class="object-cover" :src="`${url}myfiles/logo/banner_one.png`" alt="ccerms_banner">
+      </div>
     </div>
     
     <section id="about" ref="about">
@@ -95,7 +97,7 @@ const goto = (refName) => {
 
     <section id="research" ref="research">
       <div class="mx-auto max-w-7xl py-6 pb-20 sm:px-6 lg:px-8">
-          <h2 class="text-5xl font-bold">RESEARCH ARCIVES</h2>
+          <h2 class="text-5xl font-bold">RESEARCH ARCHIVES</h2>
           <div class="mt-5 h-96 rounded-lg border-4 border-dashed border-gray-200"></div>
       </div>
     </section>

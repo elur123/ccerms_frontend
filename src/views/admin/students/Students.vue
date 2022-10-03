@@ -16,18 +16,17 @@ import SectionTitle from '@/components/SectionTitle.vue'
 import SectionTitleBarSub from '@/components/SectionTitleBarSub.vue'
 import NotificationBar from '@/components/NotificationBar.vue'
 
-import Create from '@/views/admin/users/components/Create.vue'
-import Update from '@/views/admin/users/components/Update.vue'
-import Table from '@/views/admin/users/components/Table.vue'
+import Create from '@/views/admin/students/components/Create.vue'
+import Update from '@/views/admin/students/components/Update.vue'
+import Table from '@/views/admin/students/components/Table.vue'
 
-import { useResearcharchiveStore } from '@/stores/admin/researcharchives.js';
-import { useUserStore } from '@/stores/admin/users.js';
+import { useStudentStore } from '@/stores/admin/students.js';
 
 const pinia = createPinia()
 
-const titleStack = ref(['Admin', 'Settings', 'Users'])
+const titleStack = ref(['Admin', 'General', 'Students'])
 
-const userStore = useUserStore(pinia)
+const studentStore = useStudentStore(pinia)
 
 const showCreateSection = ref(false)
 const showUpdateSection = ref(false)
@@ -36,11 +35,11 @@ const modalShowDelete = ref(false)
 
 // Notification Hide Function
 const hideNotification = () => {
-  userStore.status.status = true
+  studentStore.status.status = true
 }
 
 // Get Data
-userStore.fetch()
+studentStore.fetch()
 
 
 // Show Create function
@@ -51,7 +50,7 @@ const showCreate = () => {
 
 const userCreate = (res) => {
   if (res.status) {
-    userStore.list = res.list
+    studentStore.list = res.list
     showCreateSection.value = false
     showUpdateSection.value = false
   }
@@ -59,7 +58,7 @@ const userCreate = (res) => {
 
 const archivesUpdate = (res) => {
   if (res.status) {
-    userStore.list = res.list
+    studentStore.list = res.list
     showCreateSection.value = false
     showUpdateSection.value = false
   }
@@ -75,13 +74,13 @@ const showListSection = () => {
 const select = (item) => {
   showUpdateSection.value = true
   showCreateSection.value = false
-  userStore.select(item)
+  studentStore.select(item)
 }
 
 // Select Course item to delete function
 const selectDelete = (item) => {
   modalShowDelete.value = true
-  userStore.select(item)
+  studentStore.select(item)
 }
 
 
@@ -105,13 +104,13 @@ const selectDelete = (item) => {
   <SectionMain>
 
     <NotificationBar
-      v-if="!userStore.status.status"
-      :isDismissed="userStore.status.status"
-      :color="userStore.status.success ? 'success' : 'danger'"
+      v-if="!studentStore.status.status"
+      :isDismissed="studentStore.status.status"
+      :color="studentStore.status.success ? 'success' : 'danger'"
       :icon="mdiTableBorder"
       @hide-notification="hideNotification"
     >
-      {{ userStore.status.message }}
+      {{ studentStore.status.message }}
     </NotificationBar>
 
     <!-- Create Section -->
@@ -125,7 +124,7 @@ const selectDelete = (item) => {
     <Update 
       v-if="showUpdateSection"
       :course="courseStore.list"
-      :item="userStore.request"
+      :item="studentStore.request"
       @back="showListSection" 
       @archivesUpdate="archivesUpdate"
     />
@@ -141,9 +140,9 @@ const selectDelete = (item) => {
     >
       
     <Table 
-      :data="userStore.list"
-      @select-archive="select"
-      @destroy-archive="selectDelete"
+      :data="studentStore.list"
+      @select-student="select"
+      @destroy-student="selectDelete"
     />
   
     </CardBox>

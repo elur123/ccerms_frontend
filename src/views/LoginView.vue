@@ -25,6 +25,7 @@ const authStore = useAuthStore(pinia)
 
 const router = useRouter()
 let loader = inject('Loader')
+
 const submit = () => {
   loader.show();
   authStore.login().then(res => {

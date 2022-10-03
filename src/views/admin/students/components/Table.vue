@@ -18,7 +18,7 @@ const props = defineProps({
   checkable: Boolean
 })
 
-const emit = defineEmits(['select-archive', 'destroy-archive'])
+const emit = defineEmits(['select-student', 'destroy-student'])
 
 const items = computed(() => props.data)
 
@@ -53,7 +53,7 @@ const select = item => {
 }
 
 const destroy = item => {
-  emit('destroy-archive', item);
+  emit('destroy-student', item);
 }
 
 const remove = (arr, cb) => {
@@ -100,7 +100,6 @@ const checked = (isChecked, client) => {
         <th>Email</th>
         <th>Phone Number</th>
         <th>Address</th>
-        <th>User Type</th>
         <th>Status</th>
         <th />
       </tr>
@@ -130,9 +129,6 @@ const checked = (isChecked, client) => {
         </td>
         <td data-label="Address">
             {{ item.address }}
-        </td>
-        <td data-label="User Type">
-            {{ item.usertype.type }}
         </td>
         <td data-label="Status">
             <span class="p-1 bg-lime-400 text-white text-sm rounded font-semibold ">{{ item.status.status }}</span>

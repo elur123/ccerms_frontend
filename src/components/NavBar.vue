@@ -31,12 +31,16 @@ import UserAvatar from '@/components/UserAvatar.vue'
 import BaseIcon from '@/components/BaseIcon.vue'
 import NavBarSearch from '@/components/NavBarSearch.vue'
 
+import { url } from '@/config.js'
+
 const router = useRouter()
 
 const mainStore = useMainStore()
 const AuthStore = useAuthStore()
 
 const userName = computed(() => AuthStore.user !== null ? `${AuthStore.user.firstname} ${AuthStore.user.middlename} ${AuthStore.user.lastname}` : '')
+
+const profile_picture = computed(() => AuthStore.user !== null ? AuthStore.user.file_url ?? `${url}myfiles/profile_pictures/default.png` : '')
 
 const styleStore = useStyleStore()
 
@@ -172,7 +176,7 @@ const logout = () => {
         </NavBarMenu> -->
         <NavBarMenu has-divider>
           <NavBarItemLabel :label="userName">
-            <UserAvatar class="w-6 h-6 mr-3 inline-flex" />
+            <UserAvatar :image="profile_picture" class="w-6 h-6 mr-3 inline-flex" />
           </NavBarItemLabel>
 
           <template #dropdown>
