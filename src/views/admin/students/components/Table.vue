@@ -49,7 +49,7 @@ const pagesList = computed(() => {
 })
 
 const select = item => {
-  emit('select-archive', item);
+  emit('select-student', item);
 }
 
 const destroy = item => {

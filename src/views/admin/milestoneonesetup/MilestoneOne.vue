@@ -1,6 +1,5 @@
 <script setup>
 import { ref, reactive, inject } from 'vue'
-import { createPinia } from 'pinia'
 import { mdiBallot, mdiPlus, mdiTableBorder } from '@mdi/js'
 
 import SectionMain from '@/components/SectionMain.vue'
@@ -21,11 +20,10 @@ import MilestoneOneTable from '@/views/admin/milestoneonesetup/components/Table.
 
 import { useMilestoneOneStore } from '@/stores/admin/milestoneone.js';
 
-const pinia = createPinia()
 
 const titleStack = ref(['Admin', 'Settings', 'Milestone One'])
 
-const milestoneStore = useMilestoneOneStore(pinia)
+const milestoneStore = useMilestoneOneStore()
 
 const modalShowCreate = ref(false)
 const modalShowUpdate = ref(false)

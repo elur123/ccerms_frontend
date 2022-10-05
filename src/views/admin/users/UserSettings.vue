@@ -1,6 +1,5 @@
 <script setup>
 import { ref, reactive } from 'vue'
-import { createPinia } from 'pinia'
 import { mdiBallot, mdiPlus, mdiTableBorder } from '@mdi/js'
 
 import SectionMain from '@/components/SectionMain.vue'
@@ -22,12 +21,13 @@ import Table from '@/views/admin/users/components/Table.vue'
 
 import { useResearcharchiveStore } from '@/stores/admin/researcharchives.js';
 import { useUserStore } from '@/stores/admin/users.js';
+import { useCourseStore } from '@/stores/admin/course.js';
 
-const pinia = createPinia()
 
 const titleStack = ref(['Admin', 'Settings', 'Users'])
 
-const userStore = useUserStore(pinia)
+const userStore = useUserStore()
+const courseStore = useCourseStore()
 
 const showCreateSection = ref(false)
 const showUpdateSection = ref(false)
@@ -57,7 +57,7 @@ const userCreate = (res) => {
   }
 }
 
-const archivesUpdate = (res) => {
+const userUpdate = (res) => {
   if (res.status) {
     userStore.list = res.list
     showCreateSection.value = false
@@ -127,7 +127,7 @@ const selectDelete = (item) => {
       :course="courseStore.list"
       :item="userStore.request"
       @back="showListSection" 
-      @archivesUpdate="archivesUpdate"
+      @userUpdate="userUpdate"
     />
 
     <!-- List Section -->

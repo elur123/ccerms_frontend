@@ -1,6 +1,5 @@
 <script setup>
 import { ref, reactive, inject } from 'vue'
-import { createPinia } from 'pinia'
 import { mdiBallot, mdiPlus, mdiTableBorder } from '@mdi/js'
 import { useLoading } from 'vue3-loading-overlay';
 import 'vue3-loading-overlay/dist/vue3-loading-overlay.css';
@@ -23,11 +22,10 @@ import MilestoneTwoTable from '@/views/admin/milestonetwosetup/components/Table.
 
 import { useMilestoneTwoStore } from '@/stores/admin/milestonetwo.js';
 
-const pinia = createPinia()
 
 const titleStack = ref(['Admin', 'Settings', 'Milestone Two'])
 
-const milestoneStore = useMilestoneTwoStore(pinia)
+const milestoneStore = useMilestoneTwoStore()
 
 const modalShowCreate = ref(false)
 const modalShowUpdate = ref(false)

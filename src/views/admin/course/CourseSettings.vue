@@ -1,6 +1,5 @@
 <script setup>
 import { ref, reactive, inject } from 'vue'
-import { createPinia } from 'pinia'
 import { mdiBallot, mdiPlus, mdiTableBorder } from '@mdi/js'
 
 import SectionMain from '@/components/SectionMain.vue'
@@ -20,11 +19,9 @@ import CourseTable from '@/views/admin/course/components/CourseTable.vue'
 
 import { useCourseStore } from '@/stores/admin/course.js';
 
-const pinia = createPinia()
-
 const titleStack = ref(['Admin', 'Settings', 'Courses'])
 
-const courseStore = useCourseStore(pinia)
+const courseStore = useCourseStore()
 
 const modalShowCreate = ref(false)
 const modalShowUpdate = ref(false)

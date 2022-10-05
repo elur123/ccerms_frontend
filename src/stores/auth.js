@@ -8,7 +8,7 @@ export const useAuthStore = defineStore('auth', {
         email: '',
         password: '',
     },
-    user: localStorage.getItem('user') !== null ? JSON.parse(localStorage.getItem('user')) : null,
+    user: JSON.parse(localStorage.getItem('user')),
     status: {
         status: false,
         success: false,

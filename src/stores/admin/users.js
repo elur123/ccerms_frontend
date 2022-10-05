@@ -94,7 +94,7 @@ export const useUserStore = defineStore('users', {
         telephone_number: item.telephone_number,
         address: item.address,
         email: item.email,
-        password: item.password,
+        password: '',
         usertype_id: item.usertype_id,
         other_type: item.other_type,
         status_id: item.status_id

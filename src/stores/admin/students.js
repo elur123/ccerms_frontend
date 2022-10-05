@@ -19,7 +19,8 @@ export const useStudentStore = defineStore('students', {
         password: '',
         file: {},
         usertype_id: 6,
-        other_type: '',
+        grouptype: 1,
+        course_id: 1,
         status_id: '',
     },
     status: {
@@ -50,6 +51,7 @@ export const useStudentStore = defineStore('students', {
         formData.append('file', this.request.file)
         formData.append('usertype', this.request.usertype_id)
         formData.append('other_type', this.request.other_type)
+        formData.append('grouptype', this.request.grouptype)
         formData.append('status', this.request.status_id)
 
         axios.post(`${url}api/students`, formData, 
@@ -57,7 +59,7 @@ export const useStudentStore = defineStore('students', {
           headers: { 'Content-Type': 'multipart/form-data' } 
         }
         ).then(res => {
-          this.list = res.data.users
+          this.list = res.data.students
           this.status = {
             status: false,
             success: res.data.status == 200 ? true : false,
@@ -87,9 +89,11 @@ export const useStudentStore = defineStore('students', {
         telephone_number: item.telephone_number,
         address: item.address,
         email: item.email,
-        password: item.password,
+        password: '',
         usertype_id: item.usertype_id,
         other_type: item.other_type,
+        grouptype: item.studentdetail.grouptype_id,
+        course_id: item.studentdetail.course_id,
         status_id: item.status_id
       }
     },
@@ -111,6 +115,7 @@ export const useStudentStore = defineStore('students', {
         formData.append('file', this.request.file)
         formData.append('usertype', this.request.usertype_id)
         formData.append('other_type', this.request.other_type)
+        formData.append('grouptype', this.request.grouptype)
         formData.append('status', this.request.status_id)
 
         axios.post(`${url}api/students/${this.request.id}`, formData,
@@ -118,7 +123,7 @@ export const useStudentStore = defineStore('students', {
           headers: { 'Content-Type': 'multipart/form-data' } 
         }
         ).then(res => {
-          this.list = res.data.users
+          this.list = res.data.students
           this.status = {
             status: false,
             success: res.data.status == 200 ? true : false,
@@ -158,6 +163,8 @@ export const useStudentStore = defineStore('students', {
             file: '',
             usertype_id: 6,
             other_type: '',
+            grouptype: 1,
+            course_id: 1,
             status_id: ''
         }
     },

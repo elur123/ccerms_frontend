@@ -1,6 +1,5 @@
 <script setup>
 import { ref, reactive } from 'vue'
-import { createPinia } from 'pinia'
 import { mdiBallot, mdiPlus, mdiTableBorder } from '@mdi/js'
 
 import SectionMain from '@/components/SectionMain.vue'
@@ -24,12 +23,10 @@ import { useResearcharchiveStore } from '@/stores/admin/researcharchives.js';
 import { useMilestoneTwoStore } from '@/stores/admin/milestonetwo.js';
 import { useCourseStore } from '@/stores/admin/course.js';
 
-const pinia = createPinia()
-
 const titleStack = ref(['Admin', 'Settings', 'Research Archives'])
 
-const researchStore = useResearcharchiveStore(pinia)
-const courseStore = useCourseStore(pinia)
+const researchStore = useResearcharchiveStore()
+const courseStore = useCourseStore()
 
 const showCreateSection = ref(false)
 const showUpdateSection = ref(false)

@@ -1,6 +1,5 @@
 <script setup>
 import { ref, reactive, inject } from 'vue'
-import { createPinia } from 'pinia'
 import { mdiBallot, mdiPlus, mdiTableBorder } from '@mdi/js'
 
 import SectionMain from '@/components/SectionMain.vue'
@@ -20,11 +19,9 @@ import CourseTable from '@/views/admin/scheduletype/components/Table.vue'
 
 import { useScheduleTypeStore } from '@/stores/admin/scheduletype.js';
 
-const pinia = createPinia()
-
 const titleStack = ref(['Admin', 'Settings', 'Schedule Type'])
 
-const scheduleTypeStore = useScheduleTypeStore(pinia)
+const scheduleTypeStore = useScheduleTypeStore()
 
 const modalShowCreate = ref(false)
 const modalShowUpdate = ref(false)

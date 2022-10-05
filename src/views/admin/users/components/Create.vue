@@ -1,7 +1,5 @@
 <script setup>
 import { ref, computed, inject } from 'vue'
-import { createPinia } from 'pinia'
-
 
 import BaseDivider from '@/components/BaseDivider.vue'
 import BaseButton from '@/components/BaseButton.vue'
@@ -17,10 +15,9 @@ import NotificationBarInCard from '@/components/NotificationBarInCard.vue'
 import { mdiArrowLeftBold, mdiPlus, mdiTrashCan, mdiTableBorder } from '@mdi/js'
 
 import { useUserStore } from '@/stores/admin/users.js';
-import { userTypes, gender } from '@/settings_data.js';
+import { userTypes, gender, status } from '@/settings_data.js';
 
-const pinia = createPinia()
-const userStore = useUserStore(pinia)
+const userStore = useUserStore()
 
 // Emits
 const emit = defineEmits(['back', 'userCreate'])
@@ -69,7 +66,7 @@ const userCreate = () => {
     loading.show()
     userStore.create().then(res => {
         loading.hide()
-        emit('userCreate', { status: true, list: res.data.researches });
+        emit('userCreate', { status: true, list: res.data.users });
     }).catch(() => {
         loading.hide()
         emit('userCreate', { status: false});
@@ -239,7 +236,7 @@ const hideNotification = () => {
                     <FormControl v-model="userStore.request.other_type" />
                 </FormField>
                 <FormField label="Status">
-                    <FormControl v-model="userStore.request.status_id"/>
+                    <FormControl v-model="userStore.request.status_id" :options="status"/>
                 </FormField>
             </div>
 

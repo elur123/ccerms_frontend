@@ -31,6 +31,7 @@ const submit = () => {
   authStore.login().then(res => {
     loader.hide()
     if (res.data.status === 200) {
+      authStore.user = res.data.details
       router.push('/admin/dashboard')
     }
   })

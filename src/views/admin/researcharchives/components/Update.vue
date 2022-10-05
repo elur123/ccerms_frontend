@@ -1,6 +1,5 @@
 <script setup>
 import { ref, computed, onMounted, inject  } from 'vue'
-import { createPinia } from 'pinia'
 
 import BaseDivider from '@/components/BaseDivider.vue'
 import BaseButton from '@/components/BaseButton.vue'
@@ -17,8 +16,7 @@ import { mdiArrowLeftBold, mdiPlus, mdiTrashCan, mdiTableBorder } from '@mdi/js'
 
 import { useResearcharchiveStore } from '@/stores/admin/researcharchives.js';
 
-const pinia = createPinia()
-const researchStore = useResearcharchiveStore(pinia)
+const researchStore = useResearcharchiveStore()
 
 // Emits
 const emit = defineEmits(['back', 'archivesUpdate'])

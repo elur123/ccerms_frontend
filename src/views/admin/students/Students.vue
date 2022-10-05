@@ -1,6 +1,5 @@
 <script setup>
 import { ref, reactive } from 'vue'
-import { createPinia } from 'pinia'
 import { mdiBallot, mdiPlus, mdiTableBorder } from '@mdi/js'
 
 import SectionMain from '@/components/SectionMain.vue'
@@ -20,13 +19,14 @@ import Create from '@/views/admin/students/components/Create.vue'
 import Update from '@/views/admin/students/components/Update.vue'
 import Table from '@/views/admin/students/components/Table.vue'
 
+import { useCourseStore } from '@/stores/admin/course.js';
 import { useStudentStore } from '@/stores/admin/students.js';
 
-const pinia = createPinia()
 
 const titleStack = ref(['Admin', 'General', 'Students'])
 
-const studentStore = useStudentStore(pinia)
+const courseStore = useCourseStore()
+const studentStore = useStudentStore()
 
 const showCreateSection = ref(false)
 const showUpdateSection = ref(false)
@@ -39,8 +39,8 @@ const hideNotification = () => {
 }
 
 // Get Data
+courseStore.fetch()
 studentStore.fetch()
-
 
 // Show Create function
 const showCreate = () => {
@@ -50,13 +50,12 @@ const showCreate = () => {
 
 const userCreate = (res) => {
   if (res.status) {
-    studentStore.list = res.list
     showCreateSection.value = false
     showUpdateSection.value = false
   }
 }
 
-const archivesUpdate = (res) => {
+const userUpdate = (res) => {
   if (res.status) {
     studentStore.list = res.list
     showCreateSection.value = false
@@ -116,6 +115,7 @@ const selectDelete = (item) => {
     <!-- Create Section -->
     <Create 
       v-if="showCreateSection"
+      :courses="courseStore.list"
       @back="showListSection" 
       @userCreate="userCreate"
     />
@@ -123,16 +123,16 @@ const selectDelete = (item) => {
     <!-- Update Section -->
     <Update 
       v-if="showUpdateSection"
-      :course="courseStore.list"
+      :courses="courseStore.list"
       :item="studentStore.request"
       @back="showListSection" 
-      @archivesUpdate="archivesUpdate"
+      @userUpdate="userUpdate"
     />
 
     <!-- List Section -->
     <CardBox
       v-if="!showCreateSection && !showUpdateSection"
-      title="Users List"
+      title="Students List"
       :hasTable="true"
       :icon="mdiBallot"
       :headerIcon="mdiPlus" 
