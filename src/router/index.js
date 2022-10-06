@@ -97,7 +97,7 @@ const routes = [
     },
     path: '/admin/groups',
     name: 'admin-groups',
-    component: () => import('@/views/admin/course/CourseSettings.vue')
+    component: () => import('@/views/admin/groups/Groups.vue')
   },
   {
     beforeEnter: adminAuthenticated,

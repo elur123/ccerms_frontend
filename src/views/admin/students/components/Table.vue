@@ -98,6 +98,9 @@ const checked = (isChecked, client) => {
         <th>Image</th>
         <th>Fullname</th>
         <th>Email</th>
+        <th>Course</th>
+        <th>Type</th>
+        <th>Section</th>
         <th>Phone Number</th>
         <th>Address</th>
         <th>Status</th>
@@ -119,10 +122,24 @@ const checked = (isChecked, client) => {
             />
         </td>
         <td data-label="Fullname">
-            {{ `${item.lastname}, ${item.firstname} ${item.suffix}, ${item.middlename}` }}
+            {{ item.fullname }}
         </td>
         <td data-label="Email">
             {{ item.email }}
+        </td>
+        <td data-label="Course">
+            {{ item.studentdetail.course !== null ? item.studentdetail.course.course.toUpperCase() : '' }}
+        </td>
+        <td data-label="Type">
+            {{ item.studentdetail.grouptype !== null ? item.studentdetail.grouptype.type : '' }}
+        </td>
+        <td data-label="Section">
+            <span v-if="item.studentdetail.grouptype_id == 1">
+              {{ item.studentdetail.sectionone !== null ? item.studentdetail.sectionone.section_code.toUpperCase() : '' }}
+            </span>
+            <span else>
+              {{ item.studentdetail.sectiontwo !== null ? item.studentdetail.sectiontwo.section_code.toUpperCase() : '' }}
+            </span>
         </td>
         <td data-label="Phone Number">
             {{ item.telephone_number }}
@@ -131,7 +148,9 @@ const checked = (isChecked, client) => {
             {{ item.address }}
         </td>
         <td data-label="Status">
-            <span class="p-1 bg-lime-400 text-white text-sm rounded font-semibold ">{{ item.status.status }}</span>
+            <span v-if="item.status_id == 1" class="p-1 bg-orange-400 text-white text-sm rounded font-semibold ">{{ item.status.status }}</span>
+            <span v-else-if="item.status_id == 2" class="p-1 bg-lime-400 text-white text-sm rounded font-semibold ">{{ item.status.status }}</span>
+            <span v-else class="p-1 bg-red-400 text-white text-sm rounded font-semibold ">{{ item.status.status }}</span>
         </td>
         <td class="before:hidden lg:w-1 whitespace-nowrap">
           <BaseButtons

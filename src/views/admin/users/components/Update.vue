@@ -164,7 +164,7 @@ const hideNotification = () => {
 
     </CardBoxModal>
 
-    <NotificationBar
+    <!-- <NotificationBar
       v-if="!userStore.status.status"
       :isDismissed="userStore.status.status"
       :color="userStore.status.success ? 'success' : 'danger'"
@@ -172,7 +172,7 @@ const hideNotification = () => {
       @hide-notification="hideNotification"
     >
       {{ userStore.status.message }}
-    </NotificationBar>
+    </NotificationBar> -->
 
     <CardBox
       title="Update User"

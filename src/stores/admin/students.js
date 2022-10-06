@@ -52,6 +52,7 @@ export const useStudentStore = defineStore('students', {
         formData.append('usertype', this.request.usertype_id)
         formData.append('other_type', this.request.other_type)
         formData.append('grouptype', this.request.grouptype)
+        formData.append('course', this.request.course_id)
         formData.append('status', this.request.status_id)
 
         axios.post(`${url}api/students`, formData, 
@@ -116,6 +117,7 @@ export const useStudentStore = defineStore('students', {
         formData.append('usertype', this.request.usertype_id)
         formData.append('other_type', this.request.other_type)
         formData.append('grouptype', this.request.grouptype)
+        formData.append('course', this.request.course_id)
         formData.append('status', this.request.status_id)
 
         axios.post(`${url}api/students/${this.request.id}`, formData,
@@ -160,7 +162,7 @@ export const useStudentStore = defineStore('students', {
             address: '',
             email: '',
             password: '',
-            file: '',
+            file: {},
             usertype_id: 6,
             other_type: '',
             grouptype: 1,

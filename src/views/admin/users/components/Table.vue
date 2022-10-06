@@ -135,7 +135,9 @@ const checked = (isChecked, client) => {
             {{ item.usertype.type }}
         </td>
         <td data-label="Status">
-            <span class="p-1 bg-lime-400 text-white text-sm rounded font-semibold ">{{ item.status.status }}</span>
+            <span v-if="item.status_id == 1" class="p-1 bg-orange-400 text-white text-sm rounded font-semibold ">{{ item.status.status }}</span>
+            <span v-else-if="item.status_id == 2" class="p-1 bg-lime-400 text-white text-sm rounded font-semibold ">{{ item.status.status }}</span>
+            <span v-else class="p-1 bg-red-400 text-white text-sm rounded font-semibold ">{{ item.status.status }}</span>
         </td>
         <td class="before:hidden lg:w-1 whitespace-nowrap">
           <BaseButtons

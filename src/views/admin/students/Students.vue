@@ -67,6 +67,7 @@ const userUpdate = (res) => {
 const showListSection = () => {
   showCreateSection.value = false
   showUpdateSection.value = false
+  studentStore.clear()
 }
 
 // Select Course item function
