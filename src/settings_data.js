@@ -15,7 +15,9 @@ export const gender = [
 export const status = [
     { id: 1, label: 'Pending' },
     { id: 2, label: 'Approved' },
-    { id: 3, label: 'Declined' }
+    { id: 3, label: 'Declined' },
+    { id: 9, label: 'Active' },
+    { id: 10, label: 'Disband' }
 ]
 
 export const groupTypes = [

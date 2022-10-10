@@ -21,12 +21,16 @@ import Table from '@/views/admin/groups/components/Table.vue'
 
 import { useCourseStore } from '@/stores/admin/course.js';
 import { useGroupStore } from '@/stores/admin/groups.js';
+import { useMilestoneOneStore } from '@/stores/admin/milestoneone.js';
+import { useMilestoneTwoStore } from '@/stores/admin/milestonetwo.js';
 
 
 const titleStack = ref(['Admin', 'General', 'Groups'])
 
 const courseStore = useCourseStore()
 const groupStore = useGroupStore()
+const milestoneOne = useMilestoneOneStore()
+const milestoneTwo = useMilestoneTwoStore()
 
 const showCreateSection = ref(false)
 const showUpdateSection = ref(false)
@@ -41,6 +45,8 @@ const hideNotification = () => {
 // Get Data
 courseStore.fetch()
 groupStore.fetch()
+milestoneOne.fetch()
+milestoneTwo.fetch()
 
 // Show Create function
 const showCreate = () => {
@@ -117,8 +123,10 @@ const selectDelete = (item) => {
     <Create 
       v-if="showCreateSection"
       :courses="courseStore.list"
+      :milestoneOne="milestoneOne.list"
+      :milestoneTwo="milestoneTwo.list"
       @back="showListSection" 
-      @userCreate="userCreate"
+      @groupCreate="userCreate"
     />
 
     <!-- Update Section -->

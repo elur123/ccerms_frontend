@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, inject } from 'vue'
+import { ref, computed, watch, inject } from 'vue'
 
 import BaseDivider from '@/components/BaseDivider.vue'
 import BaseButton from '@/components/BaseButton.vue'
@@ -14,12 +14,13 @@ import NotificationBar from '@/components/NotificationBar.vue'
 
 import { mdiArrowLeftBold, mdiPlus, mdiTrashCan, mdiTableBorder } from '@mdi/js'
 
-import { useResearcharchiveStore } from '@/stores/admin/researcharchives.js';
+import { useGroupStore } from '@/stores/admin/groups.js';
+import { status, groupTypes } from '@/settings_data.js';
 
-const researchStore = useResearcharchiveStore()
+const groupStore = useGroupStore()
 
 // Emits
-const emit = defineEmits(['back', 'archivesCreate'])
+const emit = defineEmits(['back', 'groupCreate'])
 
 // Variables
 const isShowModal = ref(false);
@@ -27,13 +28,21 @@ const accountType = ref('');
 const titleModal = ref('');
 const fullname = ref('');
 const isShowDeleteModal = ref(false);
-const accountIndex = ref(null)
+const accountIndex = ref(null);
 
 const loading = inject('Loader')
 
 // Props
 const props = defineProps({
-  course: {
+  courses: {
+    type: Array,
+    default: []
+  },
+  milestoneOne: {
+    type: Array,
+    default: []
+  },
+  milestoneTwo: {
     type: Array,
     default: []
   }
@@ -42,7 +51,7 @@ const props = defineProps({
 // Computed
 const courses = computed(() => {
     const data = [];
-    props.course.forEach(element => {
+    props.courses.forEach(element => {
         data.push({
             id: element.id,
             label: element.course.toUpperCase()
@@ -51,20 +60,45 @@ const courses = computed(() => {
 
     return data;
 })
+const milestoneOne = computed(() => {
+    const data = [];
+    props.milestoneOne.forEach(element => {
+        data.push({
+            id: element.id,
+            label: element.milestone.toUpperCase()
+        }) 
+    });
+
+    return data;
+})
+const milestoneTwo = computed(() => {
+    const data = [];
+    props.milestoneTwo.forEach(element => {
+        data.push({
+            id: element.id,
+            label: element.milestone.toUpperCase()
+        }) 
+    });
+
+    return data;
+})
+const groupStatus = computed(() => {
+    return status.filter(e => e.id >= 9)
+})
 
 // Declared Functions
 const back = () => {
     emit('back', false);
 }
 
-const archivesCreate = () => {
+const groupCreate = () => {
     loading.show()
-    researchStore.create().then(res => {
+    groupStore.create().then(res => {
         loading.hide()
-        emit('archivesCreate', { status: true, list: res.data.researches });
+        emit('groupCreate', { status: true, list: res.data.researches });
     }).catch(() => {
         loading.hide()
-        emit('archivesCreate', { status: false});
+        emit('groupCreate', { status: false});
     })
 }
 
@@ -81,19 +115,19 @@ const localCreate = () => {
         return;
     }
     if (accountType.value == 'member') {
-        researchStore.request.member.push({
+        groupStore.request.member.push({
             id: null,
             fullname: fullname.value
         })
     }
     else if (accountType.value == 'adviser') {
-        researchStore.request.adviser.push({
+        groupStore.request.adviser.push({
             id: null,
             fullname: fullname.value
         })
     }
     else {
-        researchStore.request.panel.push({
+        groupStore.request.panel.push({
             id: null,
             fullname: fullname.value
         })
@@ -108,19 +142,19 @@ const showModalDelete = (index, type) => {
 
 const localDelete = () => {
     if (accountType.value == 'member') {
-        researchStore.request.member.splice(accountIndex, 1)
+        groupStore.request.member.splice(accountIndex, 1)
     }
     else if (accountType.value == 'adviser') {
-        researchStore.request.adviser.splice(accountIndex, 1)
+        groupStore.request.adviser.splice(accountIndex, 1)
     }
     else {
-        researchStore.request.panel.splice(accountIndex, 1)
+        groupStore.request.panel.splice(accountIndex, 1)
     }
 }
 
 // Notification Hide Function
 const hideNotification = () => {
-  researchStore.status.status = true
+  groupStore.status.status = true
 }
 
 
@@ -154,15 +188,15 @@ const hideNotification = () => {
 
     </CardBoxModal>
 
-    <NotificationBar
-      v-if="!researchStore.status.status"
-      :isDismissed="researchStore.status.status"
-      :color="researchStore.status.success ? 'success' : 'danger'"
+    <!-- <NotificationBar
+      v-if="!groupStore.status.status"
+      :isDismissed="groupStore.status.status"
+      :color="groupStore.status.success ? 'success' : 'danger'"
       :icon="mdiTableBorder"
       @hide-notification="hideNotification"
     >
-      {{ researchStore.status.message }}
-    </NotificationBar>
+      {{ groupStore.status.message }}
+    </NotificationBar> -->
 
     <CardBox
       title="Create New Group"
@@ -172,24 +206,26 @@ const hideNotification = () => {
     >
         <div class="space-y-3">
             <FormField label="Research Title">
-                <FormControl v-model="researchStore.request.title"/>
+                <FormControl v-model="groupStore.request.title"/>
             </FormField>
 
             <FormField label="Groupname">
                 <FormControl
-                    v-model="researchStore.request.course"
+                    v-model="groupStore.request.groupname"
                 />
             </FormField>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField label="Course">
                     <FormControl
-                        v-model="researchStore.request.course"
+                        v-model="groupStore.request.course"
+                        :options="courses"
                     />
                 </FormField>
                 <FormField label="Type">
                     <FormControl
-                        v-model="researchStore.request.course"
+                        v-model="groupStore.request.type"
+                        :options="groupTypes"
                     />
                 </FormField>
             </div>
@@ -197,12 +233,13 @@ const hideNotification = () => {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField label="Milestone">
                     <FormControl
-                        v-model="researchStore.request.course"
+                        v-model="groupStore.request.milestone"
+                        :options="groupStore.request.type == 1 || groupStore.request.type == '' ? milestoneOne : milestoneTwo"
                     />
                 </FormField>
-                <FormField label="Progress">
+                <FormField label="Progress" help="Overall Percent Progress. 0% to 100%">
                     <FormControl
-                        v-model="researchStore.request.course"
+                        v-model="groupStore.request.progress"
                     />
                 </FormField>
             </div>
@@ -210,7 +247,8 @@ const hideNotification = () => {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField label="Status">
                     <FormControl
-                        v-model="researchStore.request.course"
+                        v-model="groupStore.request.status"
+                        :options="groupStatus"
                     />
                 </FormField>
             </div>
@@ -226,7 +264,7 @@ const hideNotification = () => {
                     >
                         <div class="flex justify-center">
                             <ul class="bg-white rounded-lg w-96 text-gray-900">
-                                <li v-for="(member, index) in researchStore.request.member" :key="member.id" class="px-6 py-2 border-b border-gray-200 w-full flex justify-between">
+                                <li v-for="(member, index) in groupStore.request.member" :key="member.id" class="px-6 py-2 border-b border-gray-200 w-full flex justify-between">
                                     <p>{{ member.fullname }}</p>
                                     <BaseIcon
                                         :path="mdiTrashCan"
@@ -246,7 +284,7 @@ const hideNotification = () => {
                     >
                         <div class="flex justify-center">
                             <ul class="bg-white rounded-lg w-96 text-gray-900">
-                                <li v-for="(adviser, index) in researchStore.request.adviser" :key="adviser.id" class="px-6 py-2 border-b border-gray-200 w-full flex justify-between">
+                                <li v-for="(adviser, index) in groupStore.request.adviser" :key="adviser.id" class="px-6 py-2 border-b border-gray-200 w-full flex justify-between">
                                     <p>{{ adviser.fullname }}</p>
                                     <BaseIcon
                                         :path="mdiTrashCan"
@@ -266,7 +304,7 @@ const hideNotification = () => {
                     >
                         <div class="flex justify-center">
                             <ul class="bg-white rounded-lg w-96 text-gray-900">
-                                <li v-for="(panel, index) in researchStore.request.panel" :key="panel.id" class="px-6 py-2 border-b border-gray-200 w-full flex justify-between">
+                                <li v-for="(panel, index) in groupStore.request.panel" :key="panel.id" class="px-6 py-2 border-b border-gray-200 w-full flex justify-between">
                                     <p>{{ panel.fullname }}</p>
                                     <BaseIcon
                                         :path="mdiTrashCan"
@@ -287,7 +325,7 @@ const hideNotification = () => {
             <BaseButton
                 label="Create"
                 color="info"
-                @click="archivesCreate()"
+                @click="groupCreate()"
             />
         </BaseButtons>
 

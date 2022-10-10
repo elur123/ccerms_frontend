@@ -14,6 +14,8 @@ export const useGroupStore = defineStore('groups', {
         progress_two: '',
         onemilestone: '',
         twomilestone: '',
+        milestone: '',
+        progress: '',
         status: '',
         type: '',
         member: [],
