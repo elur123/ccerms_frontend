@@ -15,9 +15,13 @@ import NotificationBar from '@/components/NotificationBar.vue'
 import { mdiArrowLeftBold, mdiPlus, mdiTrashCan, mdiTableBorder } from '@mdi/js'
 
 import { useGroupStore } from '@/stores/admin/groups.js';
+import { useStudentStore } from '@/stores/admin/students.js';
+import { useUserStore } from '@/stores/admin/users.js';
 import { status, groupTypes } from '@/settings_data.js';
 
 const groupStore = useGroupStore()
+const studentStore = useStudentStore()
+const userStore = useUserStore()
 
 // Emits
 const emit = defineEmits(['back', 'groupCreate'])
@@ -109,28 +113,29 @@ const showModal = (type) => {
     fullname.value = ''
 }
 
-const localCreate = () => {
-    if(fullname.value == '') {
-        alert('Fullname required')
-        return;
-    }
-    if (accountType.value == 'member') {
-        groupStore.request.member.push({
-            id: null,
-            fullname: fullname.value
-        })
-    }
-    else if (accountType.value == 'adviser') {
-        groupStore.request.adviser.push({
-            id: null,
-            fullname: fullname.value
-        })
-    }
-    else {
-        groupStore.request.panel.push({
-            id: null,
-            fullname: fullname.value
-        })
+const localCreate = (index, type) => {
+    switch (type) {
+        case 'member':
+            studentStore.available[index].available = false
+            const details = studentStore.available[index]
+            groupStore.request.member.push(details)
+            break;
+        case 'adviser':
+            const adviser_details = userStore.adviser_available[index]
+            groupStore.request.adviser.push(adviser_details)
+            userStore.adviser_available[index].available = false
+
+            const panel_index = userStore.panel_available.indexOf(userStore.panel_available.find(e => e.id == adviser_details.id));
+            if(panel_index >= 0) userStore.panel_available[panel_index].available = false
+            break;
+        default:
+            const panel_details = userStore.panel_available[index]
+            groupStore.request.panel.push(panel_details)
+            userStore.panel_available[index].available = false
+
+            const adviser_index = userStore.adviser_available.indexOf(userStore.adviser_available.find(e => e.id == panel_details.id));
+            if (adviser_index >= 0)  userStore.adviser_available[adviser_index].available = false
+            break;
     }
 }
 
@@ -141,14 +146,48 @@ const showModalDelete = (index, type) => {
 }
 
 const localDelete = () => {
+    switch (accountType.value) {
+        case 'member':
+            const member_id = groupStore.request.member[accountIndex.value].id
+            const index = studentStore.available.indexOf(studentStore.available.find(e => e.id == member_id))
+            studentStore.available[index].available = true
+            groupStore.request.member.splice(accountIndex.value, 1)
+            break;
+        case 'adviser':
+            // Get All id and index;
+            const adviser_id = groupStore.request.adviser[accountIndex.value].id
+            const adviser_index = userStore.adviser_available.indexOf(userStore.adviser_available.find(e => e.id == adviser_id))
+            const panel_index = userStore.panel_available.indexOf(userStore.panel_available.find(e => e.id == adviser_id))
+            
+            // Update Availability
+            if(adviser_index >= 0) userStore.adviser_available[adviser_index].available = true
+            if(panel_index >= 0) userStore.panel_available[panel_index].available = true
+            
+            // Remove from list
+            groupStore.request.adviser.splice(accountIndex.value, 1)
+            break;
+        default:
+            // Get All id and index;
+            const panel_id = groupStore.request.panel[accountIndex.value].id
+            const _adviser_index = userStore.adviser_available.indexOf(userStore.adviser_available.find(e => e.id == panel_id))
+            const _panel_index = userStore.panel_available.indexOf(userStore.panel_available.find(e => e.id == panel_id))
+            
+            // Update Availability
+            if(_adviser_index >= 0) userStore.adviser_available[_adviser_index].available = true
+            if(_panel_index >= 0) userStore.panel_available[_panel_index].available = true
+
+            // Remove from list
+            groupStore.request.panel.splice(accountIndex.value, 1)
+            break;
+    }
     if (accountType.value == 'member') {
-        groupStore.request.member.splice(accountIndex, 1)
+        
     }
     else if (accountType.value == 'adviser') {
-        groupStore.request.adviser.splice(accountIndex, 1)
+        
     }
     else {
-        groupStore.request.panel.splice(accountIndex, 1)
+        
     }
 }
 
@@ -164,14 +203,49 @@ const hideNotification = () => {
     <CardBoxModal
         v-model="isShowModal"
         :large-title="titleModal"
-        button="success"
-        buttonLabel="Add    "
-        @confirm="localCreate()"
+        buttonLabel="Close"
     >
 
-        <FormField label="Fullname">
-            <FormControl v-model="fullname"/>
-        </FormField>
+    <div class="flex justify-center">
+        <ul v-if="accountType == 'member'" class=" bg-white rounded-lg w-96 text-gray-900">
+            <li v-for="(studentsList, index) in studentStore.available" :key="studentsList.id" class="px-6 py-2 border-b border-gray-200 w-full flex justify-between">
+                <p>{{ studentsList.fullname }}</p>
+                <BaseIcon
+                    v-if="studentsList.available"
+                    :path="mdiPlus"
+                    class="cursor-pointer mr-3"
+                    @click="localCreate(index, 'member')"
+                />
+                <div class="p-1 bg-lime-300 text-white text-sm rounded font-semibold " v-else>Added</div>
+            </li>
+        </ul>
+
+        <ul v-else-if="accountType == 'adviser'" class=" bg-white rounded-lg w-96 text-gray-900">
+            <li v-for="(adviserList, index) in userStore.adviser_available" :key="adviserList.id" class="px-6 py-2 border-b border-gray-200 w-full flex justify-between">
+                <p>{{ adviserList.fullname }}</p>
+                <BaseIcon
+                    v-if="adviserList.available"
+                    :path="mdiPlus"
+                    class="cursor-pointer mr-3"
+                    @click="localCreate(index, 'adviser')"
+                />
+                <div class="p-1 bg-lime-300 text-white text-sm rounded font-semibold " v-else>Added</div>
+            </li>
+        </ul>
+
+        <ul v-else class=" bg-white rounded-lg w-96 text-gray-900">
+            <li v-for="(panelList, index) in userStore.panel_available" :key="panelList.id" class="px-6 py-2 border-b border-gray-200 w-full flex justify-between">
+                <p>{{panelList.fullname }}</p>
+                <BaseIcon
+                    v-if="panelList.available"
+                    :path="mdiPlus"
+                    class="cursor-pointer mr-3"
+                    @click="localCreate(index, 'panel')"
+                />
+                <div class="p-1 bg-lime-300 text-white text-sm rounded font-semibold " v-else>Added</div>
+            </li>
+        </ul>
+    </div>
 
     </CardBoxModal>
 
@@ -187,16 +261,6 @@ const hideNotification = () => {
         <h4 class="text-center"> Click Delete to remove from list... </h4>
 
     </CardBoxModal>
-
-    <!-- <NotificationBar
-      v-if="!groupStore.status.status"
-      :isDismissed="groupStore.status.status"
-      :color="groupStore.status.success ? 'success' : 'danger'"
-      :icon="mdiTableBorder"
-      @hide-notification="hideNotification"
-    >
-      {{ groupStore.status.message }}
-    </NotificationBar> -->
 
     <CardBox
       title="Create New Group"

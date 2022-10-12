@@ -5,6 +5,7 @@ import { url } from '@/config.js'
 export const useStudentStore = defineStore('students', {
   state: () => ({
     list: [],
+    available: [],
     request: {
         id: '',
         firstname: '',
@@ -33,6 +34,11 @@ export const useStudentStore = defineStore('students', {
     fetch() {
       axios.get(`${url}api/students`).then(res => {
         this.list = res.data
+      })
+    },
+    fetchAvailable() {
+      axios.get(`${url}api/students/available`).then(res => {
+          this.available = res.data.filter(e => e.available)
       })
     },
     create() {

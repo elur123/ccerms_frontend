@@ -5,6 +5,8 @@ import { url } from '@/config.js'
 export const useUserStore = defineStore('users', {
   state: () => ({
     list: [],
+    adviser_available: [],
+    panel_available: [],
     access_list: [],
     request: {
         id: '',
@@ -22,6 +24,8 @@ export const useUserStore = defineStore('users', {
         usertype_id: '',
         other_type: '',
         status_id: '',
+        allow_adviser: false,
+        allow_panel: false,
         access: [],
     },
     status: {
@@ -34,6 +38,12 @@ export const useUserStore = defineStore('users', {
     fetch() {
       axios.get(`${url}api/users`).then(res => {
         this.list = res.data
+      })
+    },
+    fetchAvailable() {
+      axios.get(`${url}api/users/available`).then(res => {
+        this.adviser_available = res.data.advisers;
+        this.panel_available = res.data.panels;
       })
     },
     fetchAccessList() {
@@ -58,6 +68,8 @@ export const useUserStore = defineStore('users', {
         formData.append('usertype', this.request.usertype_id)
         formData.append('other_type', this.request.other_type)
         formData.append('status', this.request.status_id)
+        formData.append('allow_adviser', this.request.allow_adviser)
+        formData.append('allow_panel', this.request.allow_panel)
 
         axios.post(`${url}api/users`, formData, 
         { 
@@ -97,7 +109,9 @@ export const useUserStore = defineStore('users', {
         password: '',
         usertype_id: item.usertype_id,
         other_type: item.other_type,
-        status_id: item.status_id
+        status_id: item.status_id,
+        allow_adviser: item.allow_adviser == 1 ? true : false,
+        allow_panel: item.allow_panel == 1 ? true : false
       }
     },
     update() {
@@ -119,6 +133,8 @@ export const useUserStore = defineStore('users', {
         formData.append('usertype', this.request.usertype_id)
         formData.append('other_type', this.request.other_type)
         formData.append('status', this.request.status_id)
+        formData.append('allow_adviser', this.request.allow_adviser)
+        formData.append('allow_panel', this.request.allow_panel)
 
         axios.post(`${url}api/users/${this.request.id}`, formData,
         { 
@@ -165,7 +181,9 @@ export const useUserStore = defineStore('users', {
             file: '',
             usertype_id: '',
             other_type: '',
-            status_id: ''
+            status_id: '',
+            allow_adviser: false,
+            allow_panel: false,
         }
     },
   }

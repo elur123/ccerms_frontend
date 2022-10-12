@@ -23,6 +23,8 @@ import { useCourseStore } from '@/stores/admin/course.js';
 import { useGroupStore } from '@/stores/admin/groups.js';
 import { useMilestoneOneStore } from '@/stores/admin/milestoneone.js';
 import { useMilestoneTwoStore } from '@/stores/admin/milestonetwo.js';
+import { useStudentStore } from '@/stores/admin/students.js';
+import { useUserStore } from '@/stores/admin/users.js';
 
 
 const titleStack = ref(['Admin', 'General', 'Groups'])
@@ -31,6 +33,8 @@ const courseStore = useCourseStore()
 const groupStore = useGroupStore()
 const milestoneOne = useMilestoneOneStore()
 const milestoneTwo = useMilestoneTwoStore()
+const studentStore = useStudentStore()
+const userStore = useUserStore()
 
 const showCreateSection = ref(false)
 const showUpdateSection = ref(false)
@@ -47,6 +51,8 @@ courseStore.fetch()
 groupStore.fetch()
 milestoneOne.fetch()
 milestoneTwo.fetch()
+studentStore.fetchAvailable()
+userStore.fetchAvailable()
 
 // Show Create function
 const showCreate = () => {

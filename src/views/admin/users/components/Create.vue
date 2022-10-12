@@ -240,6 +240,27 @@ const hideNotification = () => {
                 </FormField>
             </div>
 
+            <BaseDivider />
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField label="Allow">
+                    <div class="flex">
+                        <div class="form-check form-check-inline pr-2">
+                            <input class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" 
+                                type="checkbox" id="allow-adviser" value="1" v-model="userStore.request.allow_adviser"
+                            >
+                            <label class="form-check-label inline-block text-gray-800 cursor-pointer" for="allow-adviser">Adviser</label>
+                        </div>
+                        <div class="form-check form-check-inline pr-2">
+                            <input class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" 
+                                type="checkbox" id="allow-panel" value="1" v-model="userStore.request.allow_panel"
+                            >
+                            <label class="form-check-label inline-block text-gray-800 cursor-pointer" for="allow-panel">Panel</label>
+                        </div>
+                    </div>
+                </FormField>
+            </div>
+
         </div>
 
         <div class="space-y-3" v-else>
