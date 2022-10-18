@@ -99,7 +99,7 @@ const groupCreate = () => {
     loading.show()
     groupStore.create().then(res => {
         loading.hide()
-        emit('groupCreate', { status: true, list: res.data.researches });
+        emit('groupCreate', { status: true, list: res.data.groups });
     }).catch(() => {
         loading.hide()
         emit('groupCreate', { status: false});
@@ -117,10 +117,12 @@ const localCreate = (index, type) => {
     switch (type) {
         case 'member':
             studentStore.available[index].available = false
+            studentStore.available[index].is_create = true
             const details = studentStore.available[index]
             groupStore.request.member.push(details)
             break;
         case 'adviser':
+            userStore.adviser_available[index].is_create = true
             const adviser_details = userStore.adviser_available[index]
             groupStore.request.adviser.push(adviser_details)
             userStore.adviser_available[index].available = false
@@ -129,6 +131,7 @@ const localCreate = (index, type) => {
             if(panel_index >= 0) userStore.panel_available[panel_index].available = false
             break;
         default:
+            userStore.panel_available[index].is_create = true
             const panel_details = userStore.panel_available[index]
             groupStore.request.panel.push(panel_details)
             userStore.panel_available[index].available = false

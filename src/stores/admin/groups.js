@@ -36,6 +36,9 @@ export const useGroupStore = defineStore('groups', {
     },
     create() {
       return new Promise((resolve, reject) => {
+        this.request.adviser = JSON.stringify(this.request.adviser)
+        this.request.panel = JSON.stringify(this.request.panel)
+        this.request.member = JSON.stringify(this.request.member)
         axios.post(`${url}api/groups`, this.request, 
         { 
           headers: { 'Content-Type': 'multipart/form-data' } 
