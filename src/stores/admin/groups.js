@@ -50,8 +50,9 @@ export const useGroupStore = defineStore('groups', {
             success: res.data.status == 200 ? true : false,
             message: res.data.message,
           }
-          this.clear()
+          res.member_registered = JSON.parse(this.request.member)
           resolve(res)
+          this.clear()
         }).catch(err => {
           this.status = {
             status: false,
@@ -65,7 +66,20 @@ export const useGroupStore = defineStore('groups', {
     select(item) {
       this.request = {
         id: item.id,
-        
+        title: item.title,
+        groupname: item.groupname,
+        course: item.course_id,
+        progress_one: item.progress_one,
+        progress_two: item.progress_two,
+        onemilestone: item.onemilestone_id,
+        twomilestone: item.twomilestone_id,
+        milestone: item.type_id > 1 ? item.twomilestone_id : item.onemilestone_id,
+        progress: item.type_id > 1 ? item.progress_two : item.progress_one,
+        status: item.status_id,
+        type: item.type_id,
+        member: this.personnel_data(item.member),
+        adviser: this.personnel_data(item.adviser),
+        panel: this.personnel_data(item.panel)
       }
     },
     update() {
@@ -116,5 +130,18 @@ export const useGroupStore = defineStore('groups', {
             panel: []
         }
     },
+    personnel_data(arr) {
+      var data = [];
+      arr.forEach(element => {
+        data.push({
+          id: element.user.id,
+          fullname: `${element.user.lastname}, ${element.user.firstname}, ${element.user.middlename}`,
+          available: false,
+          is_create: false,
+        })
+      });
+
+      return data;
+    }
   }
 })

@@ -99,6 +99,14 @@ const groupCreate = () => {
     loading.show()
     groupStore.create().then(res => {
         loading.hide()
+        // Remove Member Added
+        res.member_registered.forEach(arr => {
+            const index = studentStore.available.indexOf(studentStore.available.find(e => e.id == arr.id))
+            console.log(index);
+            studentStore.available.splice(index, 1)
+        })
+        // Back advisers and panels availability
+        userStore.refreshAvailability()
         emit('groupCreate', { status: true, list: res.data.groups });
     }).catch(() => {
         loading.hide()

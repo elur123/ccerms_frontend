@@ -60,14 +60,14 @@ const showCreate = () => {
   showUpdateSection.value = false
 }
 
-const userCreate = (res) => {
+const groupCreate = (res) => {
   if (res.status) {
     showCreateSection.value = false
     showUpdateSection.value = false
   }
 }
 
-const userUpdate = (res) => {
+const groupUpdate = (res) => {
   if (res.status) {
     groupStore.list = res.list
     showCreateSection.value = false
@@ -132,16 +132,17 @@ const selectDelete = (item) => {
       :milestoneOne="milestoneOne.list"
       :milestoneTwo="milestoneTwo.list"
       @back="showListSection" 
-      @groupCreate="userCreate"
+      @groupCreate="groupCreate"
     />
 
     <!-- Update Section -->
     <Update 
       v-if="showUpdateSection"
       :courses="courseStore.list"
-      :item="groupStore.request"
+      :milestoneOne="milestoneOne.list"
+      :milestoneTwo="milestoneTwo.list"
       @back="showListSection" 
-      @userUpdate="userUpdate"
+      @groupUpdate="groupUpdate"
     />
 
     <!-- List Section -->

@@ -46,6 +46,14 @@ export const useUserStore = defineStore('users', {
         this.panel_available = res.data.panels;
       })
     },
+    refreshAvailability(){
+      this.adviser_available.forEach(e => {
+        e.available = true
+      })
+      this.panel_available.forEach(e => {
+        e.available = true
+      })
+    },
     fetchAccessList() {
       axios.get(`${url}api/useraccess`).then(res => {
         this.access_list = res.data
