@@ -87,6 +87,39 @@ const select = (item) => {
   showUpdateSection.value = true
   showCreateSection.value = false
   groupStore.select(item)
+
+  updatePersonnelAvailabilty(groupStore.request.adviser, 'adviser')
+  updatePersonnelAvailabilty(groupStore.request.panel, 'panel')
+  updatePersonnelAvailabilty(groupStore.request.member, 'member')
+}
+
+// Update availability
+const updatePersonnelAvailabilty = (array, type) => {
+  switch (type) {
+    case 'adviser':
+        array.forEach(arr => {
+            const find = userStore.adviser_available.find(e => e.id == arr.id)
+            if (find != undefined) {
+              const index = userStore.adviser_available.indexOf(find)
+              userStore.adviser_available[index].available = false
+            }
+        })
+      break;
+    case 'panel':
+        array.forEach(arr => {
+            const find = userStore.panel_available.find(e => e.id == arr.id)
+            if (find != undefined) {
+              const index = userStore.panel_available.indexOf(find)
+              userStore.panel_available[index].available = false
+            }
+        })
+      break;
+    default:
+      array.forEach(arr => {
+            studentStore.available.push(arr)
+        })
+      break;
+  }
 }
 
 // Select Course item to delete function

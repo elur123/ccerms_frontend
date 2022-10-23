@@ -95,22 +95,22 @@ const back = () => {
     emit('back', false);
 }
 
-const groupCreate = () => {
+const groupUpdate = () => {
     loading.show()
-    groupStore.create().then(res => {
+    groupStore.update().then(res => {
         loading.hide()
+        console.log(res);
         // Remove Member Added
         res.member_registered.forEach(arr => {
             const index = studentStore.available.indexOf(studentStore.available.find(e => e.id == arr.id))
-            console.log(index);
             studentStore.available.splice(index, 1)
         })
         // Back advisers and panels availability
         userStore.refreshAvailability()
-        emit('groupCreate', { status: true, list: res.data.groups });
+        emit('groupUpdate', { status: true, list: res.data.groups });
     }).catch(() => {
         loading.hide()
-        emit('groupCreate', { status: false});
+        emit('groupUpdate', { status: false});
     })
 }
 
@@ -163,6 +163,8 @@ const localDelete = () => {
             const index = studentStore.available.indexOf(studentStore.available.find(e => e.id == member_id))
             studentStore.available[index].available = true
             groupStore.request.member.splice(accountIndex.value, 1)
+            
+            groupStore.destroy_personnel(member_id, 'groupmembers')
             break;
         case 'adviser':
             // Get All id and index;

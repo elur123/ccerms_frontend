@@ -84,6 +84,10 @@ export const useGroupStore = defineStore('groups', {
     },
     update() {
       return new Promise((resolve, reject) => {
+        this.request._method = 'put';
+        this.request.adviser = JSON.stringify(this.request.adviser)
+        this.request.panel = JSON.stringify(this.request.panel)
+        this.request.member = JSON.stringify(this.request.member)
         axios.post(`${url}api/groups/${this.request.id}`, this.request,
         { 
           headers: { 'Content-Type': 'multipart/form-data' } 
@@ -95,9 +99,12 @@ export const useGroupStore = defineStore('groups', {
             success: res.data.status == 200 ? true : false,
             message: res.data.message,
           }
-          this.clear()
+          
+          res.member_registered = JSON.parse(this.request.member)
           resolve(res)
+          this.clear()
         }).catch(err => {
+          console.log(err);
           this.status = {
             status: false,
             success: false,

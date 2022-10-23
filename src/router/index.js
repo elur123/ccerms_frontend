@@ -106,7 +106,7 @@ const routes = [
     },
     path: '/admin/sections',
     name: 'admin-sections',
-    component: () => import('@/views/admin/course/CourseSettings.vue')
+    component: () => import('@/views/admin/sections/Sections.vue')
   },
   {
     beforeEnter: adminAuthenticated,
