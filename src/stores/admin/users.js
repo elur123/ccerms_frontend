@@ -7,6 +7,7 @@ export const useUserStore = defineStore('users', {
     list: [],
     adviser_available: [],
     panel_available: [],
+    subjectteacher_available: [],
     access_list: [],
     request: {
         id: '',
@@ -26,6 +27,7 @@ export const useUserStore = defineStore('users', {
         status_id: '',
         allow_adviser: false,
         allow_panel: false,
+        allow_st: false,
         access: [],
     },
     status: {
@@ -44,6 +46,7 @@ export const useUserStore = defineStore('users', {
       axios.get(`${url}api/users/available`).then(res => {
         this.adviser_available = res.data.advisers;
         this.panel_available = res.data.panels;
+        this.subjectteacher_available = res.data.subjectteachers
       })
     },
     refreshAvailability(){
@@ -78,6 +81,7 @@ export const useUserStore = defineStore('users', {
         formData.append('status', this.request.status_id)
         formData.append('allow_adviser', this.request.allow_adviser)
         formData.append('allow_panel', this.request.allow_panel)
+        formData.append('allow_st', this.request.allow_st)
 
         axios.post(`${url}api/users`, formData, 
         { 
@@ -119,7 +123,8 @@ export const useUserStore = defineStore('users', {
         other_type: item.other_type,
         status_id: item.status_id,
         allow_adviser: item.allow_adviser == 1 ? true : false,
-        allow_panel: item.allow_panel == 1 ? true : false
+        allow_panel: item.allow_panel == 1 ? true : false,
+        allow_st: item.allow_st == 1 ? true : false
       }
     },
     update() {
@@ -143,6 +148,7 @@ export const useUserStore = defineStore('users', {
         formData.append('status', this.request.status_id)
         formData.append('allow_adviser', this.request.allow_adviser)
         formData.append('allow_panel', this.request.allow_panel)
+        formData.append('allow_st', this.request.allow_st)
 
         axios.post(`${url}api/users/${this.request.id}`, formData,
         { 
@@ -192,6 +198,7 @@ export const useUserStore = defineStore('users', {
             status_id: '',
             allow_adviser: false,
             allow_panel: false,
+            allow_st: false
         }
     },
   }

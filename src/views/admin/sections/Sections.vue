@@ -16,17 +16,16 @@ import SectionTitleBarSub from '@/components/SectionTitleBarSub.vue'
 import NotificationBar from '@/components/NotificationBar.vue'
 
 import Create from '@/views/admin/sections/components/Create.vue'
-import Update from '@/views/admin/researcharchives/components/Update.vue'
+import Update from '@/views/admin/sections/components/Update.vue'
 import Table from '@/views/admin/sections/components/Table.vue'
 
 import { useSectionStore } from '@/stores/admin/sections.js';
-import { useMilestoneTwoStore } from '@/stores/admin/milestonetwo.js';
-import { useCourseStore } from '@/stores/admin/course.js';
+import { useUserStore  } from '@/stores/admin/users.js';
 
 const titleStack = ref(['Admin', 'General', 'Sections'])
 
 const sectionStore = useSectionStore()
-const courseStore = useCourseStore()
+const userStore = useUserStore()
 
 const showCreateSection = ref(false)
 const showUpdateSection = ref(false)
@@ -40,13 +39,14 @@ const hideNotification = () => {
 
 // Get Data
 sectionStore.fetch()
-courseStore.fetch()
+userStore.fetchAvailable()
 
 
 // Show Create function
 const showCreate = () => {
   showCreateSection.value = true
   showUpdateSection.value = false
+  sectionStore.clear()
 }
 
 const sectionCreate = (res) => {
@@ -117,6 +117,7 @@ const selectDelete = (item) => {
     <!-- Create Section -->
     <Create 
       v-if="showCreateSection"
+      :teachers="userStore.subjectteacher_available"
       @back="showListSection" 
       @sectionCreate="sectionCreate"
     />
@@ -124,7 +125,7 @@ const selectDelete = (item) => {
     <!-- Update Section -->
     <Update 
       v-if="showUpdateSection"
-      :item="sectionStore.request"
+      :teachers="userStore.subjectteacher_available"
       @back="showListSection" 
       @sectionUpdate="sectionUpdate"
     />
@@ -141,8 +142,8 @@ const selectDelete = (item) => {
       
     <Table 
       :data="sectionStore.list"
-      @select-archive="select"
-      @destroy-archive="selectDelete"
+      @select-section="select"
+      @destroy-section="selectDelete"
     />
   
     </CardBox>

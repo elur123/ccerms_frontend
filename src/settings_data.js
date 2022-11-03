@@ -1,3 +1,22 @@
+function generateYear () {
+    var max = new Date().getFullYear()
+    var min = max - 10
+    var years = []
+    
+    years.push({
+        id: max + 1,
+        label: max + 1
+    })
+
+    for (var i = max; i >= min; i--) {
+        years.push({
+            id: i,
+            label: i
+        })
+    }
+    return years
+}
+
 export const userTypes = [
     { id: 1, label: 'Admin' },
     { id: 2, label: 'Research Coordinator' },
@@ -25,3 +44,5 @@ export const groupTypes = [
     { id: 2, label: 'Capstone 2' },
     { id: 3, label: 'Done' }
 ]
+
+export const years_list = generateYear();

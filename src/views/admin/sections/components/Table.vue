@@ -16,7 +16,7 @@ const props = defineProps({
   checkable: Boolean
 })
 
-const emit = defineEmits(['select-archive', 'destroy-archive'])
+const emit = defineEmits(['select-section', 'destroy-section'])
 
 const items = computed(() => props.data)
 
@@ -47,11 +47,11 @@ const pagesList = computed(() => {
 })
 
 const select = item => {
-  emit('select-archive', item);
+  emit('select-section', item);
 }
 
 const destroy = item => {
-  emit('destroy-archive', item);
+  emit('destroy-section', item);
 }
 
 const remove = (arr, cb) => {

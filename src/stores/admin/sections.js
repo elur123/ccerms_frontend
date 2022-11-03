@@ -6,15 +6,17 @@ export const useSectionStore = defineStore('sections', {
   state: () => ({
     list: [],
     request: {
-        title: '',
-        course: '',
-        tags: '',
-        year_from_published: '',
-        year_to_published: '',
-        file: {},
-        adviser: [],
-        panel: [],
-        member: []
+        id: '',
+        section_code: '',
+        room_number: '',
+        user: '',
+        grouptype: '',
+        from_time: '',
+        to_time: '',
+        from_year: '',
+        to_year: '',
+        student: [],
+        group: []
     },
     status: {
       status: true,
@@ -30,20 +32,9 @@ export const useSectionStore = defineStore('sections', {
     },
     create() {
       return new Promise((resolve, reject) => {
-        let formData = new FormData();
-        formData.append('title', this.request.title)
-        formData.append('course', this.request.course)
-        formData.append('tags', this.request.tags)
-        formData.append('year_from_published', this.request.year_from_published)
-        formData.append('year_to_published', this.request.year_to_published)
-        formData.append('file', this.request.file)
-        formData.append('advisers', JSON.stringify(this.request.adviser))
-        formData.append('panels', JSON.stringify(this.request.panel))
-        formData.append('members', JSON.stringify(this.request.member))
-
-        axios.post(`${url}api/sections`, formData, 
+        axios.post(`${url}api/sections`, this.request, 
         { 
-          headers: { 'Content-Type': 'multipart/form-data' } 
+          headers: { 'Content-Type': 'application/json' } 
         }
         ).then(res => {
           this.list = res.data.sections
@@ -67,35 +58,24 @@ export const useSectionStore = defineStore('sections', {
     select(item) {
       this.request = {
         id: item.id,
-        title: item.title,
-        course: item.course_id,
-        tags: item.tags,
-        year_from_published: item.year_from_published,
-        year_to_published: item.year_to_published,
-        file: {},
-        adviser: item.adviser,
-        panel: item.panel,
-        member: item.member
+        section_code: item.section_code,
+        room_number: item.room_number,
+        user: item.user_id,
+        grouptype: item.grouptype_id,
+        from_time: item.from_time,
+        to_time: item.to_time,
+        from_year: item.from_year,
+        to_year: item.to_year,
+        student: item.sectionstudent,
+        group: item.sectiongroup
       }
     },
     update() {
       return new Promise((resolve, reject) => {
-        let formData = new FormData();
-        formData.append('_method', 'PUT')
-        formData.append('id', this.request.id)
-        formData.append('title', this.request.title)
-        formData.append('course', this.request.course)
-        formData.append('tags', this.request.tags)
-        formData.append('year_from_published', this.request.year_from_published)
-        formData.append('year_to_published', this.request.year_to_published)
-        formData.append('file', this.request.file)
-        formData.append('advisers', JSON.stringify(this.request.adviser))
-        formData.append('panels', JSON.stringify(this.request.panel))
-        formData.append('members', JSON.stringify(this.request.member))
 
-        axios.post(`${url}api/sections/${this.request.id}`, formData,
+        axios.put(`${url}api/sections/${this.request.id}`, this.request,
         { 
-          headers: { 'Content-Type': 'multipart/form-data' } 
+          headers: { 'Content-Type': 'application/json' } 
         }
         ).then(res => {
           this.list = res.data.sections
@@ -125,15 +105,16 @@ export const useSectionStore = defineStore('sections', {
     clear() {
         this.request = {
           id: '',
-          title: '',
-          course: '',
-          tags: '',
-          year_from_published: '',
-          year_to_published: '',
-          file: {},
-          adviser: [],
-          panel: [],
-          member: []
+          section_code: '',
+          room_number: '',
+          user: '',
+          grouptype: '',
+          from_time: '',
+          to_time: '',
+          from_year: '',
+          to_year: '',
+          student: [],
+          group: []
         }
     },
   }
