@@ -12,7 +12,7 @@ import {
   mdiCog
 } from '@mdi/js'
 
-export default [
+export const adminMenu =  [
   '',
   [
     {
@@ -47,9 +47,12 @@ export default [
       icon: mdiTable
     },
     {
-      to: '/admin/submissions',
       label: 'Submissions',
-      icon: mdiSquareEditOutline
+      icon: mdiSquareEditOutline,
+      menu: [
+        { label: 'Capstone 1', to: '/admin/submissions-one' },
+        { label: 'Capstone 2', to: '/admin/submissions-two' }
+      ]
     },
   ],
   'Settings',
@@ -83,4 +86,45 @@ export default [
       icon: mdiCog
     },
   ]
+]
+
+export const studentMenu =  [
+  '',
+  [
+    {
+      to: '/student/dashboard',
+      icon: mdiDesktopMac,
+      label: 'Dashboard'
+    }
+  ],
+  'General',
+  [
+    {
+      to: '/student/group',
+      label: 'Group',
+      icon: mdiSquareEditOutline
+    },
+    {
+      to: '/student/section',
+      label: 'Section',
+      icon: mdiTelevisionGuide
+    },
+  ],
+  'Events',
+  [
+    {
+      to: '/student/schedules',
+      label: 'Defense Schedules',
+      icon: mdiTable
+    },
+    {
+      label: 'Submissions',
+      icon: mdiSquareEditOutline,
+      menu: [
+        { label: 'Capstone 1', to: '/student/submissions-one' },
+        { label: 'Capstone 2', to: '/student/submissions-two' }
+      ]
+    },
+  ],
+
 ]

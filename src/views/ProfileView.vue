@@ -1,6 +1,5 @@
 <script setup>
 import { ref, reactive } from 'vue'
-import { useMainStore } from '@/stores/main'
 import { mdiAccount, mdiAccountCircle, mdiLock, mdiMail, mdiAsterisk, mdiFormTextboxPassword } from '@mdi/js'
 import SectionMain from '@/components/SectionMain.vue'
 import CardBox from '@/components/CardBox.vue'
@@ -14,7 +13,11 @@ import SectionBottomOtherPages from '@/components/SectionBottomOtherPages.vue'
 import BaseButtons from '@/components/BaseButtons.vue'
 import UserCard from '@/components/UserCard.vue'
 
+import { useMainStore } from '@/stores/main'
+import { useAuthStore } from '@/stores/auth'
+
 const mainStore = useMainStore()
+const authStore = useAuthStore()
 
 const titleStack = ref(['Admin', 'Profile'])
 
@@ -41,7 +44,7 @@ const submitPass = () => {
 <template>
   <SectionTitleBar :title-stack="titleStack" />
 
-  <UserCard />
+  <UserCard :user="authStore.user" />
 
   <SectionMain>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -91,11 +94,6 @@ const submitPass = () => {
             color="info"
             type="submit"
             label="Submit"
-          />
-          <BaseButton
-            color="info"
-            label="Options"
-            outline
           />
         </BaseButtons>
       </CardBox>
@@ -158,15 +156,8 @@ const submitPass = () => {
             color="info"
             label="Submit"
           />
-          <BaseButton
-            color="info"
-            label="Options"
-            outline
-          />
         </BaseButtons>
       </CardBox>
     </div>
   </SectionMain>
-
-  <SectionBottomOtherPages />
 </template>

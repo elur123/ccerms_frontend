@@ -14,13 +14,12 @@ import NotificationBar from '@/components/NotificationBar.vue'
 
 import { mdiArrowLeftBold, mdiPlus, mdiTrashCan, mdiTableBorder } from '@mdi/js'
 
-import { useSectionStore } from '@/stores/admin/sections.js';
-import { groupTypes, years_list } from '@/settings_data.js';
+import { useResearcharchiveStore } from '@/stores/admin/researcharchives.js';
 
-const sectionStore = useSectionStore()
+const researchStore = useResearcharchiveStore()
 
 // Emits
-const emit = defineEmits(['back', 'sectionUpdate'])
+const emit = defineEmits(['back', 'archivesCreate'])
 
 // Variables
 const isShowModal = ref(false);
@@ -34,20 +33,23 @@ const loading = inject('Loader')
 
 // Props
 const props = defineProps({
-  teachers: {
+  course: {
     type: Array,
     default: []
   }
 })
 
 // Computed
-const teachers = computed(() => {
-   return props.teachers.map(item => {
-        return {
-            'id': item.id,
-            'label': item.fullname
-        }
-   })
+const courses = computed(() => {
+    const data = [];
+    props.course.forEach(element => {
+        data.push({
+            id: element.id,
+            label: element.course.toUpperCase()
+        }) 
+    });
+
+    return data;
 })
 
 // Declared Functions
@@ -55,14 +57,14 @@ const back = () => {
     emit('back', false);
 }
 
-const sectionUpdate = () => {
+const archivesCreate = () => {
     loading.show()
-    sectionStore.update().then(res => {
+    researchStore.create().then(res => {
         loading.hide()
-        emit('sectionUpdate', { status: true, list: res.data.sections });
+        emit('archivesCreate', { status: true, list: res.data.researches });
     }).catch(() => {
         loading.hide()
-        emit('sectionUpdate', { status: false});
+        emit('archivesCreate', { status: false});
     })
 }
 
@@ -79,19 +81,19 @@ const localCreate = () => {
         return;
     }
     if (accountType.value == 'member') {
-        sectionStore.request.member.push({
+        researchStore.request.member.push({
             id: null,
             fullname: fullname.value
         })
     }
     else if (accountType.value == 'adviser') {
-        sectionStore.request.adviser.push({
+        researchStore.request.adviser.push({
             id: null,
             fullname: fullname.value
         })
     }
     else {
-        sectionStore.request.panel.push({
+        researchStore.request.panel.push({
             id: null,
             fullname: fullname.value
         })
@@ -106,19 +108,19 @@ const showModalDelete = (index, type) => {
 
 const localDelete = () => {
     if (accountType.value == 'member') {
-        sectionStore.request.member.splice(accountIndex, 1)
+        researchStore.request.member.splice(accountIndex, 1)
     }
     else if (accountType.value == 'adviser') {
-        sectionStore.request.adviser.splice(accountIndex, 1)
+        researchStore.request.adviser.splice(accountIndex, 1)
     }
     else {
-        sectionStore.request.panel.splice(accountIndex, 1)
+        researchStore.request.panel.splice(accountIndex, 1)
     }
 }
 
 // Notification Hide Function
 const hideNotification = () => {
-  sectionStore.status.status = true
+  researchStore.status.status = true
 }
 
 
@@ -152,71 +154,66 @@ const hideNotification = () => {
 
     </CardBoxModal>
 
+    <NotificationBar
+      v-if="!researchStore.status.status"
+      :isDismissed="researchStore.status.status"
+      :color="researchStore.status.success ? 'success' : 'danger'"
+      :icon="mdiTableBorder"
+      @hide-notification="hideNotification"
+    >
+      {{ researchStore.status.message }}
+    </NotificationBar>
+
     <CardBox
-      title="Update Section"
+      title="Create Research Archives"
       :form="true"
       :headerIcon="mdiArrowLeftBold" 
       @header-icon-click="back()"
     >
         <div class="space-y-3">
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField label="Section Code">
-                    <FormControl v-model="sectionStore.request.section_code"/>
-                </FormField>
+            <FormField label="Research Title">
+                <FormControl v-model="researchStore.request.title"/>
+            </FormField>
 
-                <FormField label="Section Type">
-                    <FormControl
-                        v-model="sectionStore.request.grouptype"
-                        :options="groupTypes"
-                    />
-                </FormField>
+            <FormField label="Course">
+                <FormControl
+                    v-model="researchStore.request.course"
+                    :options="courses"
+                />
+            </FormField>
 
-                <FormField label="Room">
-                    <FormControl v-model="sectionStore.request.room_number"/>
-                </FormField>
+            <FormField label="Tags" help="Use (#) to define tags and (,) for separator. eg. #web,#mobile">
+                <FormControl v-model="researchStore.request.tags"/>
+            </FormField>
 
-                <FormField label="Professor">
-                    <FormControl
-                        v-model="sectionStore.request.user"
-                        :options="teachers"
-                    />
-                </FormField>
-
-                <FormField label="From Time">
-                    <FormControl v-model="sectionStore.request.from_time" type="time"/>
-                </FormField>
-
-                <FormField label="To Time">
-                    <FormControl v-model="sectionStore.request.to_time" type="time"/>
-                </FormField>
-
-                <FormField label="From Year">
-                    <FormControl v-model="sectionStore.request.from_year" 
-                        :options="years_list"
-                    />
-                </FormField>
-
-                <FormField label="To Year">
-                    <FormControl v-model="sectionStore.request.to_year"
-                        :options="years_list"
-                    />
-                </FormField>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <FormField label="Year Published From">
+                        <FormControl v-model="researchStore.request.year_from_published" type="date"/>
+                    </FormField>
+                </div>
+                <div>
+                    <FormField label="Year Published To">
+                        <FormControl v-model="researchStore.request.year_to_published" type="date"/>
+                    </FormField>
+                </div>
             </div>
 
-            <hr>
+            <FormField label="Reseach File">
+                <FormFilePicker v-model="researchStore.request.file"/>
+            </FormField>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                     <CardBox 
-                        title="Students"
+                        title="Members"
                         :headerIcon="mdiPlus"
                         @header-icon-click="showModal('member')"
                     >
                         <div class="flex justify-center">
                             <ul class="bg-white rounded-lg w-96 text-gray-900">
-                                <li v-for="(member, index) in sectionStore.request.student" :key="member.id" class="px-6 py-2 border-b border-gray-200 w-full flex justify-between">
-                                    <p>{{ `${member.user.lastname}, ${member.user.firstname}` }}</p>
+                                <li v-for="(member, index) in researchStore.request.member" :key="member.id" class="px-6 py-2 border-b border-gray-200 w-full flex justify-between">
+                                    <p>{{ member.fullname }}</p>
                                     <BaseIcon
                                         :path="mdiTrashCan"
                                         class="cursor-pointer mr-3"
@@ -229,18 +226,38 @@ const hideNotification = () => {
                 </div>
                 <div>
                     <CardBox 
-                        title="Groups"
+                        title="Adviser(s)"
                         :headerIcon="mdiPlus"
                         @header-icon-click="showModal('adviser')"
                     >
                         <div class="flex justify-center">
                             <ul class="bg-white rounded-lg w-96 text-gray-900">
-                                <li v-for="(group, index) in sectionStore.request.group" :key="group.id" class="px-6 py-2 border-b border-gray-200 w-full flex justify-between">
-                                    <p>{{ group.group.groupname }}</p>
+                                <li v-for="(adviser, index) in researchStore.request.adviser" :key="adviser.id" class="px-6 py-2 border-b border-gray-200 w-full flex justify-between">
+                                    <p>{{ adviser.fullname }}</p>
                                     <BaseIcon
                                         :path="mdiTrashCan"
                                         class="cursor-pointer mr-3"
                                         @click="showModalDelete(index, 'adviser')"
+                                    />
+                                </li>
+                            </ul>
+                        </div>
+                    </CardBox>
+                </div>
+                <div>
+                    <CardBox 
+                        title="Panel(s)"
+                        :headerIcon="mdiPlus"
+                        @header-icon-click="showModal('panel')"
+                    >
+                        <div class="flex justify-center">
+                            <ul class="bg-white rounded-lg w-96 text-gray-900">
+                                <li v-for="(panel, index) in researchStore.request.panel" :key="panel.id" class="px-6 py-2 border-b border-gray-200 w-full flex justify-between">
+                                    <p>{{ panel.fullname }}</p>
+                                    <BaseIcon
+                                        :path="mdiTrashCan"
+                                        class="cursor-pointer mr-3"
+                                        @click="showModalDelete(index, 'panel')"
                                     />
                                 </li>
                             </ul>
@@ -254,9 +271,9 @@ const hideNotification = () => {
         <BaseDivider />
         <BaseButtons>
             <BaseButton
-                label="Update"
+                label="Create"
                 color="info"
-                @click="sectionUpdate()"
+                @click="archivesCreate()"
             />
         </BaseButtons>
 

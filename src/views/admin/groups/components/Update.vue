@@ -168,6 +168,7 @@ const localDelete = () => {
             break;
         case 'adviser':
             // Get All id and index;
+            const adviser_parent_id = groupStore.request.adviser[accountIndex.value].parent_id
             const adviser_id = groupStore.request.adviser[accountIndex.value].id
             const adviser_index = userStore.adviser_available.indexOf(userStore.adviser_available.find(e => e.id == adviser_id))
             const panel_index = userStore.panel_available.indexOf(userStore.panel_available.find(e => e.id == adviser_id))
@@ -178,9 +179,11 @@ const localDelete = () => {
             
             // Remove from list
             groupStore.request.adviser.splice(accountIndex.value, 1)
+            if(adviser_parent_id != undefined) groupStore.destroy_personnel(adviser_parent_id, 'groupadvisers')
             break;
         default:
             // Get All id and index;
+            const panel_parent_id = groupStore.request.panel[accountIndex.value].parent_id
             const panel_id = groupStore.request.panel[accountIndex.value].id
             const _adviser_index = userStore.adviser_available.indexOf(userStore.adviser_available.find(e => e.id == panel_id))
             const _panel_index = userStore.panel_available.indexOf(userStore.panel_available.find(e => e.id == panel_id))
@@ -191,6 +194,7 @@ const localDelete = () => {
 
             // Remove from list
             groupStore.request.panel.splice(accountIndex.value, 1)
+            if(panel_parent_id != undefined) groupStore.destroy_personnel(panel_parent_id, 'grouppanels')
             break;
     }
     if (accountType.value == 'member') {

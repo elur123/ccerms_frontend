@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import axios from 'axios'
 import { url } from '@/config.js'
 
-export const useScheduleTypeStore = defineStore('scheduletypes', {
+export const useScheduleTypeStore = defineStore('scheduletype', {
   state: () => ({
     list: [],
     id: '',

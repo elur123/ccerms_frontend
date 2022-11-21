@@ -14,13 +14,13 @@ import NotificationBar from '@/components/NotificationBar.vue'
 
 import { mdiArrowLeftBold, mdiPlus, mdiTrashCan, mdiTableBorder } from '@mdi/js'
 
-import { useSectionStore } from '@/stores/admin/sections.js';
-import { groupTypes, years_list } from '@/settings_data.js';
+import { useScheduleStore } from '@/stores/admin/schedules.js';
+import { groupTypes, years_list, status } from '@/settings_data.js';
 
-const sectionStore = useSectionStore()
+const scheduleStore = useScheduleStore()
 
 // Emits
-const emit = defineEmits(['back', 'sectionUpdate'])
+const emit = defineEmits(['back', 'scheduleUpdate'])
 
 // Variables
 const isShowModal = ref(false);
@@ -37,6 +37,14 @@ const props = defineProps({
   teachers: {
     type: Array,
     default: []
+  },
+  groups: {
+    type: Array,
+    default: []
+  },
+  scheduleTypes: {
+    type: Array,
+    default: []
   }
 })
 
@@ -50,19 +58,70 @@ const teachers = computed(() => {
    })
 })
 
+const groupTypesFiltered = computed(() => {
+    return groupTypes.filter(e => e.id < 3)
+})
+
+const capstoneOne = computed(() => {
+    var data = [];
+    
+    data = props.groups.map(item => {
+        return {
+            'id': item.id,
+            'label': item.groupname,
+            'type_id': item.type_id,
+            'panel': item.panel
+        }
+    })
+
+    data = data.filter(e => e.type_id == 1)
+
+    return data
+})
+
+const capstoneTwo = computed(() => {
+    var data = [];
+    
+    data = props.groups.map(item => {
+        return {
+            'id': item.id,
+            'label': item.groupname,
+            'type_id': item.type_id,
+            'panel': item.panel
+        }
+    })
+
+    data = data.filter(e => e.type_id == 2)
+
+    return data
+})
+
+const scheduleTypes = computed(() => {
+    return props.scheduleTypes.map(item => {
+        return {
+            'id': item.id,
+            'label': item.type
+        }
+    })
+})
+
+const statusFiltered = computed(() => {
+    return status.filter(e => e.id >= 4 && e.id <= 8)
+})
+ 
 // Declared Functions
 const back = () => {
     emit('back', false);
 }
 
-const sectionUpdate = () => {
+const scheduleUpdate = () => {
     loading.show()
-    sectionStore.update().then(res => {
+    scheduleStore.update().then(res => {
         loading.hide()
-        emit('sectionUpdate', { status: true, list: res.data.sections });
+        emit('scheduleUpdate', { status: true, list: res.data.schedules });
     }).catch(() => {
         loading.hide()
-        emit('sectionUpdate', { status: false});
+        emit('scheduleUpdate', { status: false});
     })
 }
 
@@ -79,19 +138,19 @@ const localCreate = () => {
         return;
     }
     if (accountType.value == 'member') {
-        sectionStore.request.member.push({
+        scheduleStore.request.member.push({
             id: null,
             fullname: fullname.value
         })
     }
     else if (accountType.value == 'adviser') {
-        sectionStore.request.adviser.push({
+        scheduleStore.request.adviser.push({
             id: null,
             fullname: fullname.value
         })
     }
     else {
-        sectionStore.request.panel.push({
+        scheduleStore.request.panel.push({
             id: null,
             fullname: fullname.value
         })
@@ -106,19 +165,34 @@ const showModalDelete = (index, type) => {
 
 const localDelete = () => {
     if (accountType.value == 'member') {
-        sectionStore.request.member.splice(accountIndex, 1)
+        scheduleStore.request.member.splice(accountIndex, 1)
     }
     else if (accountType.value == 'adviser') {
-        sectionStore.request.adviser.splice(accountIndex, 1)
+        scheduleStore.request.adviser.splice(accountIndex, 1)
     }
     else {
-        sectionStore.request.panel.splice(accountIndex, 1)
+        scheduleStore.request.panel.splice(accountIndex, 1)
     }
+}
+
+const changeGroup = (type) => {
+    const index = type == 1 ? capstoneOne.value.indexOf(capstoneOne.value.find(e => e.id == scheduleStore.request.group)) 
+    : capstoneOne.value.indexOf(capstoneTwo.value.find(e => e.id == scheduleStore.request.group))
+
+    const panels = type == 1 ? capstoneOne.value[index].panel : capstoneTwo.value[index].panel
+
+    scheduleStore.request.panels = panels.map(item => {
+        return {
+            id: item.user.id,
+            fullname: `${item.user.firstname} ${item.user.middlename} ${item.user.lastname}`,
+            is_create: true
+        }
+    })
 }
 
 // Notification Hide Function
 const hideNotification = () => {
-  sectionStore.status.status = true
+  scheduleStore.status.status = true
 }
 
 
@@ -153,7 +227,7 @@ const hideNotification = () => {
     </CardBoxModal>
 
     <CardBox
-      title="Update Section"
+      title="Create Schedule"
       :form="true"
       :headerIcon="mdiArrowLeftBold" 
       @header-icon-click="back()"
@@ -161,45 +235,48 @@ const hideNotification = () => {
         <div class="space-y-3">
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField label="Section Code">
-                    <FormControl v-model="sectionStore.request.section_code"/>
+                <FormField label="Schedule Date">
+                    <FormControl v-model="scheduleStore.request.date" type="date"/>
                 </FormField>
 
-                <FormField label="Section Type">
+                <FormField label="Schedule Venue">
+                    <FormControl v-model="scheduleStore.request.venue"/>
+                </FormField>
+
+                <FormField label="Group Type">
                     <FormControl
-                        v-model="sectionStore.request.grouptype"
-                        :options="groupTypes"
+                        v-model="scheduleStore.request.grouptype"
+                        :options="groupTypesFiltered"
                     />
                 </FormField>
 
-                <FormField label="Room">
-                    <FormControl v-model="sectionStore.request.room_number"/>
-                </FormField>
-
-                <FormField label="Professor">
+                <FormField label="Group">
                     <FormControl
-                        v-model="sectionStore.request.user"
-                        :options="teachers"
+                        v-model="scheduleStore.request.group"
+                        :options="scheduleStore.request.grouptype == 1 || scheduleStore.request.grouptype == '' ? capstoneOne : capstoneTwo"
+                        @change="changeGroup(1)"
                     />
                 </FormField>
 
                 <FormField label="From Time">
-                    <FormControl v-model="sectionStore.request.from_time" type="time"/>
+                    <FormControl v-model="scheduleStore.request.from_time" type="time"/>
                 </FormField>
 
                 <FormField label="To Time">
-                    <FormControl v-model="sectionStore.request.to_time" type="time"/>
+                    <FormControl v-model="scheduleStore.request.to_time" type="time"/>
                 </FormField>
 
-                <FormField label="From Year">
-                    <FormControl v-model="sectionStore.request.from_year" 
-                        :options="years_list"
+                <FormField label="Schedule Type">
+                    <FormControl
+                        v-model="scheduleStore.request.scheduletype"
+                        :options="scheduleTypes"
                     />
                 </FormField>
 
-                <FormField label="To Year">
-                    <FormControl v-model="sectionStore.request.to_year"
-                        :options="years_list"
+                <FormField label="Status">
+                    <FormControl
+                        v-model="scheduleStore.request.status"
+                        :options="statusFiltered"
                     />
                 </FormField>
             </div>
@@ -209,39 +286,18 @@ const hideNotification = () => {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <CardBox 
-                        title="Students"
-                        :headerIcon="mdiPlus"
-                        @header-icon-click="showModal('member')"
+                        title="Panels"
+                       
                     >
                         <div class="flex justify-center">
                             <ul class="bg-white rounded-lg w-96 text-gray-900">
-                                <li v-for="(member, index) in sectionStore.request.student" :key="member.id" class="px-6 py-2 border-b border-gray-200 w-full flex justify-between">
-                                    <p>{{ `${member.user.lastname}, ${member.user.firstname}` }}</p>
-                                    <BaseIcon
+                                <li v-for="(pan, index) in scheduleStore.request.panels" :key="index" class="px-6 py-2 border-b border-gray-200 w-full flex justify-between">
+                                    <p>{{ pan.fullname }}</p>
+                                    <!-- <BaseIcon
                                         :path="mdiTrashCan"
                                         class="cursor-pointer mr-3"
                                         @click="showModalDelete(index, 'member')"
-                                    />
-                                </li>
-                            </ul>
-                        </div>
-                    </CardBox>
-                </div>
-                <div>
-                    <CardBox 
-                        title="Groups"
-                        :headerIcon="mdiPlus"
-                        @header-icon-click="showModal('adviser')"
-                    >
-                        <div class="flex justify-center">
-                            <ul class="bg-white rounded-lg w-96 text-gray-900">
-                                <li v-for="(group, index) in sectionStore.request.group" :key="group.id" class="px-6 py-2 border-b border-gray-200 w-full flex justify-between">
-                                    <p>{{ group.group.groupname }}</p>
-                                    <BaseIcon
-                                        :path="mdiTrashCan"
-                                        class="cursor-pointer mr-3"
-                                        @click="showModalDelete(index, 'adviser')"
-                                    />
+                                    /> -->
                                 </li>
                             </ul>
                         </div>
@@ -256,7 +312,7 @@ const hideNotification = () => {
             <BaseButton
                 label="Update"
                 color="info"
-                @click="sectionUpdate()"
+                @click="scheduleUpdate()"
             />
         </BaseButtons>
 

@@ -1,15 +1,13 @@
 <script setup>
-import { useMainStore } from '@/stores/main'
 import { computed } from 'vue'
 
-const props = defineProps({
-  image: {
-    type: String,
-    default: null
-  },
-})
+import { useAuthStore } from '@/stores/auth'
+import { url } from '@/config.js'
 
-const mainStore = useMainStore()
+
+const authStore = useAuthStore()
+
+const profile_picture = computed(() => authStore.user !== null ? authStore.user.file_url ?? `${url}myfiles/profile_pictures/default.png` : '')
 
 
 </script>
@@ -17,7 +15,7 @@ const mainStore = useMainStore()
 <template>
   <div>
     <img
-      :src="image"
+      :src="profile_picture"
       alt="profile_picture"
       class="rounded-full block h-auto w-full max-w-full bg-gray-100 dark:bg-gray-800"
     >

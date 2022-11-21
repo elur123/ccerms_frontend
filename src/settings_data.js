@@ -35,8 +35,13 @@ export const status = [
     { id: 1, label: 'Pending' },
     { id: 2, label: 'Approved' },
     { id: 3, label: 'Declined' },
+    { id: 4, label: 'Ongoing' },
+    { id: 5, label: 'Accepted' },
+    { id: 6, label: 'Minor' },
+    { id: 7, label: 'Major' },
+    { id: 8, label: 'Redefense' },
     { id: 9, label: 'Active' },
-    { id: 10, label: 'Disband' }
+    { id: 10, label: 'Disband' },
 ]
 
 export const groupTypes = [

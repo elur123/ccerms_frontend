@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import LandingPage from '@/views/LandingPage.vue'
-import Home from '@/views/HomeView.vue'
+import AdminIndex from '@/views/admin/Index.vue'
+import StudentIndex from '@/views/student/Index.vue'
 
 import { authenticate, adminAuthenticated, studentAuthenticated } from '@/auth.js'
 
@@ -79,7 +80,7 @@ const routes = [
     },
     path: '/admin/dashboard',
     name: 'dashboard',
-    component: Home
+    component: AdminIndex
   },
   {
     beforeEnter: adminAuthenticated,
@@ -115,16 +116,25 @@ const routes = [
     },
     path: '/admin/defenseschedules',
     name: 'admin-defenseschedules',
-    component: () => import('@/views/admin/course/CourseSettings.vue')
+    component: () => import('@/views/admin/schedules/Schedules.vue')
   },
   {
     beforeEnter: adminAuthenticated,
     meta: {
       title: 'Submissions'
     },
-    path: '/admin/submissions',
-    name: 'admin-submissions',
-    component: () => import('@/views/admin/course/CourseSettings.vue')
+    path: '/admin/submissions-one',
+    name: 'admin-submissions-one',
+    component: () => import('@/views/admin/submissionone/SubmissionOne.vue')
+  },
+  {
+    beforeEnter: adminAuthenticated,
+    meta: {
+      title: 'Submissions'
+    },
+    path: '/admin/submissions-two',
+    name: 'admin-submissions-two',
+    component: () => import('@/views/admin/submissionone/SubmissionTwo.vue')
   },
   {
     beforeEnter: adminAuthenticated,
@@ -179,7 +189,63 @@ const routes = [
     path: '/admin/scheduletypes',
     name: 'admin-scheduletypes',
     component: () => import('@/views/admin/scheduletype/ScheduleTypeSettings.vue')
-  }
+  },
+
+  // Student Route
+  {
+    beforeEnter: studentAuthenticated,
+    meta: {
+      title: 'Dashboard'
+    },
+    path: '/student/dashboard',
+    name: 'student-dashboard',
+    component: StudentIndex
+  },
+  {
+    beforeEnter: studentAuthenticated,
+    meta: {
+      title: 'Group'
+    },
+    path: '/student/group',
+    name: 'student-group',
+    component: () => import('@/views/student/Group/Index.vue')
+  },
+  {
+    beforeEnter: studentAuthenticated,
+    meta: {
+      title: 'Section'
+    },
+    path: '/student/section',
+    name: 'student-section',
+    component: () => import('@/views/student/Section/Index.vue')
+  },
+  {
+    beforeEnter: studentAuthenticated,
+    meta: {
+      title: 'Schedules'
+    },
+    path: '/student/schedules',
+    name: 'student-schedules',
+    component: () => import('@/views/student/Schedules/Index.vue')
+  },
+  {
+    beforeEnter: studentAuthenticated,
+    meta: {
+      title: 'Capstone One Submissions'
+    },
+    path: '/student/submissions-one',
+    name: 'student-submissions-one',
+    component: () => import('@/views/student/SubmissionOne/Index.vue')
+  },
+  {
+    beforeEnter: studentAuthenticated,
+    meta: {
+      title: 'Capstone Two Submissions'
+    },
+    path: '/student/submissions-two',
+    name: 'student-submissions-two',
+    component: () => import('@/views/student/SubmissionTwo/Index.vue')
+  },
 ]
 
 const router = createRouter({

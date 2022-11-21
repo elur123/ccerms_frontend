@@ -141,6 +141,7 @@ export const useGroupStore = defineStore('groups', {
       var data = [];
       arr.forEach(element => {
         data.push({
+          parent_id: element.id,
           id: element.user.id,
           fullname: `${element.user.lastname}, ${element.user.firstname}, ${element.user.middlename}`,
           available: false,

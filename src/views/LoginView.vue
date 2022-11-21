@@ -21,7 +21,7 @@ import { url } from '@/config'
 
 const pinia = createPinia()
 
-const authStore = useAuthStore(pinia)
+const authStore = useAuthStore()
 
 const router = useRouter()
 let loader = inject('Loader')
@@ -32,6 +32,7 @@ const submit = () => {
     loader.hide()
     if (res.data.status === 200) {
       authStore.user = res.data.details
+      authStore.clear()
       router.push('/admin/dashboard')
     }
   })
@@ -45,7 +46,7 @@ const submit = () => {
     bg="login"
   >
 
-    <img :src="`${url}myfiles/logo/ccerms_logo.png`" alt="ccerms_logo">
+    <img class="hidden" :src="`${url}myfiles/logo/ccerms_logo.png`" alt="ccerms_logo">
 
     <CardBox
       :class="cardClass"

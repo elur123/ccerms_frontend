@@ -36,11 +36,11 @@ import { url } from '@/config.js'
 const router = useRouter()
 
 const mainStore = useMainStore()
-const AuthStore = useAuthStore()
+const authStore = useAuthStore()
 
-const userName = computed(() => AuthStore.user !== null ? `${AuthStore.user.firstname} ${AuthStore.user.middlename} ${AuthStore.user.lastname}` : '')
+const userName = computed(() => authStore.user !== null ? `${authStore.user.firstname} ${authStore.user.middlename} ${authStore.user.lastname}` : '')
 
-const profile_picture = computed(() => AuthStore.user !== null ? AuthStore.user.file_url ?? `${url}myfiles/profile_pictures/default.png` : '')
+const profile_picture = computed(() => authStore.user !== null ? authStore.user.file_url ?? `${url}myfiles/profile_pictures/default.png` : '')
 
 const styleStore = useStyleStore()
 
@@ -72,6 +72,7 @@ const menuOpenLg = () => {
 
 const logout = () => {
   localStorage.clear();
+  authStore.user = null
   router.push('/login')
 }
 </script>
@@ -184,12 +185,6 @@ const logout = () => {
               <NavBarItemLabel
                 :icon="mdiAccount"
                 label="My Profile"
-              />
-            </NavBarItem>
-            <NavBarItem>
-              <NavBarItemLabel
-                :icon="mdiCogOutline"
-                label="Settings"
               />
             </NavBarItem>
             <NavBarItem>
