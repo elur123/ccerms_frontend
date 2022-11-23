@@ -222,6 +222,15 @@ const routes = [
   {
     beforeEnter: studentAuthenticated,
     meta: {
+      title: 'Section'
+    },
+    path: '/student/research-archives',
+    name: 'student-research-archives',
+    component: () => import('@/views/student/ResearchArchives/Index.vue')
+  },
+  {
+    beforeEnter: studentAuthenticated,
+    meta: {
       title: 'Schedules'
     },
     path: '/student/schedules',

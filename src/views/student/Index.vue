@@ -52,16 +52,18 @@ const transactionBarItems = computed(() => mainStore.history.slice(0, 3))
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
       <CardBoxWidget
         color="text-red-500"
+        :icon="mdiFile"
+        :number="256"
+        label="Submissions"
+      />  
+      
+      <CardBoxWidget
+        color="text-red-500"
         :icon="mdiCalendar"
         :number="256"
         label="Schedules"
       />
-      <CardBoxWidget
-        color="text-red-500"
-        :icon="mdiFile"
-        :number="256"
-        label="Submission"
-      />
+      
       <CardBoxWidget
         color="text-red-500"
         :icon="mdiFileAccount"

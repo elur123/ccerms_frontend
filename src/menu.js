@@ -109,6 +109,11 @@ export const studentMenu =  [
       label: 'Section',
       icon: mdiTelevisionGuide
     },
+    {
+      to: '/student/research-archives',
+      label: 'Research Archives',
+      icon: mdiTelevisionGuide
+    },
   ],
   'Events',
   [
