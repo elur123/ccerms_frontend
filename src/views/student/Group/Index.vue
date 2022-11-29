@@ -1,23 +1,12 @@
 <script setup>
-  import {
-    ref,
-    reactive
-  } from 'vue'
-  import {
-    mdiBallot,
-    mdiPlus,
-    mdiTableBorder
-  } from '@mdi/js'
+  import { ref, reactive } from 'vue'
+  import { mdiBallot, mdiPlus, mdiTableBorder } from '@mdi/js'
 
   import SectionMain from '@/components/SectionMain.vue'
   import SectionTitleBar from '@/components/SectionTitleBar.vue'
 
-  import {
-    useStudentDetailsStore
-  } from '@/stores/student/details.js';
-  import {
-    useAuthStore
-  } from '@/stores/auth.js'
+  import { useStudentDetailsStore } from '@/stores/student/details.js';
+  import { useAuthStore } from '@/stores/auth.js'
 
   const titleStack = ref(['Student', 'General', 'Group'])
 
@@ -46,7 +35,7 @@
               <li v-for="milestone in studentDetails.onemilestone" :key="milestone.id" class="relative mb-6 sm:mb-0">
                 <div class="flex items-center">
                   <div
-                    class="flex z-10 justify-center items-center w-6 h-6 rounded-full ring-0 ring-white dark:bg-blue-900 sm:ring-8 dark:ring-gray-900 shrink-0" :class="milestone.id == studentDetails.details.group.onemilestone_id ? 'bg-yellow-200' : 'bg-gray-200'">
+                    class="flex z-10 justify-center items-center w-6 h-6 rounded-full ring-0 ring-white dark:bg-blue-900 sm:ring-8 dark:ring-gray-900 shrink-0" :class="studentDetails.details.group.onemilestone_order >= milestone.order ? 'bg-yellow-200' : 'bg-gray-200'">
                     <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
                       xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="31.424px" height="31.425px"
                       viewBox="0 0 31.424 31.425" style="enable-background:new 0 0 31.424 31.425;" xml:space="preserve">

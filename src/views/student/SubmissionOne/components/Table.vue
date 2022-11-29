@@ -61,7 +61,8 @@ const select = item => {
         <th>Milestone</th>
         <th>File</th>
         <th>Date time Submitted</th>
-        <th>Send By</th>
+        <th>Submitted By</th>
+        <th>Submitted To</th>
         <th>Date time Checked</th>
         <th>Checked By</th>
         <th>Status</th>
@@ -72,28 +73,29 @@ const select = item => {
         v-for="item in itemsPaginated"
         :key="item.id"
       >
-        <td data-label="Schedule Date">
-          {{ item.date }}
+        <td data-label="Revision #">
+          {{ item.revision_number }}
         </td>
-        <td data-label="Venue">
-          {{ item.venue }}
+        <td data-label="Milestone">
+          {{ item.milestone }}
         </td>
-        <td data-label="Time Schedule">
-          {{ `${item.from_time} - ${item.to_time}` }}
+        <td data-label="File">
+          {{ item.file }}
         </td>
-        <td data-label="Schedule Type">
-          {{ item.scheduletype ?? null }}
+        <td data-label="Date time Submitted">
+          {{ item.sendby_datetime }}
         </td>
-        <td data-label="Group name">
-          {{ item.groupname ?? null }}
+        <td data-label="Submitted By">
+          {{ item.submitted_by }}
         </td>
-        <td data-label="Group Type">
-          {{ item.grouptype ?? null }}
+        <td data-label="Submitted To">
+          {{ item.submitted_to }}
         </td>
-        <td data-label="Panelist">
-          <span v-for="pan in item.panels" :key="pan.id" class="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
-                {{ pan.fullname }}
-          </span>
+        <td data-label="Date time Checked">
+          {{ item.approved_datetime }}
+        </td>
+        <td data-label="Checked By">
+          {{ item.checked_by }}
         </td>
         <td data-label="Status">
           <span v-if="item.status_id == 4" class="p-1 bg-yellow-400 text-white text-sm rounded font-semibold ">{{ item.status }}</span>

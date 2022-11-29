@@ -7,8 +7,8 @@ export const useStudentDetailsStore = defineStore('studentDetails', {
     details: null,
     section_list: [],
     schedules: [],
-    onemilestone: [],
-    twomilestone: []
+    onemilestones: [],
+    twomilestones: []
   }),
   actions: {
     fetch(id) {
@@ -16,8 +16,8 @@ export const useStudentDetailsStore = defineStore('studentDetails', {
         this.details = res.data.student_details
         this.section_list = res.data.section_list
         this.schedules = res.data.schedules
-        this.onemilestone = res.data.onemilesones
-        this.twomilestone = res.data.twomilesones
+        this.onemilestones = res.data.onemilesones
+        this.twomilestones = res.data.twomilesones
       })
     },
   }

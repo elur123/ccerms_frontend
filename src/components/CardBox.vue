@@ -16,6 +16,10 @@ const props = defineProps({
     type: String,
     default: null
   },
+  headerBg: {
+    type: String,
+    default: 'bg-yellow-400'
+  },
   rounded: {
     type: String,
     default: 'md:rounded'
@@ -64,7 +68,8 @@ const submit = e => {
   >
     <header
       v-if="title"
-      class="flex bg-yellow-400 items-stretch border-b border-gray-100 dark:border-gray-800"
+      :class="props.headerBg"
+      class="flex items-stretch border-b border-gray-100 dark:border-gray-800"
     >
       <p
         class="flex items-center py-3 grow font-bold"
