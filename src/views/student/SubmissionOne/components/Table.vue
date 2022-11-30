@@ -16,7 +16,7 @@ const props = defineProps({
   checkable: Boolean
 })
 
-const emit = defineEmits(['select-section'])
+const emit = defineEmits(['select-submission', 'delete-submission'])
 
 const items = computed(() => props.data)
 
@@ -47,8 +47,13 @@ const pagesList = computed(() => {
 })
 
 const select = item => {
-  emit('select-section', item);
+  emit('select-submission', item);
 }
+
+const destroy = item => {
+  emit('delete-submission', item);
+}
+
 
 </script>
 
@@ -66,6 +71,7 @@ const select = item => {
         <th>Date time Checked</th>
         <th>Checked By</th>
         <th>Status</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -98,10 +104,30 @@ const select = item => {
           {{ item.checked_by }}
         </td>
         <td data-label="Status">
-          <span v-if="item.status_id == 4" class="p-1 bg-yellow-400 text-white text-sm rounded font-semibold ">{{ item.status }}</span>
-          <span v-else-if="item.status_id == 5" class="p-1 bg-lime-400 text-white text-sm rounded font-semibold ">{{ item.status }}</span>
-          <span v-else-if="item.status_id == 6 || item.status_id == 7" class="p-1 bg-red-400 text-white text-sm rounded font-semibold ">{{ item.status }}</span>
+          <span v-if="item.status_id == 1" class="p-1 bg-yellow-400 text-white text-sm rounded font-semibold ">{{ item.status }}</span>
+          <span v-else-if="item.status_id == 2" class="p-1 bg-lime-400 text-white text-sm rounded font-semibold ">{{ item.status }}</span>
           <span v-else class="p-1 bg-red-400 text-white text-sm rounded font-semibold ">{{ item.status }}</span>
+        </td>
+        <td data-label="Actions">
+            <BaseButtons
+              v-if="item.status_id == 1"
+              type="justify-start lg:justify-end"
+              no-wrap
+            >
+              <BaseButton
+                color="info"
+                :icon="mdiEye"
+                small
+                @click="select(item)"
+              />
+              <BaseButton
+                color="danger"
+                :icon="mdiTrashCan"
+                small
+                @click="destroy(item)"
+              />
+            </BaseButtons>
+            <span v-else>No action</span>
         </td>
       </tr>
     </tbody>

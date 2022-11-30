@@ -5,10 +5,12 @@ import { mdiBallot, mdiPlus, mdiTableBorder, mdiArrowLeftBold } from '@mdi/js'
 import SectionMain from '@/components/SectionMain.vue'
 import SectionTitleBar from '@/components/SectionTitleBar.vue'
 import CardBox from '@/components/CardBox.vue'
+import CardBoxModal from '@/components/CardBoxModal.vue'
 import BaseIcon from '@/components/BaseIcon.vue'
 import NotificationBar from '@/components/NotificationBar.vue'
 
 import Create from '@/views/student/SubmissionOne/components/Create.vue'
+import Update from '@/views/student/SubmissionOne/components/Update.vue'
 import Table from '@/views/student/SubmissionOne/components/Table.vue'
 
 
@@ -20,6 +22,8 @@ import { useAuthStore } from '@/stores/auth.js'
 const titleStack = ref(['Student', 'Events', 'Submissions', 'Capstone 1'])
 const showSubmission = ref(false);
 const showCreate = ref(false);
+const showUpdate = ref(false);
+const showDelete = ref(false);
 const milestoneDetails = ref(null);
 
 // State
@@ -44,26 +48,60 @@ const select_milestone = (milestone) => {
   submissinOne.fetch(studentDetails.details.group.id, milestone.id)
   showSubmission.value = true
   milestoneDetails.value = milestone
-
-  submissinOne.request.group = studentDetails.details.group.id
-  submissinOne.request.milestone = milestone.id
-  submissinOne.request.submitted_by = studentDetails.details.user_id
 }
 
 const back_milestone_list = () => {
   showSubmission.value = false
   showCreate.value = false
+  showUpdate.value = false
   milestoneDetails.value = null
 }
 
 const show_create = () => {
   showCreate.value = !showCreate.value
+
+  submissinOne.request.group = studentDetails.details.group.id
+  submissinOne.request.milestone = milestoneDetails.value.id
+  submissinOne.request.submitted_by = studentDetails.details.user_id
+}
+
+const show_update = () => {
+  showUpdate.value = !showUpdate.value
+
+  submissinOne.request.group = studentDetails.details.group.id
+  submissinOne.request.milestone = milestoneDetails.value.id
+  submissinOne.request.submitted_by = studentDetails.details.user_id
+  submissinOne.request.submitted_to = ''
+  submissinOne.request.notes = ''
 }
 
 const submit = (res) => {
   if (res.status) {
     submissinOne.submissions = res.list
     showCreate.value = false
+    showUpdate.value = false
+  }
+}
+
+const select_submission = (item) => {
+  submissinOne.select(item);
+  showUpdate.value = true;
+  showCreate.value = false;
+  this.submissinOne.request.submitted_by = studentDetails.details.user_id
+}
+
+const delete_submission = (item) => {
+  showDelete.value = true
+  submissinOne.select(item)
+}
+
+const localDelete = () => {
+  let find = submissinOne.submissions.find(e => e.id == submissinOne.request.id);
+  let index = submissinOne.submissions.indexOf(find);
+
+  if (find != undefined) {
+    submissinOne.submissions.splice(index, 1);
+    submissinOne.delete()
   }
 }
 
@@ -83,6 +121,19 @@ const submit = (res) => {
     >
       {{ submissinOne.status.message }}
     </NotificationBar>
+
+    <!-- Delete Modal -->
+    <CardBoxModal
+        v-model="showDelete"
+        large-title="Delete entry..."
+        button="warning"
+        buttonLabel="Delete"
+        @confirm="localDelete()"
+    >
+
+        <h4 class="text-center"> Click Delete to remove from list... </h4>
+
+    </CardBoxModal>
 
     <div v-if="!showSubmission" class="grid grid-cols-1 md:grid-cols-3 gap-3">
 
@@ -120,13 +171,22 @@ const submit = (res) => {
           :advisers="studentDetails.details.group.advisers"
           :panels="studentDetails.details.group.panels"
           :rcs="studentDetails.details.group.rcs"
-          v-if="showCreate"
+          v-if="showCreate & !showUpdate"
           @back="show_create"
+          @submit="submit"
+        />
+
+        <Update 
+          :advisers="studentDetails.details.group.advisers"
+          :panels="studentDetails.details.group.panels"
+          :rcs="studentDetails.details.group.rcs"
+          v-if="showUpdate & !showCreate"
+          @back="show_update"
           @submit="submit"
         />
         
         <CardBox
-          v-if="!showCreate"
+          v-if="!showCreate && !showUpdate"
           title="Submission List"
           :hasTable="true"
           :icon="mdiBallot"
@@ -135,6 +195,8 @@ const submit = (res) => {
         >
           
           <Table 
+            @select-submission="select_submission"
+            @delete-submission="delete_submission"
             :data="submissinOne.submissions"
           />
       

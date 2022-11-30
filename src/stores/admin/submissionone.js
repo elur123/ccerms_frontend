@@ -6,15 +6,7 @@ export const useSubmissionOneStore = defineStore('submissionone', {
   state: () => ({
     list: [],
     request: {
-        title: '',
-        course: '',
-        tags: '',
-        year_from_published: '',
-        year_to_published: '',
-        file: {},
-        adviser: [],
-        panel: [],
-        member: []
+        
     },
     status: {
       status: true,
@@ -23,8 +15,8 @@ export const useSubmissionOneStore = defineStore('submissionone', {
     }
   }),
   actions: {
-    fetch() {
-      axios.get(`${url}api/researcharchives`).then(res => {
+    fetch(user_id) {
+      axios.get(`${url}api/onesubmissions/${user_id}`).then(res => {
         this.list = res.data
       })
     },

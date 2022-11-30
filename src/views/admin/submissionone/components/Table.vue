@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { mdiEye, mdiTrashCan } from '@mdi/js'
+import { mdiEye, mdiTrashCan, mdiMagnify  } from '@mdi/js'
 import CardBoxModal from '@/components/CardBoxModal.vue'
 import TableCheckboxCell from '@/components/TableCheckboxCell.vue'
 import BaseLevel from '@/components/BaseLevel.vue'
@@ -16,7 +16,7 @@ const props = defineProps({
   checkable: Boolean
 })
 
-const emit = defineEmits(['select-archive', 'destroy-archive'])
+const emit = defineEmits(['select-submission'])
 
 const items = computed(() => props.data)
 
@@ -96,14 +96,15 @@ const checked = (isChecked, client) => {
         <!-- <th /> -->
         <th>Revision #</th>
         <th>Milestone</th>
-        <th>File</th>
         <th>Group</th>
+        <th>File</th>
         <th>Datetime Submitted</th>
         <th>Submitted By</th>
+        <th>Submitted To</th>
         <th>Datetime Checked</th>
         <th>Checked By</th>
         <th>Status</th>
-        <th />
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -115,57 +116,61 @@ const checked = (isChecked, client) => {
           v-if="props.checkable"
           @checked="checked($event, item)"
         />
-        <td data-label="Code">
-          {{ item.code }}
+         <td data-label="Revision #">
+          {{ item.revision_number }}
         </td>
-        <td data-label="Title">
-          {{ item.title }}
+        <td data-label="Milestone">
+          {{ item.milestone }}
         </td>
-        <td data-label="Course">
-          {{ item.course.course }}
-        </td>
-        <td data-label="Tags">
-          {{ item.tags }}
+        <td data-label="Group">
+          {{ item.groupname }}
         </td>
         <td data-label="File">
-          <a :href="item.file_url" class="text-blue-400">{{ item.file }}</a>
+          {{ item.file }}
         </td>
-        <td data-label="Year Published">
-          {{ item.year_from_published }} - {{ item.year_to_published }}
+        <td data-label="Date time Submitted">
+          {{ item.sendby_datetime }}
         </td>
-        <td data-label="Member(s)">
-          <span v-for="mem in item.member" :key="mem.id" class="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
-            {{ mem.fullname.toUpperCase() }}
-          </span>
+        <td data-label="Submitted By">
+          {{ item.submitted_by }}
         </td>
-        <td data-label="Adviser(s)">
-          <span v-for="adv in item.adviser" :key="adv.id" class="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
-            {{ adv.fullname.toUpperCase() }}
-          </span>
+        <td data-label="Submitted To">
+          {{ item.submitted_to }}
         </td>
-        <td data-label="Panel(s)">
-          <span v-for="pan in item.panel" :key="pan.id" class="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
-            {{ pan.fullname.toUpperCase() }}
-          </span>
+        <td data-label="Date time Checked">
+          {{ item.approved_datetime }}
         </td>
-        <td class="before:hidden lg:w-1 whitespace-nowrap">
-          <BaseButtons
-            type="justify-start lg:justify-end"
-            no-wrap
-          >
-            <BaseButton
-              color="info"
-              :icon="mdiEye"
-              small
-              @click="select(item)"
-            />
-            <BaseButton
-              color="danger"
-              :icon="mdiTrashCan"
-              small
-              @click="destroy(item)"
-            />
-          </BaseButtons>
+        <td data-label="Checked By">
+          {{ item.checked_by }}
+        </td>
+        <td data-label="Status">
+          <span v-if="item.status_id == 1" class="p-1 bg-yellow-400 text-white text-sm rounded font-semibold ">{{ item.status }}</span>
+          <span v-else-if="item.status_id == 2" class="p-1 bg-lime-400 text-white text-sm rounded font-semibold ">{{ item.status }}</span>
+          <span v-else class="p-1 bg-red-400 text-white text-sm rounded font-semibold ">{{ item.status }}</span>
+        </td>
+        <td data-label="Actions">
+            <BaseButtons
+              v-if="item.status_id == 1"
+              type="justify-start lg:justify-end"
+              no-wrap
+            >
+              <BaseButton
+                color="info"
+                :icon="mdiEye"
+                small
+                @click="select(item)"
+              />
+              <BaseButton
+                color="info"
+                :icon="mdiMagnify"
+                small
+                @click="select(item)"
+              />
+            </BaseButtons>
+
+            
+      
+            
         </td>
       </tr>
     </tbody>

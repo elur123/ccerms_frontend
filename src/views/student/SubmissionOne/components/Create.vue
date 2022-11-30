@@ -91,19 +91,6 @@ const hideNotification = () => {
 
 </script>
 <template>
-    <!-- Delete Modal -->
-    <CardBoxModal
-        v-model="isShowDeleteModal"
-        large-title="Delete entry..."
-        button="warning"
-        buttonLabel="Delete"
-        @confirm="localDelete()"
-    >
-
-        <h4 class="text-center"> Click Delete to remove from list... </h4>
-
-    </CardBoxModal>
-
     <CardBox
       title="Create New Submission"
       :form="true"
