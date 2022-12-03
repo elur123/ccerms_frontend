@@ -12,6 +12,7 @@ import NotificationBar from '@/components/NotificationBar.vue'
 import Create from '@/views/student/SubmissionOne/components/Create.vue'
 import Update from '@/views/student/SubmissionOne/components/Update.vue'
 import Table from '@/views/student/SubmissionOne/components/Table.vue'
+import Comments from '@/views/student/SubmissionOne/components/Comments.vue'
 
 
 import { useStudentDetailsStore } from '@/stores/student/details.js';
@@ -23,8 +24,10 @@ const titleStack = ref(['Student', 'Events', 'Submissions', 'Capstone 1'])
 const showSubmission = ref(false);
 const showCreate = ref(false);
 const showUpdate = ref(false);
+const showComments = ref(false);
 const showDelete = ref(false);
 const milestoneDetails = ref(null);
+const submissionDetails = ref(null);
 
 // State
 const studentDetails = useStudentDetailsStore();
@@ -87,7 +90,16 @@ const select_submission = (item) => {
   submissinOne.select(item);
   showUpdate.value = true;
   showCreate.value = false;
-  this.submissinOne.request.submitted_by = studentDetails.details.user_id
+  submissinOne.request.submitted_by = studentDetails.details.user_id
+}
+
+const show_submission = (item) => {
+  submissinOne.select(item);
+  showComments.value = true
+  showUpdate.value = false;
+  showCreate.value = false;
+  submissionDetails.value = item
+  submissinOne.request.submitted_by = studentDetails.details.user_id
 }
 
 const delete_submission = (item) => {
@@ -171,7 +183,7 @@ const localDelete = () => {
           :advisers="studentDetails.details.group.advisers"
           :panels="studentDetails.details.group.panels"
           :rcs="studentDetails.details.group.rcs"
-          v-if="showCreate & !showUpdate"
+          v-if="showCreate & (!showComments && !showUpdate)"
           @back="show_create"
           @submit="submit"
         />
@@ -180,13 +192,20 @@ const localDelete = () => {
           :advisers="studentDetails.details.group.advisers"
           :panels="studentDetails.details.group.panels"
           :rcs="studentDetails.details.group.rcs"
-          v-if="showUpdate & !showCreate"
+          v-if="showUpdate & (!showCreate && !showComments)"
+          @back="show_update"
+          @submit="submit"
+        />
+
+        <Comments
+          :submissionDetails="submissionDetails"
+          v-if="showComments & (!showCreate && !showUpdate)"
           @back="show_update"
           @submit="submit"
         />
         
         <CardBox
-          v-if="!showCreate && !showUpdate"
+          v-if="!showCreate && !showUpdate && !showComments"
           title="Submission List"
           :hasTable="true"
           :icon="mdiBallot"
@@ -196,6 +215,7 @@ const localDelete = () => {
           
           <Table 
             @select-submission="select_submission"
+            @show-submission="show_submission"
             @delete-submission="delete_submission"
             :data="submissinOne.submissions"
           />

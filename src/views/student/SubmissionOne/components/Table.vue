@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { mdiEye, mdiTrashCan } from '@mdi/js'
+import { mdiEye, mdiTrashCan, mdiMagnify } from '@mdi/js'
 import CardBoxModal from '@/components/CardBoxModal.vue'
 import TableCheckboxCell from '@/components/TableCheckboxCell.vue'
 import BaseLevel from '@/components/BaseLevel.vue'
@@ -16,7 +16,7 @@ const props = defineProps({
   checkable: Boolean
 })
 
-const emit = defineEmits(['select-submission', 'delete-submission'])
+const emit = defineEmits(['select-submission', 'show-submission', 'delete-submission'])
 
 const items = computed(() => props.data)
 
@@ -48,6 +48,10 @@ const pagesList = computed(() => {
 
 const select = item => {
   emit('select-submission', item);
+}
+
+const show = item => {
+  emit('show-submission', item);
 }
 
 const destroy = item => {
@@ -110,24 +114,30 @@ const destroy = item => {
         </td>
         <td data-label="Actions">
             <BaseButtons
-              v-if="item.status_id == 1"
               type="justify-start lg:justify-end"
               no-wrap
             >
               <BaseButton
+                v-if="item.status_id == 1"
                 color="info"
                 :icon="mdiEye"
                 small
                 @click="select(item)"
               />
               <BaseButton
+                v-if="item.status_id == 1"
                 color="danger"
                 :icon="mdiTrashCan"
                 small
                 @click="destroy(item)"
               />
+              <BaseButton
+                color="info"
+                :icon="mdiMagnify"
+                small
+                @click="show(item)"
+              />
             </BaseButtons>
-            <span v-else>No action</span>
         </td>
       </tr>
     </tbody>

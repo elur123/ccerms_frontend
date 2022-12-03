@@ -150,11 +150,11 @@ const checked = (isChecked, client) => {
         </td>
         <td data-label="Actions">
             <BaseButtons
-              v-if="item.status_id == 1"
               type="justify-start lg:justify-end"
               no-wrap
             >
               <BaseButton
+                v-if="item.status_id == 1"
                 color="info"
                 :icon="mdiEye"
                 small
