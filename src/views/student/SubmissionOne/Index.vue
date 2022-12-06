@@ -78,9 +78,31 @@ const show_update = () => {
   submissinOne.request.notes = ''
 }
 
+const show_comment = () => {
+  showComments.value = !showComments.value
+
+  submissinOne.request.group = studentDetails.details.group.id
+  submissinOne.request.milestone = milestoneDetails.value.id
+  submissinOne.request.submitted_by = studentDetails.details.user_id
+  submissinOne.request.submitted_to = ''
+  submissinOne.request.notes = ''
+  submissinOne.request.comment.user = ''
+}
+
 const submit = (res) => {
   if (res.status) {
     submissinOne.submissions = res.list
+    showCreate.value = false
+    showUpdate.value = false
+  }
+}
+
+const post_comment = (res) => {
+  if (res.status) {
+    const index = submissinOne.submissions.indexOf(submissinOne.submissions.find(e => e.id == submissionDetails.id));
+    submissinOne.submissions[index].comments = res.data.comments
+    submissinOne.submissions.comments = res.list
+    showComments.value = true
     showCreate.value = false
     showUpdate.value = false
   }
@@ -99,7 +121,8 @@ const show_submission = (item) => {
   showUpdate.value = false;
   showCreate.value = false;
   submissionDetails.value = item
-  submissinOne.request.submitted_by = studentDetails.details.user_id
+  submissinOne.request.comment.file = {}
+  submissinOne.request.comment.user = studentDetails.details.user_id
 }
 
 const delete_submission = (item) => {
@@ -200,8 +223,8 @@ const localDelete = () => {
         <Comments
           :submissionDetails="submissionDetails"
           v-if="showComments & (!showCreate && !showUpdate)"
-          @back="show_update"
-          @submit="submit"
+          @back="show_comment"
+          @submit="post_comment"
         />
         
         <CardBox

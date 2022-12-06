@@ -6,7 +6,10 @@ export const useSubmissionOneStore = defineStore('submissionone', {
   state: () => ({
     list: [],
     request: {
-        
+      user: '',
+      file: {},
+      status: '',
+      comment: ''
     },
     status: {
       status: true,
@@ -20,31 +23,29 @@ export const useSubmissionOneStore = defineStore('submissionone', {
         this.list = res.data
       })
     },
-    create() {
+    comment(submission_id) {
       return new Promise((resolve, reject) => {
-        let formData = new FormData();
-        formData.append('title', this.request.title)
-        formData.append('course', this.request.course)
-        formData.append('tags', this.request.tags)
-        formData.append('year_from_published', this.request.year_from_published)
-        formData.append('year_to_published', this.request.year_to_published)
-        formData.append('file', this.request.file)
-        formData.append('advisers', JSON.stringify(this.request.adviser))
-        formData.append('panels', JSON.stringify(this.request.panel))
-        formData.append('members', JSON.stringify(this.request.member))
 
-        axios.post(`${url}api/researcharchives`, formData, 
+        let formData = new FormData();
+        formData.append('user', this.request.user)
+        formData.append('file', this.request.file)
+        formData.append('status', this.request.status)
+        formData.append('comment', this.request.comment)
+
+        axios.post(`${url}api/onesubmissions/comments/${submission_id}`, formData,
         { 
           headers: { 'Content-Type': 'multipart/form-data' } 
         }
         ).then(res => {
-          this.list = res.data.researches
+          this.list = res.data.comments
+  
           this.status = {
             status: false,
             success: res.data.status == 200 ? true : false,
             message: res.data.message,
           }
-          this.clear()
+          this.request.comment = ''
+          this.request.file = {}
           resolve(res)
         }).catch(err => {
           this.status = {
@@ -115,18 +116,6 @@ export const useSubmissionOneStore = defineStore('submissionone', {
       axios.delete(`${url}api/${prefix}/${id}`)
     },
     clear() {
-        this.request = {
-          id: '',
-          title: '',
-          course: '',
-          tags: '',
-          year_from_published: '',
-          year_to_published: '',
-          file: {},
-          adviser: [],
-          panel: [],
-          member: []
-        }
     },
   }
 })

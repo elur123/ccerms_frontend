@@ -38,7 +38,7 @@ watch(modelValueProp, value => {
   file.value = value
 
   if (!value) {
-    root.value.input.value = null
+    root.value = {}
   }
 })
 

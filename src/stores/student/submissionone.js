@@ -12,7 +12,12 @@ export const useSubmissionOneStore = defineStore('submissionOne', {
         milestone: '',
         submitted_by: '',
         submitted_to: '',
-        notes: ''
+        notes: '',
+        comment: {
+          user: '',
+          file: {},
+          comment: ''
+        }
       },
       status: {
         status: true,
@@ -67,7 +72,12 @@ export const useSubmissionOneStore = defineStore('submissionOne', {
         milestone: item.onemilestone_id,
         submitted_by: item.send_by,
         submitted_to: item.send_to,
-        notes: item.notes
+        notes: item.notes,
+        comment: {
+          user: '',
+          file: {},
+          comment: ''
+        }
       }
     },
     update() {
@@ -93,6 +103,39 @@ export const useSubmissionOneStore = defineStore('submissionOne', {
             message: res.data.message,
           }
           this.clear()
+          resolve(res)
+        }).catch(err => {
+          this.status = {
+            status: false,
+            success: false,
+            message: 'Server error!',
+          }
+          reject(err)
+        })
+      })
+    },
+    comment(submission_id) {
+      return new Promise((resolve, reject) => {
+
+        let formData = new FormData();
+        formData.append('user', this.request.comment.user)
+        formData.append('file', this.request.comment.file)
+        formData.append('comment', this.request.comment.comment)
+
+        axios.post(`${url}api/onesubmissions/comments/${submission_id}`, formData,
+        { 
+          headers: { 'Content-Type': 'multipart/form-data' } 
+        }
+        ).then(res => {
+          const index = this.submissions.indexOf(this.submissions.find(e => e.id == submission_id));
+          this.submissions[index].comments = res.data.comments
+          this.status = {
+            status: false,
+            success: res.data.status == 200 ? true : false,
+            message: res.data.message,
+          }
+          this.request.comment.comment = ''
+          this.request.comment.file = {}
           resolve(res)
         }).catch(err => {
           this.status = {
@@ -138,7 +181,12 @@ export const useSubmissionOneStore = defineStore('submissionOne', {
         milestone: '',
         submitted_by: '',
         submitted_to: '',
-        notes: ''
+        notes: '',
+        comment: {
+          user: '',
+          file: {},
+          comment: ''
+        }
       }
     }
   }

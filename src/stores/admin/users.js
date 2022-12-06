@@ -59,7 +59,28 @@ export const useUserStore = defineStore('users', {
     },
     fetchAccessList() {
       axios.get(`${url}api/useraccess`).then(res => {
-        this.access_list = res.data
+         res.data.forEach(element => {
+          const find = this.access_list.find(e => e.key == element.parent)
+          if (find == undefined) {
+            this.access_list.push({
+              key: element.parent,
+              label: element.label,
+              data: [{
+                id: element.id,
+                access: element.access
+              }]
+            });
+          }
+          else {
+            let index = this.access_list.indexOf(find)
+            this.access_list[index].data.push({
+              id: element.id,
+              access: element.access
+            })
+          }
+        })
+
+        console.log(this.access_list);
       })
     },
     create() {
@@ -79,6 +100,7 @@ export const useUserStore = defineStore('users', {
         formData.append('usertype', this.request.usertype_id)
         formData.append('other_type', this.request.other_type)
         formData.append('status', this.request.status_id)
+        formData.append('access', this.request.access)
         formData.append('allow_adviser', this.request.allow_adviser)
         formData.append('allow_panel', this.request.allow_panel)
         formData.append('allow_st', this.request.allow_st)
@@ -122,6 +144,7 @@ export const useUserStore = defineStore('users', {
         usertype_id: item.usertype_id,
         other_type: item.other_type,
         status_id: item.status_id,
+        access: [],
         allow_adviser: item.allow_adviser == 1 ? true : false,
         allow_panel: item.allow_panel == 1 ? true : false,
         allow_st: item.allow_st == 1 ? true : false
@@ -196,6 +219,7 @@ export const useUserStore = defineStore('users', {
             usertype_id: '',
             other_type: '',
             status_id: '',
+            access: [],
             allow_adviser: false,
             allow_panel: false,
             allow_st: false

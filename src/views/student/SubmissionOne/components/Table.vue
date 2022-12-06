@@ -90,7 +90,7 @@ const destroy = item => {
           {{ item.milestone }}
         </td>
         <td data-label="File">
-          {{ item.file }}
+          <a class="text-blue-500 hover:underline" :href="item.file_url">{{ item.file }}</a>
         </td>
         <td data-label="Date time Submitted">
           {{ item.sendby_datetime }}

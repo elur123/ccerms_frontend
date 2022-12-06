@@ -15,7 +15,8 @@ import NotificationBar from '@/components/NotificationBar.vue'
 import NotificationBarInCard from '@/components/NotificationBarInCard.vue'
 import { mdiArrowLeftBold, mdiPlus, mdiTrashCan, mdiTableBorder } from '@mdi/js'
 
-import { useSubmissionOneStore } from '@/stores/student/submissionone.js';
+import { useSubmissionOneStore } from '@/stores/admin/submissionone.js';
+import { status } from '@/settings_data';
 
 const submissionOne = useSubmissionOneStore()
 
@@ -31,6 +32,11 @@ const props = defineProps({
   },
 })
 
+// Computed functions
+const submissionStatus = computed(() => {
+    return status.filter(e => e.id <= 3)
+})
+
 // Variables
 const loading = inject('Loader')
 
@@ -43,7 +49,7 @@ const submit = () => {
     loading.show()
     submissionOne.comment(props.submissionDetails.id).then(res => {
         loading.hide()
-        emit('comment', { status: true, list: res.data });
+        emit('comment', { status: true, list: res.data.comments });
     }).catch(() => {
         loading.hide()
         emit('comment', { status: false});
@@ -140,11 +146,15 @@ const submit = () => {
 
                     <div class="py-2">
                         <FormField label="Attached File" class="pb-2">
-                            <FormFilePicker v-model="submissionOne.request.comment.file"/>
+                            <FormFilePicker v-model="submissionOne.request.file"/>
+                        </FormField>
+
+                        <FormField label="Status" class="pb-2">
+                            <FormControl v-model="submissionOne.request.status" :options="submissionStatus" />
                         </FormField>
 
                         <FormField label="Add Comments">
-                            <FormControl type="textarea" v-model="submissionOne.request.comment.comment" />
+                            <FormControl type="textarea" v-model="submissionOne.request.comment" />
                         </FormField>
                     </div>
 

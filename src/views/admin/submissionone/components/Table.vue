@@ -47,7 +47,7 @@ const pagesList = computed(() => {
 })
 
 const select = item => {
-  emit('select-archive', item);
+  emit('select-submission', item);
 }
 
 const destroy = item => {
@@ -153,13 +153,6 @@ const checked = (isChecked, client) => {
               type="justify-start lg:justify-end"
               no-wrap
             >
-              <BaseButton
-                v-if="item.status_id == 1"
-                color="info"
-                :icon="mdiEye"
-                small
-                @click="select(item)"
-              />
               <BaseButton
                 color="info"
                 :icon="mdiMagnify"

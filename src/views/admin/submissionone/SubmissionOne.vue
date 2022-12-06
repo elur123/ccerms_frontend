@@ -16,12 +16,16 @@ import SectionTitleBarSub from '@/components/SectionTitleBarSub.vue'
 import NotificationBar from '@/components/NotificationBar.vue'
 
 import Check from '@/views/admin/submissionone/components/Check.vue'
+import Comments from '@/views/admin/submissionone/components/Comments.vue'
 import Table from '@/views/admin/submissionone/components/Table.vue'
 
 import { useSubmissionOneStore } from '@/stores/admin/submissionone.js';
 import { useAuthStore } from '@/stores/auth.js'
 
+// Variables
 const titleStack = ref(['Admin', 'Events', 'Capstone One Submissions'])
+const submissionDetails = ref(null);
+const showComments = ref(false);
 
 const submissionStore = useSubmissionOneStore()
 const authStore = useAuthStore()
@@ -37,8 +41,20 @@ submissionStore.fetch(authStore.user.id)
 
 
 // functions
+const back = () => {
+  showComments.value = !showComments.value
+}
+
 const select = (item) => {
-  
+  submissionDetails.value = item
+  submissionStore.request.status = item.status_id
+  submissionStore.request.user = authStore.user.id
+  back()
+}
+
+const post_comment = (res) => {
+  const index = submissionStore.list.indexOf(submissionStore.list.find(e => e.id == submissionDetails.value.id))
+  submissionDetails.value = submissionStore.list[index]
 }
 
 </script>
@@ -58,8 +74,16 @@ const select = (item) => {
       {{ submissionStore.status.message }}
     </NotificationBar>
 
+    <Comments
+      :submissionDetails="submissionDetails"
+      v-if="showComments"
+      @back="back"
+      @comment="post_comment"
+    />
+
     <!-- List Section -->
     <CardBox
+      v-if="!showComments"
       title="Submissions List"
       :hasTable="true"
       :icon="mdiBallot"

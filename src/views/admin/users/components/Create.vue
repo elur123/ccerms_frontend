@@ -54,12 +54,16 @@ const nextPage = () => {
 
 const watchAccess = (e) => {
     const val = e.target._value;
-    if (e.target.checked) {
-        
-    }
-    else {
 
+    if (e.target.checked) {
+        userStore.request.access.push(val)
     }
+
+    else {
+        let index = userStore.request.access.indexOf(val)
+        userStore.request.access.splice(index, 1)
+    }
+
 }
 
 const userCreate = () => {
@@ -275,14 +279,14 @@ const hideNotification = () => {
             </NotificationBarInCard>
 
             <div class="access-item" v-for="(access, index) in userStore.access_list" :key="index">
-                <h4 class="font-bold">{{ access.label }}</h4>
+                <h4 class="font-bold pb-2">{{ access.label }}</h4>
                 <div class="flex">
-                    <div class="form-check form-check-inline pr-2" v-for="(access_item, sub_index) in access.data" :key="sub_index">
+                    <div class="form-check form-check-inline px-3" v-for="(access_item, sub_index) in access.data" :key="sub_index">
                         <input class="form-check-input appearance-none h-4 w-4 border border-gray-300 rounded-sm bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" 
-                            type="checkbox" :id="`${access.key}-${access_item}`" :value="`${access.key}-${access_item}`"
+                            type="checkbox" :id="access_item.id" :value="access_item.id"
                             @change="watchAccess($event)"
                         >
-                        <label class="form-check-label inline-block text-gray-800 cursor-pointer" :for="`${access.key}-${access_item}`">{{ access_item.toUpperCase() }}</label>
+                        <label class="form-check-label inline-block text-gray-800 cursor-pointer" :for="access_item.id">{{ access_item.access.toUpperCase() }}</label>
                     </div>
                 </div>
                 <BaseDivider v-if="index != userStore.access_list.length - 1" />
