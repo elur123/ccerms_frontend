@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { RouterView } from 'vue-router'
 import { useLayoutStore } from '@/stores/layout.js'
 import { useAuthStore } from '@/stores/auth.js'

@@ -69,6 +69,8 @@ const userUpdate = (res) => {
 const showListSection = () => {
   showCreateSection.value = false
   showUpdateSection.value = false
+
+  userStore.clear()
 }
 
 // Select Course item function
@@ -142,8 +144,8 @@ const selectDelete = (item) => {
       
     <Table 
       :data="userStore.list"
-      @select-archive="select"
-      @destroy-archive="selectDelete"
+      @select-user="select"
+      @destroy-user="selectDelete"
     />
   
     </CardBox>

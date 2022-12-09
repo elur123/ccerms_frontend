@@ -46,7 +46,7 @@ const submit = () => {
     bg="login"
   >
 
-    <img class="hidden" :src="`${url}myfiles/logo/ccerms_logo.png`" alt="ccerms_logo">
+    <img class="hidden md:block" :src="`${url}myfiles/logo/ccerms_logo.png`" alt="ccerms_logo">
 
     <CardBox
       :class="cardClass"

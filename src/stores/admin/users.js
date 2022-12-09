@@ -58,6 +58,7 @@ export const useUserStore = defineStore('users', {
       })
     },
     fetchAccessList() {
+      this.access_list = []
       axios.get(`${url}api/useraccess`).then(res => {
          res.data.forEach(element => {
           const find = this.access_list.find(e => e.key == element.parent)
@@ -79,8 +80,6 @@ export const useUserStore = defineStore('users', {
             })
           }
         })
-
-        console.log(this.access_list);
       })
     },
     create() {
@@ -144,7 +143,7 @@ export const useUserStore = defineStore('users', {
         usertype_id: item.usertype_id,
         other_type: item.other_type,
         status_id: item.status_id,
-        access: [],
+        access: item.access.map(a => a.id),
         allow_adviser: item.allow_adviser == 1 ? true : false,
         allow_panel: item.allow_panel == 1 ? true : false,
         allow_st: item.allow_st == 1 ? true : false
@@ -169,6 +168,7 @@ export const useUserStore = defineStore('users', {
         formData.append('usertype', this.request.usertype_id)
         formData.append('other_type', this.request.other_type)
         formData.append('status', this.request.status_id)
+        formData.append('access', this.request.access)
         formData.append('allow_adviser', this.request.allow_adviser)
         formData.append('allow_panel', this.request.allow_panel)
         formData.append('allow_st', this.request.allow_st)

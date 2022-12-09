@@ -20,7 +20,6 @@ const pinia = createPinia()
 const app = createApp(App);
 app.use(router);
 app.use(pinia);
-
 app.provide('Loader', useLoading())
 
 app.mount('#app');
@@ -29,10 +28,6 @@ app.mount('#app');
 const mainStore = useMainStore(pinia)
 const styleStore = useStyleStore(pinia)
 const layoutStore = useLayoutStore(pinia)
-
-/* Fetch sample data */
-// mainStore.fetch('clients')
-// mainStore.fetch('history')
 
 /* App style */
 styleStore.setStyle(localStorage[styleKey] ?? 'basic')

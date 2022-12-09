@@ -41,6 +41,13 @@ const props = defineProps({
   }
 })
 
+// Computed Functions
+const statusList = computed(() => {
+    return status.filter(e => e.id <= 3)
+})
+
+
+
 
 // Declared Functions
 userStore.fetchAccessList();
@@ -240,7 +247,7 @@ const hideNotification = () => {
                     <FormControl v-model="userStore.request.other_type" />
                 </FormField>
                 <FormField label="Status">
-                    <FormControl v-model="userStore.request.status_id" :options="status"/>
+                    <FormControl v-model="userStore.request.status_id" :options="statusList"/>
                 </FormField>
             </div>
 

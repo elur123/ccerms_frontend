@@ -134,7 +134,7 @@ const routes = [
     },
     path: '/admin/submissions-two',
     name: 'admin-submissions-two',
-    component: () => import('@/views/admin/submissionone/SubmissionTwo.vue')
+    component: () => import('@/views/admin/submissionone/SubmissionOne.vue')
   },
   {
     beforeEnter: adminAuthenticated,
