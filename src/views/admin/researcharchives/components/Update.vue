@@ -15,6 +15,7 @@ import NotificationBar from '@/components/NotificationBar.vue'
 import { mdiArrowLeftBold, mdiPlus, mdiTrashCan, mdiTableBorder } from '@mdi/js'
 
 import { useResearcharchiveStore } from '@/stores/admin/researcharchives.js';
+import { years_list } from '@/settings_data.js';
 
 const researchStore = useResearcharchiveStore()
 
@@ -210,12 +211,12 @@ const hideNotification = () => {
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <FormField label="Year Published From">
-                        <FormControl v-model="researchStore.request.year_from_published" type="date"/>
+                        <FormControl v-model="researchStore.request.year_from_published" :options="years_list"/>
                     </FormField>
                 </div>
                 <div>
                     <FormField label="Year Published To">
-                        <FormControl v-model="researchStore.request.year_to_published" type="date"/>
+                        <FormControl v-model="researchStore.request.year_to_published" :options="years_list"/>
                     </FormField>
                 </div>
             </div>

@@ -16,7 +16,8 @@ export const useSectionStore = defineStore('sections', {
         from_year: '',
         to_year: '',
         student: [],
-        group: []
+        group: [],
+        semester: '',
     },
     status: {
       status: true,
@@ -67,7 +68,8 @@ export const useSectionStore = defineStore('sections', {
         from_year: item.from_year,
         to_year: item.to_year,
         student: item.sectionstudent,
-        group: item.sectiongroup
+        group: item.sectiongroup,
+        semester: item.semester
       }
     },
     update() {
@@ -114,7 +116,8 @@ export const useSectionStore = defineStore('sections', {
           from_year: '',
           to_year: '',
           student: [],
-          group: []
+          group: [],
+          semester: ''
         }
     },
   }

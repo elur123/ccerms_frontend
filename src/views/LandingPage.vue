@@ -69,7 +69,7 @@ const goto = (refName) => {
     
     <section id="about h-full w-full" ref="about" class="py-[80px] px-4">
       <div class="mx-auto max-w-7xl py-6 pb-20 sm:px-6 lg:px-8">
-          <h2 class="text-5xl font-bold p-3" data-aos="fade-left">ABOUT</h2>
+          <h2 class="text-5xl font-bold p-3">ABOUT</h2>
           <div class="h-full flex flex-col md:flex-row justify-evenly items-center gap-2 rounded-lg py-2">
             <div class="about-description w-full h-1/2 order-2 md:order-1 p-3">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 

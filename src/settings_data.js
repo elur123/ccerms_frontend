@@ -50,4 +50,9 @@ export const groupTypes = [
     { id: 3, label: 'Done' }
 ]
 
+export const semesters = [
+    { id: '1st Semester', label: '1st Semester' },
+    { id: '2nd Semester', label: '2nd Semester' }
+]
+
 export const years_list = generateYear();

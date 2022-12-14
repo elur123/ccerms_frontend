@@ -6,6 +6,7 @@ export const useStudentStore = defineStore('students', {
   state: () => ({
     list: [],
     available: [],
+    section_available: [],
     request: {
         id: '',
         firstname: '',
@@ -39,6 +40,11 @@ export const useStudentStore = defineStore('students', {
     fetchAvailable() {
       axios.get(`${url}api/students/available`).then(res => {
           this.available = res.data.filter(e => e.available)
+      })
+    },
+    fetchSectionAvailable() {
+      axios.get(`${url}api/students/section_available`).then(res => {
+          this.section_available = res.data
       })
     },
     create() {

@@ -21,11 +21,13 @@ import Table from '@/views/admin/sections/components/Table.vue'
 
 import { useSectionStore } from '@/stores/admin/sections.js';
 import { useUserStore  } from '@/stores/admin/users.js';
+import { useStudentStore  } from '@/stores/admin/students.js';
 
 const titleStack = ref(['Admin', 'General', 'Sections'])
 
 const sectionStore = useSectionStore()
 const userStore = useUserStore()
+const studentStore = useStudentStore()
 
 const showCreateSection = ref(false)
 const showUpdateSection = ref(false)
@@ -40,6 +42,7 @@ const hideNotification = () => {
 // Get Data
 sectionStore.fetch()
 userStore.fetchAvailable()
+studentStore.fetchSectionAvailable()
 
 
 // Show Create function
@@ -118,6 +121,7 @@ const selectDelete = (item) => {
     <Create 
       v-if="showCreateSection"
       :teachers="userStore.subjectteacher_available"
+      :students="studentStore.section_available"
       @back="showListSection" 
       @sectionCreate="sectionCreate"
     />

@@ -15,7 +15,7 @@ import NotificationBar from '@/components/NotificationBar.vue'
 import { mdiArrowLeftBold, mdiPlus, mdiTrashCan, mdiTableBorder } from '@mdi/js'
 
 import { useSectionStore } from '@/stores/admin/sections.js';
-import { groupTypes, years_list } from '@/settings_data.js';
+import { groupTypes, years_list, semesters } from '@/settings_data.js';
 
 const sectionStore = useSectionStore()
 
@@ -37,6 +37,10 @@ const props = defineProps({
   teachers: {
     type: Array,
     default: []
+  },
+  students: {
+    type: Array,
+    default: []
   }
 })
 
@@ -48,6 +52,10 @@ const teachers = computed(() => {
             'label': item.fullname
         }
    })
+})
+
+const filtered_students = computed(() => {
+    return props.students.filter(student => student.fullname.toLowerCase().includes(fullname.value.toLowerCase()))
 })
 
 // Declared Functions
@@ -129,13 +137,37 @@ const hideNotification = () => {
         v-model="isShowModal"
         :large-title="titleModal"
         button="success"
-        buttonLabel="Add    "
-        @confirm="localCreate()"
+        buttonLabel="Close"
     >
 
-        <FormField label="Fullname">
+        <FormField label="Search Student name">
             <FormControl v-model="fullname"/>
         </FormField>
+
+        <BaseDivider />
+        
+        
+        <ul class="h-[350px] overflow-y-auto divide-y divide-gray-200 dark:divide-gray-700">
+            <li class="py-3 sm:py-4" v-for="student in filtered_students" :key="student.id">
+                <div class="flex items-center space-x-4">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+                        {{ student.fullname }}
+                        </p>
+                        <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                        {{ student.email }}
+                        </p>
+                    </div>
+                    <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white px-2">
+                        <BaseButton
+                            label="Add"
+                            color="light"
+                        />
+                    </div>
+                </div>
+            </li>
+        </ul>
+
 
     </CardBoxModal>
 
@@ -159,10 +191,22 @@ const hideNotification = () => {
       @header-icon-click="back()"
     >
         <div class="space-y-3">
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <div class="grid grid-cols-1 md:grid-cols-2">
+
                 <FormField label="Section Code">
                     <FormControl v-model="sectionStore.request.section_code"/>
+                </FormField>
+
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
+                <FormField label="Semester">
+                    <FormControl
+                        v-model="sectionStore.request.user"
+                        :options="semesters"
+                    />
                 </FormField>
 
                 <FormField label="Section Type">
@@ -211,7 +255,7 @@ const hideNotification = () => {
                     <CardBox 
                         title="Students"
                         :headerIcon="mdiPlus"
-                        @header-icon-click="showModal('member')"
+                        @header-icon-click="showModal('Student')"
                     >
                         <div class="flex justify-center">
                             <ul class="bg-white rounded-lg w-96 text-gray-900">
