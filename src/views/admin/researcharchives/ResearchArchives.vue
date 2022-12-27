@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { mdiBallot, mdiPlus, mdiTableBorder } from '@mdi/js'
 
 import SectionMain from '@/components/SectionMain.vue'
@@ -32,6 +32,7 @@ const showCreateSection = ref(false)
 const showUpdateSection = ref(false)
 const modalShowUpdate = ref(false)
 const modalShowDelete = ref(false)
+const search_research = ref('')
 
 // Notification Hide Function
 const hideNotification = () => {
@@ -39,9 +40,15 @@ const hideNotification = () => {
 }
 
 // Get Data
-researchStore.fetch()
-courseStore.fetch()
+onMounted(() => {
+  researchStore.fetch('', 1)
+  courseStore.fetch()
+}) 
 
+// Search Research function
+const searchResearch = () => {
+  researchStore.fetch(search_research.value, 1)
+}
 
 // Show Create function
 const showCreate = () => {
@@ -140,9 +147,21 @@ const selectDelete = (item) => {
       :headerIcon="mdiPlus" 
       @header-icon-click="showCreate()"
     >
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="p-3 w-full">
+        <input class="w-full border-b border-b-1 border-0 focus:outline-none focus:ring-0 focus:border-yellow-400 focus:border-b-2" 
+          type="text" 
+          placeholder="Hit enter to search research..."
+          v-model="search_research"
+          @keyup.enter="searchResearch"
+        >
+      </div>
+    </div>
       
     <Table 
       :data="researchStore.list"
+      :search="search_research"
       @select-archive="select"
       @destroy-archive="selectDelete"
     />

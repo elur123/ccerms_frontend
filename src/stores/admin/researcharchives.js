@@ -23,8 +23,8 @@ export const useResearcharchiveStore = defineStore('researcharchive', {
     }
   }),
   actions: {
-    fetch() {
-      axios.get(`${url}api/researcharchives`).then(res => {
+    fetch(search, page) {
+      axios.get(`${url}api/researcharchives?page=${page}&s=${search}`).then(res => {
         this.list = res.data
       })
     },

@@ -8,10 +8,17 @@ import BaseButtons from '@/components/BaseButtons.vue'
 import BaseButton from '@/components/BaseButton.vue'
 import UserAvatar from '@/components/UserAvatar.vue'
 
+import { useResearcharchiveStore } from '@/stores/admin/researcharchives.js';
+const researchStore = useResearcharchiveStore()
+
 const props = defineProps({
   data: {
-    type: Array,
-    default: []
+    type: Object,
+    default: null
+  },
+  search: {
+    string: String,
+    default: ''
   },
   checkable: Boolean
 })
@@ -20,26 +27,12 @@ const emit = defineEmits(['select-archive', 'destroy-archive'])
 
 const items = computed(() => props.data)
 
-const isModalDangerActive = ref(false)
-
-const perPage = ref(10)
-
-const currentPage = ref(0)
-
 const checkedRows = ref([])
-
-const itemsPaginated = computed(
-  () => items.value.slice(perPage.value * currentPage.value, perPage.value * (currentPage.value + 1))
-)
-
-const numPages = computed(() => Math.ceil(items.value.length / perPage.value))
-
-const currentPageHuman = computed(() => currentPage.value + 1)
 
 const pagesList = computed(() => {
   const pagesList = []
 
-  for (let i = 0; i < numPages.value; i++) {
+  for (let i = 1; i <= props.data.last_page; i++) {
     pagesList.push(i)
   }
 
@@ -105,9 +98,9 @@ const checked = (isChecked, client) => {
         <th>Panel(s)</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody v-if="props.data.total > 0">
       <tr
-        v-for="item in itemsPaginated"
+        v-for="item in props.data.data"
         :key="item.id"
       >
         <TableCheckboxCell
@@ -147,6 +140,30 @@ const checked = (isChecked, client) => {
             {{ pan.fullname.toUpperCase() }}
           </span>
         </td>
+        <td class="before:hidden lg:w-1 whitespace-nowrap">
+          <BaseButtons
+            type="justify-start lg:justify-end"
+            no-wrap
+          >
+            <BaseButton
+              color="info"
+              :icon="mdiEye"
+              small
+              @click="select(item)"
+            />
+            <BaseButton
+              color="danger"
+              :icon="mdiTrashCan"
+              small
+              @click="destroy(item)"
+            />
+          </BaseButtons>
+        </td>
+      </tr>
+    </tbody>
+    <tbody v-else>
+      <tr>
+        <td colspan="10">No research archive data</td>
       </tr>
     </tbody>
   </table>
@@ -158,13 +175,13 @@ const checked = (isChecked, client) => {
         <BaseButton
           v-for="page in pagesList"
           :key="page"
-          :active="page === currentPage"
-          :label="page + 1"
+          :active="page === props.data.current_page"
+          :label="page"
           small
-          @click="currentPage = page"
+          @click="researchStore.fetch(props.search, page)"
         />
       </BaseButtons>
-      <small>Page {{ currentPageHuman }} of {{ numPages }}</small>
+      <small>Page {{ props.data.current_page }} of {{ props.data.last_page }}</small>
     </BaseLevel>
   </div>
 </template>

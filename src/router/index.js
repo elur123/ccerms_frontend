@@ -74,6 +74,15 @@ const routes = [
     component: () => import('@/views/LoginView.vue')
   },
   {
+    meta: {
+      title: 'Account Hold',
+      fullScreen: true
+    },
+    path: '/hold',
+    name: 'hold',
+    component: () => import('@/views/HoldView.vue')
+  },
+  {
     beforeEnter: adminAuthenticated,
     meta: {
       title: 'Dashboard'

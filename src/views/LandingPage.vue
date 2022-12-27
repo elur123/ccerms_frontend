@@ -18,12 +18,13 @@ const styles = [
 
 const about = ref(null);
 const research = ref(null);
+const search_research = ref('')
 
 const styleStore = useStyleStore()
 
 styleStore.setDarkMode(false)
 
-researchStore.fetch()
+researchStore.fetch('', 1)
 
 const router = useRouter()
 
@@ -37,6 +38,12 @@ const goto = (refName) => {
 
     window.scrollTo(0, top);
 }
+
+// Search Research function
+const searchResearch = () => {
+  researchStore.fetch(search_research.value, 1)
+}
+
 
 </script>
 
@@ -98,7 +105,19 @@ const goto = (refName) => {
     <section id="research" ref="research" class="py-[80px] px-4">
       <div class="mx-auto max-w-7xl py-6 pb-20 sm:px-6 lg:px-8">
           <h2 class="text-5xl font-bold">RESEARCH ARCHIVES</h2>
-          <ResearchArchivesTable :data="researchStore.list" />
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="p-3 w-full">
+              <input class="w-full bg-transparent border-b border-b-1 border-0 focus:outline-none focus:ring-0 focus:border-yellow-400 focus:border-b-2" 
+                type="text" 
+                placeholder="Hit enter to search research..."
+                v-model="search_research"
+                @keyup.enter="searchResearch"
+              >
+            </div>
+          </div>
+
+          <ResearchArchivesTable :data="researchStore.list" :search="search_research" />
       </div>
     </section>
   </main>
