@@ -22,34 +22,60 @@ import Table from '@/views/admin/sections/components/Table.vue'
 import { useSectionStore } from '@/stores/admin/sections.js';
 import { useUserStore  } from '@/stores/admin/users.js';
 import { useStudentStore  } from '@/stores/admin/students.js';
+import { useGroupStore  } from '@/stores/admin/groups.js';
 
 const titleStack = ref(['Admin', 'General', 'Sections'])
 
 const sectionStore = useSectionStore()
 const userStore = useUserStore()
 const studentStore = useStudentStore()
+const groupStore = useGroupStore()
 
 const showCreateSection = ref(false)
 const showUpdateSection = ref(false)
 const modalShowUpdate = ref(false)
 const modalShowDelete = ref(false)
 
-// Notification Hide Function
-const hideNotification = () => {
-  sectionStore.status.status = true
-}
-
 // Get Data
 sectionStore.fetch()
 userStore.fetchAvailable()
 studentStore.fetchSectionAvailable()
+groupStore.fetch()
 
+// Notification Hide Function
+const hideNotification = () => {
+  sectionStore.status.status = true
+}
 
 // Show Create function
 const showCreate = () => {
   showCreateSection.value = true
   showUpdateSection.value = false
   sectionStore.clear()
+}
+
+const addStudent = (student) => {
+
+    const index = studentStore.section_available.indexOf(student);
+    studentStore.section_available[index].is_available = false
+}
+
+const removeStudent = (student) => {
+  
+    const index = studentStore.section_available.indexOf(student);
+    studentStore.section_available[index].is_available = true
+}
+
+const addGroup = (group) => {
+
+    const index = groupStore.section_available.indexOf(group);
+    groupStore.section_available[index].is_available = false
+}
+
+const removeGroup = (group) => {
+  
+    const index = groupStore.section_available.indexOf(group);
+    studentStore.section_available[index].is_available = true
 }
 
 const sectionCreate = (res) => {
@@ -122,7 +148,12 @@ const selectDelete = (item) => {
       v-if="showCreateSection"
       :teachers="userStore.subjectteacher_available"
       :students="studentStore.section_available"
+      :groups="groupStore.section_available"
       @back="showListSection" 
+      @addStudent="addStudent"
+      @removeStudent="removeStudent"
+      @addGroup="addGroup"
+      @removeGroup="removeGroup"
       @sectionCreate="sectionCreate"
     />
 

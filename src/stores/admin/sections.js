@@ -32,6 +32,15 @@ export const useSectionStore = defineStore('sections', {
       })
     },
     create() {
+
+      this.request.student = this.request.student.map(function(stud) {
+        return stud.id
+      })
+
+      this.request.group = this.request.group.map(function(grp) {
+        return grp.id
+      })
+
       return new Promise((resolve, reject) => {
         axios.post(`${url}api/sections`, this.request, 
         { 

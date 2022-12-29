@@ -44,7 +44,16 @@ export const useStudentStore = defineStore('students', {
     },
     fetchSectionAvailable() {
       axios.get(`${url}api/students/section_available`).then(res => {
-          this.section_available = res.data
+          this.section_available = res.data.map(function(s) {
+            return {
+              id: s.id,
+              fullname: s.fullname,
+              email: s.email,
+              section_one: s.section_one,
+              section_two: s.section_two,
+              is_available: true
+            }
+          })
       })
     },
     create() {

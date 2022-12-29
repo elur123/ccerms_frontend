@@ -5,6 +5,7 @@ import { url } from '@/config.js'
 export const useGroupStore = defineStore('groups', {
   state: () => ({
     list: [],
+    section_available: [],
     request: {
         id: '',
         title: '',
@@ -32,6 +33,13 @@ export const useGroupStore = defineStore('groups', {
     fetch() {
       axios.get(`${url}api/groups`).then(res => {
         this.list = res.data
+        this.section_available = res.data.map(function (grp) {
+          return {
+            id: grp.id,
+            groupname: grp.groupname,
+            is_available: true
+          }
+        })
       })
     },
     create() {

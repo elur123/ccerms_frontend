@@ -216,7 +216,7 @@ const hideNotification = () => {
                         <div class="flex justify-center">
                             <ul class="bg-white rounded-lg w-96 text-gray-900">
                                 <li v-for="(member, index) in sectionStore.request.student" :key="member.id" class="px-6 py-2 border-b border-gray-200 w-full flex justify-between">
-                                    <p>{{ `${member.user.lastname}, ${member.user.firstname}` }}</p>
+                                    <p>{{ member.fullname }}</p>
                                     <BaseIcon
                                         :path="mdiTrashCan"
                                         class="cursor-pointer mr-3"
@@ -236,7 +236,7 @@ const hideNotification = () => {
                         <div class="flex justify-center">
                             <ul class="bg-white rounded-lg w-96 text-gray-900">
                                 <li v-for="(group, index) in sectionStore.request.group" :key="group.id" class="px-6 py-2 border-b border-gray-200 w-full flex justify-between">
-                                    <p>{{ group.group.groupname }}</p>
+                                    <p>{{ group.groupname }}</p>
                                     <BaseIcon
                                         :path="mdiTrashCan"
                                         class="cursor-pointer mr-3"
