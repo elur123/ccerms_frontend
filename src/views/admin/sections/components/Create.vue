@@ -134,6 +134,7 @@ const hideNotification = () => {
 
 </script>
 <template>
+
     <!-- Add Modal -->
     <CardBoxModal
         v-model="isShowModal"

@@ -23,6 +23,7 @@ import { useSectionStore } from '@/stores/admin/sections.js';
 import { useUserStore  } from '@/stores/admin/users.js';
 import { useStudentStore  } from '@/stores/admin/students.js';
 import { useGroupStore  } from '@/stores/admin/groups.js';
+import { customAlert } from '@/alert.js'
 
 const titleStack = ref(['Admin', 'General', 'Sections'])
 
@@ -161,7 +162,13 @@ const selectDelete = (item) => {
     <Update 
       v-if="showUpdateSection"
       :teachers="userStore.subjectteacher_available"
+      :students="studentStore.section_available"
+      :groups="groupStore.section_available"
       @back="showListSection" 
+      @addStudent="addStudent"
+      @removeStudent="removeStudent"
+      @addGroup="addGroup"
+      @removeGroup="removeGroup"
       @sectionUpdate="sectionUpdate"
     />
 

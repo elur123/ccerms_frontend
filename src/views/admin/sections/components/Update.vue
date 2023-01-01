@@ -20,13 +20,14 @@ import { groupTypes, years_list } from '@/settings_data.js';
 const sectionStore = useSectionStore()
 
 // Emits
-const emit = defineEmits(['back', 'sectionUpdate'])
+const emit = defineEmits(['back', 'addStudent', 'removeStudent', 'addGroup', 'removeGroup', 'sectionUpdate'])
 
 // Variables
 const isShowModal = ref(false);
 const accountType = ref('');
 const titleModal = ref('');
 const fullname = ref('');
+const groupname = ref('');
 const isShowDeleteModal = ref(false);
 const accountIndex = ref(null)
 
@@ -35,6 +36,14 @@ const loading = inject('Loader')
 // Props
 const props = defineProps({
   teachers: {
+    type: Array,
+    default: []
+  },
+  students: {
+    type: Array,
+    default: []
+  },
+  groups: {
     type: Array,
     default: []
   }
@@ -48,6 +57,14 @@ const teachers = computed(() => {
             'label': item.fullname
         }
    })
+})
+
+const filtered_students = computed(() => {
+    return props.students.filter(student => student.fullname.toLowerCase().includes(fullname.value.toLowerCase()))
+})
+
+const filtered_groups = computed(() => {
+    return props.groups.filter(group => group.groupname.toLowerCase().includes(groupname.value.toLowerCase()))
 })
 
 // Declared Functions
@@ -73,29 +90,16 @@ const showModal = (type) => {
     fullname.value = ''
 }
 
-const localCreate = () => {
-    if(fullname.value == '') {
-        alert('Fullname required')
-        return;
-    }
-    if (accountType.value == 'member') {
-        sectionStore.request.member.push({
-            id: null,
-            fullname: fullname.value
-        })
-    }
-    else if (accountType.value == 'adviser') {
-        sectionStore.request.adviser.push({
-            id: null,
-            fullname: fullname.value
-        })
-    }
-    else {
-        sectionStore.request.panel.push({
-            id: null,
-            fullname: fullname.value
-        })
-    }
+const addStudent = (student) => {
+
+    emit('addStudent', student);
+    sectionStore.request.student.push(student)
+}
+
+const addGroup = (group) => {
+
+    emit('addGroup', group);
+    sectionStore.request.group.push(group)
 }
 
 const showModalDelete = (index, type) => {
@@ -105,14 +109,20 @@ const showModalDelete = (index, type) => {
 }
 
 const localDelete = () => {
-    if (accountType.value == 'member') {
-        sectionStore.request.member.splice(accountIndex, 1)
+    if (accountType.value == 'student') {
+        
+        let student = sectionStore.request.student[accountIndex.value]
+        emit('removeStudent', student);
+        
+        sectionStore.request.student.splice(accountIndex.value, 1)
     }
-    else if (accountType.value == 'adviser') {
-        sectionStore.request.adviser.splice(accountIndex, 1)
-    }
+
     else {
-        sectionStore.request.panel.splice(accountIndex, 1)
+        
+        let group = sectionStore.request.group[accountIndex.value]
+        emit('removeGroup', group);
+        
+        sectionStore.request.group.splice(accountIndex.value, 1)
     }
 }
 
@@ -124,18 +134,69 @@ const hideNotification = () => {
 
 </script>
 <template>
+
     <!-- Add Modal -->
     <CardBoxModal
         v-model="isShowModal"
         :large-title="titleModal"
         button="success"
-        buttonLabel="Add    "
-        @confirm="localCreate()"
+        buttonLabel="Close"
     >
 
-        <FormField label="Fullname">
+        <FormField v-if="accountType == 'Student'" label="Search Student name">
             <FormControl v-model="fullname"/>
         </FormField>
+
+        <FormField v-else label="Search groupname">
+            <FormControl v-model="groupname"/>
+        </FormField>
+
+        <BaseDivider />
+
+        <ul v-if="accountType == 'Student'" class="h-[350px] overflow-y-auto divide-y divide-gray-200 dark:divide-gray-700">
+            <li class="py-3 sm:py-4" v-for="student in filtered_students" :key="student.id">
+                <div class="flex items-center space-x-4">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+                        {{ student.fullname }}
+                        </p>
+                        <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+                        {{ student.email }}
+                        </p>
+                    </div>
+                    <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white px-2">
+                        <BaseButton
+                            v-if="student.is_available"
+                            label="Add"
+                            color="light"
+                            @click="addStudent(student)"
+                        />
+                        <span v-else>Added</span>
+                    </div>
+                </div>
+            </li>
+        </ul>
+
+        <ul v-else class="h-[350px] overflow-y-auto divide-y divide-gray-200 dark:divide-gray-700">
+            <li class="py-3 sm:py-4" v-for="group in filtered_groups" :key="group.id">
+                <div class="flex items-center space-x-4">
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+                        {{ group.groupname }}
+                        </p>
+                    </div>
+                    <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white px-2">
+                        <BaseButton
+                            v-if="group.is_available"
+                            label="Add"
+                            color="light"
+                            @click="addGroup(group)"
+                        />
+                        <span v-else>Added</span>
+                    </div>
+                </div>
+            </li>
+        </ul>
 
     </CardBoxModal>
 
@@ -211,7 +272,7 @@ const hideNotification = () => {
                     <CardBox 
                         title="Students"
                         :headerIcon="mdiPlus"
-                        @header-icon-click="showModal('member')"
+                        @header-icon-click="showModal('Student')"
                     >
                         <div class="flex justify-center">
                             <ul class="bg-white rounded-lg w-96 text-gray-900">
@@ -220,7 +281,7 @@ const hideNotification = () => {
                                     <BaseIcon
                                         :path="mdiTrashCan"
                                         class="cursor-pointer mr-3"
-                                        @click="showModalDelete(index, 'member')"
+                                        @click="showModalDelete(index, 'student')"
                                     />
                                 </li>
                             </ul>
@@ -231,7 +292,7 @@ const hideNotification = () => {
                     <CardBox 
                         title="Groups"
                         :headerIcon="mdiPlus"
-                        @header-icon-click="showModal('adviser')"
+                        @header-icon-click="showModal('Group')"
                     >
                         <div class="flex justify-center">
                             <ul class="bg-white rounded-lg w-96 text-gray-900">
@@ -240,7 +301,7 @@ const hideNotification = () => {
                                     <BaseIcon
                                         :path="mdiTrashCan"
                                         class="cursor-pointer mr-3"
-                                        @click="showModalDelete(index, 'adviser')"
+                                        @click="showModalDelete(index, 'group')"
                                     />
                                 </li>
                             </ul>
