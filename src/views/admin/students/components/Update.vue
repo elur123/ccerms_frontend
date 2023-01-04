@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, inject } from 'vue'
+import { ref, computed } from 'vue'
 
 
 import BaseDivider from '@/components/BaseDivider.vue'
@@ -11,14 +11,16 @@ import FormField from '@/components/FormField.vue'
 import FormFilePicker from '@/components/FormFilePicker.vue'
 import FormControl from '@/components/FormControl.vue'
 import BaseIcon from '@/components/BaseIcon.vue'
-import NotificationBar from '@/components/NotificationBar.vue'
 import NotificationBarInCard from '@/components/NotificationBarInCard.vue'
 import { mdiArrowLeftBold, mdiPlus, mdiTrashCan, mdiTableBorder } from '@mdi/js'
+import { customAlert } from '@/alert.js'
 
 import { useStudentStore } from '@/stores/admin/students.js';
+import { useLayoutStore } from '@/stores/layout.js'
 import { userTypes, gender, status, groupTypes } from '@/settings_data.js';
 
 const studentStore = useStudentStore()
+const layoutStore = useLayoutStore()
 
 // Emits
 const emit = defineEmits(['back', 'userUpdate'])
@@ -30,8 +32,6 @@ const titleModal = ref('');
 const fullname = ref('');
 const isShowDeleteModal = ref(false);
 const accountIndex = ref(null)
-
-const loading = inject('Loader')
 
 // Props
 const props = defineProps({
@@ -57,19 +57,26 @@ const courses_list = computed(() => {
     return data
 }) 
 
+const status_list = computed(() => {
+    return status.filter(e => e.id <= 3)
+})
+
 // Declared Functions
 const back = () => {
     emit('back', false);
 }
 
 const userUpdate = () => {
-    loading.show()
+    
+    layoutStore.showLoading = true
     studentStore.update().then(res => {
-        loading.hide()
+        customAlert('success', 'Successfully updated!')
         emit('userUpdate', { status: true, list: res.data.students });
+        layoutStore.showLoading = false
     }).catch(() => {
-        loading.hide()
+        customAlert('warning', 'Server error!')
         emit('userUpdate', { status: false});
+        layoutStore.showLoading = false
     })
 }
 
@@ -123,11 +130,6 @@ const localDelete = () => {
     }
 }
 
-// Notification Hide Function
-const hideNotification = () => {
-  studentStore.status.status = true
-}
-
 
 </script>
 <template>
@@ -158,16 +160,6 @@ const hideNotification = () => {
         <h4 class="text-center"> Click Delete to remove from list... </h4>
 
     </CardBoxModal>
-
-    <!-- <NotificationBar
-      v-if="!studentStore.status.status"
-      :isDismissed="studentStore.status.status"
-      :color="studentStore.status.success ? 'success' : 'danger'"
-      :icon="mdiTableBorder"
-      @hide-notification="hideNotification"
-    >
-      {{ studentStore.status.message }}
-    </NotificationBar> -->
 
     <CardBox
       title="Update Student"
@@ -239,7 +231,7 @@ const hideNotification = () => {
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField label="Status">
-                    <FormControl v-model="studentStore.request.status_id" :options="status"/>
+                    <FormControl v-model="studentStore.request.status_id" :options="status_list"/>
                 </FormField>
             </div>
 

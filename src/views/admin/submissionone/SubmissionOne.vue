@@ -13,7 +13,6 @@ import BaseButton from '@/components/BaseButton.vue'
 import BaseButtons from '@/components/BaseButtons.vue'
 import SectionTitle from '@/components/SectionTitle.vue'
 import SectionTitleBarSub from '@/components/SectionTitleBarSub.vue'
-import NotificationBar from '@/components/NotificationBar.vue'
 
 import Check from '@/views/admin/submissionone/components/Check.vue'
 import Comments from '@/views/admin/submissionone/components/Comments.vue'
@@ -63,16 +62,6 @@ const post_comment = (res) => {
   <SectionTitleBar :title-stack="titleStack" />
 
   <SectionMain>
-
-    <NotificationBar
-      v-if="!submissionStore.status.status"
-      :isDismissed="submissionStore.status.status"
-      :color="submissionStore.status.success ? 'success' : 'danger'"
-      :icon="mdiTableBorder"
-      @hide-notification="hideNotification"
-    >
-      {{ submissionStore.status.message }}
-    </NotificationBar>
 
     <Comments
       :submissionDetails="submissionDetails"

@@ -8,6 +8,8 @@ export const useLayoutStore = defineStore('layout', {
     /* Aside */
     isAsideMobileExpanded: false,
     isAsideLgActive: false,
+
+    showLoading: false,
   }),
   actions: {
     asideMobileToggle (payload = null) {
@@ -29,5 +31,10 @@ export const useLayoutStore = defineStore('layout', {
 
       document.documentElement.classList[payload ? 'add' : 'remove']('full-screen')
     },
+
+    loadingToggle (load = false) { 
+      
+      this.showLoading = load
+    }
   }
 })

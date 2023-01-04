@@ -10,14 +10,16 @@ import FormField from '@/components/FormField.vue'
 import FormFilePicker from '@/components/FormFilePicker.vue'
 import FormControl from '@/components/FormControl.vue'
 import BaseIcon from '@/components/BaseIcon.vue'
-import NotificationBar from '@/components/NotificationBar.vue'
+import { customAlert } from '@/alert.js'
 
 import { mdiArrowLeftBold, mdiPlus, mdiTrashCan, mdiTableBorder } from '@mdi/js'
 
 import { useResearcharchiveStore } from '@/stores/admin/researcharchives.js';
 import { years_list } from '@/settings_data.js';
+import { useLayoutStore } from '@/stores/layout.js'
 
 const researchStore = useResearcharchiveStore()
+const layoutStore = useLayoutStore()
 
 // Emits
 const emit = defineEmits(['back', 'archivesCreate'])
@@ -29,8 +31,6 @@ const titleModal = ref('');
 const fullname = ref('');
 const isShowDeleteModal = ref(false);
 const accountIndex = ref(null)
-
-const loading = inject('Loader')
 
 // Props
 const props = defineProps({
@@ -59,13 +59,18 @@ const back = () => {
 }
 
 const archivesCreate = () => {
-    loading.show()
+    
+    layoutStore.showLoading = true
     researchStore.create().then(res => {
-        loading.hide()
+        
+        customAlert('success', 'Successfully created!')
         emit('archivesCreate', { status: true, list: res.data.researches });
+        layoutStore.showLoading = false
     }).catch(() => {
-        loading.hide()
+        
+        customAlert('warning', 'Check field required!')
         emit('archivesCreate', { status: false});
+        layoutStore.showLoading = false
     })
 }
 
@@ -154,16 +159,6 @@ const hideNotification = () => {
         <h4 class="text-center"> Click Delete to remove from list... </h4>
 
     </CardBoxModal>
-
-    <NotificationBar
-      v-if="!researchStore.status.status"
-      :isDismissed="researchStore.status.status"
-      :color="researchStore.status.success ? 'success' : 'danger'"
-      :icon="mdiTableBorder"
-      @hide-notification="hideNotification"
-    >
-      {{ researchStore.status.message }}
-    </NotificationBar>
 
     <CardBox
       title="Create Research Archives"

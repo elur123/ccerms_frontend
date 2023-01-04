@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, inject } from 'vue'
+import { ref, computed } from 'vue'
 
 import BaseDivider from '@/components/BaseDivider.vue'
 import BaseButton from '@/components/BaseButton.vue'
@@ -29,8 +29,6 @@ const titleModal = ref('');
 const fullname = ref('');
 const isShowDeleteModal = ref(false);
 const accountIndex = ref(null)
-
-const loading = inject('Loader')
 
 // Props
 const props = defineProps({

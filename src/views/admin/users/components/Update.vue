@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, inject } from 'vue'
+import { ref, computed } from 'vue'
 
 import BaseDivider from '@/components/BaseDivider.vue'
 import BaseButton from '@/components/BaseButton.vue'
@@ -10,14 +10,16 @@ import FormField from '@/components/FormField.vue'
 import FormFilePicker from '@/components/FormFilePicker.vue'
 import FormControl from '@/components/FormControl.vue'
 import BaseIcon from '@/components/BaseIcon.vue'
-import NotificationBar from '@/components/NotificationBar.vue'
 import NotificationBarInCard from '@/components/NotificationBarInCard.vue'
 import { mdiArrowLeftBold, mdiPlus, mdiTrashCan, mdiTableBorder } from '@mdi/js'
+import { customAlert } from '@/alert.js'
 
 import { useUserStore } from '@/stores/admin/users.js';
 import { userTypes, gender, status } from '@/settings_data.js';
+import { useLayoutStore } from '@/stores/layout.js'
 
 const userStore = useUserStore()
+const layoutStore = useLayoutStore()
 
 // Emits
 const emit = defineEmits(['back', 'userUpdate'])
@@ -30,8 +32,6 @@ const fullname = ref('');
 const isShowDeleteModal = ref(false);
 const accountIndex = ref(null)
 const isNext = ref(false);
-
-const loading = inject('Loader')
 
 // Props
 const props = defineProps({
@@ -84,13 +84,18 @@ const checkedAcess = (id) => {
 }
 
 const userUpdate = () => {
-    loading.show()
+
+    layoutStore.showLoading = true
     userStore.update().then(res => {
-        loading.hide()
+        
+        customAlert('success', 'Successfully updated!')
         emit('userUpdate', { status: true, list: res.data.users });
+        layoutStore.showLoading = false
     }).catch(() => {
-        loading.hide()
+        
+        customAlert('warning', 'Check field required!')
         emit('userUpdate', { status: false});
+        layoutStore.showLoading = false
     })
 }
 

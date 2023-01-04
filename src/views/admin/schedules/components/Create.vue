@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, inject } from 'vue'
+import { ref, computed } from 'vue'
 
 import BaseDivider from '@/components/BaseDivider.vue'
 import BaseButton from '@/components/BaseButton.vue'
@@ -10,14 +10,16 @@ import FormField from '@/components/FormField.vue'
 import FormFilePicker from '@/components/FormFilePicker.vue'
 import FormControl from '@/components/FormControl.vue'
 import BaseIcon from '@/components/BaseIcon.vue'
-import NotificationBar from '@/components/NotificationBar.vue'
+import { customAlert } from '@/alert.js'
 
 import { mdiArrowLeftBold, mdiPlus, mdiTrashCan, mdiTableBorder } from '@mdi/js'
 
 import { useScheduleStore } from '@/stores/admin/schedules.js';
 import { groupTypes, years_list, status } from '@/settings_data.js';
+import { useLayoutStore } from '@/stores/layout.js'
 
 const scheduleStore = useScheduleStore()
+const layoutStore = useLayoutStore()
 
 // Emits
 const emit = defineEmits(['back', 'scheduleCreate'])
@@ -29,8 +31,6 @@ const titleModal = ref('');
 const fullname = ref('');
 const isShowDeleteModal = ref(false);
 const accountIndex = ref(null)
-
-const loading = inject('Loader')
 
 // Props
 const props = defineProps({
@@ -115,13 +115,18 @@ const back = () => {
 }
 
 const scheduleCreate = () => {
-    loading.show()
+
+    layoutStore.showLoading = true
     scheduleStore.create().then(res => {
-        loading.hide()
+        
+        customAlert('success', 'Successfully created!')
         emit('scheduleCreate', { status: true, list: res.data.schedules });
+        layoutStore.showLoading = false
     }).catch(() => {
-        loading.hide()
+
+        customAlert('warning', 'Check field required !')
         emit('scheduleCreate', { status: false});
+        layoutStore.showLoading = false
     })
 }
 

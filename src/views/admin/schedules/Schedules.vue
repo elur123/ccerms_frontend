@@ -110,16 +110,6 @@ const selectDelete = (item) => {
 
   <SectionMain>
 
-    <NotificationBar
-      v-if="!scheduleStore.status.status"
-      :isDismissed="scheduleStore.status.status"
-      :color="scheduleStore.status.success ? 'success' : 'danger'"
-      :icon="mdiTableBorder"
-      @hide-notification="hideNotification"
-    >
-      {{ scheduleStore.status.message }}
-    </NotificationBar>
-
     <!-- Create Section -->
     <Create 
       v-if="showCreateSchedule"

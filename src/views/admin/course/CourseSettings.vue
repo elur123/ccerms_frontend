@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, inject } from 'vue'
+import { ref, reactive } from 'vue'
 import { mdiBallot, mdiPlus, mdiTableBorder } from '@mdi/js'
 
 import SectionMain from '@/components/SectionMain.vue'
@@ -14,20 +14,20 @@ import BaseButton from '@/components/BaseButton.vue'
 import BaseButtons from '@/components/BaseButtons.vue'
 import SectionTitle from '@/components/SectionTitle.vue'
 import SectionTitleBarSub from '@/components/SectionTitleBarSub.vue'
-import NotificationBar from '@/components/NotificationBar.vue'
+import { customAlert } from '@/alert.js'
 import CourseTable from '@/views/admin/course/components/CourseTable.vue'
 
 import { useCourseStore } from '@/stores/admin/course.js';
+import { useLayoutStore } from '@/stores/layout.js'
 
 const titleStack = ref(['Admin', 'Settings', 'Courses'])
 
 const courseStore = useCourseStore()
+const layoutStore = useLayoutStore()
 
 const modalShowCreate = ref(false)
 const modalShowUpdate = ref(false)
 const modalShowDelete = ref(false)
-
-const loading = inject('Loader')
 
 // Get Data
 courseStore.fetch()
@@ -53,21 +53,31 @@ const selectDelete = (item) => {
 
 // Create function
 const create = () => {
-  loading.show()
+
+  layoutStore.showLoading = true
   courseStore.create().then(() => {
-    loading.hide()
+
+    customAlert('success', 'Successfully created!')
+    layoutStore.showLoading = false
   }).catch(() => {
-    loading.hide()
+
+    customAlert('warning', 'Server error!')
+    layoutStore.showLoading = false
   })
 }
 
 // Update function
 const update = () => {
-  loading.show()
+  
+  layoutStore.showLoading = true
   courseStore.update().then(() => {
-    loading.hide()
+
+    customAlert('success', 'Successfully updated!')
+    layoutStore.showLoading = false
   }).catch(() => {
-    loading.hide()
+
+    customAlert('warning', 'Server error!')
+    layoutStore.showLoading = false
   })
 }
 
@@ -120,15 +130,6 @@ const hideNotification = () => {
   <SectionTitleBar :title-stack="titleStack" />
 
   <SectionMain>
-    <NotificationBar
-      v-if="!courseStore.status.status"
-      :isDismissed="courseStore.status.status"
-      :color="courseStore.status.success ? 'success' : 'danger'"
-      :icon="mdiTableBorder"
-      @hide-notification="hideNotification"
-    >
-      {{ courseStore.status.message }}
-    </NotificationBar>
     <CardBox
       title="Courses List"
       :hasTable="true"

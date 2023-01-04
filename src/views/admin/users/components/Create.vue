@@ -10,14 +10,17 @@ import FormField from '@/components/FormField.vue'
 import FormFilePicker from '@/components/FormFilePicker.vue'
 import FormControl from '@/components/FormControl.vue'
 import BaseIcon from '@/components/BaseIcon.vue'
-import NotificationBar from '@/components/NotificationBar.vue'
+import { customAlert } from '@/alert.js'
 import NotificationBarInCard from '@/components/NotificationBarInCard.vue'
 import { mdiArrowLeftBold, mdiPlus, mdiTrashCan, mdiTableBorder } from '@mdi/js'
 
 import { useUserStore } from '@/stores/admin/users.js';
 import { userTypes, gender, status } from '@/settings_data.js';
+import { useLayoutStore } from '@/stores/layout.js'
+
 
 const userStore = useUserStore()
+const layoutStore = useLayoutStore()
 
 // Emits
 const emit = defineEmits(['back', 'userCreate'])
@@ -74,13 +77,18 @@ const watchAccess = (e) => {
 }
 
 const userCreate = () => {
-    loading.show()
+
+    layoutStore.showLoading = true
     userStore.create().then(res => {
-        loading.hide()
+        
+        customAlert('success', 'Successfully created!')
         emit('userCreate', { status: true, list: res.data.users });
+        layoutStore.showLoading = false
     }).catch(() => {
-        loading.hide()
+        
+        customAlert('warning', 'Check field required!')
         emit('userCreate', { status: false});
+        layoutStore.showLoading = false
     })
 }
 

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch, inject } from 'vue'
+import { ref, computed } from 'vue'
 
 import BaseDivider from '@/components/BaseDivider.vue'
 import BaseButton from '@/components/BaseButton.vue'
@@ -10,7 +10,7 @@ import FormField from '@/components/FormField.vue'
 import FormFilePicker from '@/components/FormFilePicker.vue'
 import FormControl from '@/components/FormControl.vue'
 import BaseIcon from '@/components/BaseIcon.vue'
-import NotificationBar from '@/components/NotificationBar.vue'
+import { customAlert } from '@/alert.js'
 
 import { mdiArrowLeftBold, mdiPlus, mdiTrashCan, mdiTableBorder } from '@mdi/js'
 
@@ -18,10 +18,12 @@ import { useGroupStore } from '@/stores/admin/groups.js';
 import { useStudentStore } from '@/stores/admin/students.js';
 import { useUserStore } from '@/stores/admin/users.js';
 import { status, groupTypes } from '@/settings_data.js';
+import { useLayoutStore } from '@/stores/layout.js'
 
 const groupStore = useGroupStore()
 const studentStore = useStudentStore()
 const userStore = useUserStore()
+const layoutStore = useLayoutStore()
 
 // Emits
 const emit = defineEmits(['back', 'groupUpdate'])
@@ -33,8 +35,6 @@ const titleModal = ref('');
 const fullname = ref('');
 const isShowDeleteModal = ref(false);
 const accountIndex = ref(null);
-
-const loading = inject('Loader')
 
 // Props
 const props = defineProps({
@@ -96,21 +96,25 @@ const back = () => {
 }
 
 const groupUpdate = () => {
-    loading.show()
+
+    layoutStore.showLoading = true
     groupStore.update().then(res => {
-        loading.hide()
-        console.log(res);
+
         // Remove Member Added
         res.member_registered.forEach(arr => {
             const index = studentStore.available.indexOf(studentStore.available.find(e => e.id == arr.id))
             studentStore.available.splice(index, 1)
         })
         // Back advisers and panels availability
+        customAlert('success', 'Successfully updated!')
         userStore.refreshAvailability()
         emit('groupUpdate', { status: true, list: res.data.groups });
+        layoutStore.showLoading = false
     }).catch(() => {
-        loading.hide()
+
+        customAlert('warning', 'Server error!')
         emit('groupUpdate', { status: false});
+        layoutStore.showLoading = false
     })
 }
 

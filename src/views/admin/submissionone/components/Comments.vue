@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, inject } from 'vue'
+import { ref, computed } from 'vue'
 
 
 import BaseDivider from '@/components/BaseDivider.vue'
@@ -11,14 +11,17 @@ import FormField from '@/components/FormField.vue'
 import FormFilePicker from '@/components/FormFilePicker.vue'
 import FormControl from '@/components/FormControl.vue'
 import BaseIcon from '@/components/BaseIcon.vue'
-import NotificationBar from '@/components/NotificationBar.vue'
+import { customAlert } from '@/alert.js'
 import NotificationBarInCard from '@/components/NotificationBarInCard.vue'
 import { mdiArrowLeftBold, mdiPlus, mdiTrashCan, mdiTableBorder } from '@mdi/js'
 
 import { useSubmissionOneStore } from '@/stores/admin/submissionone.js';
 import { status } from '@/settings_data';
+import { useLayoutStore } from '@/stores/layout.js'
+
 
 const submissionOne = useSubmissionOneStore()
+const layoutStore = useLayoutStore()
 
 // Emits
 const emit = defineEmits(['back', 'comment'])
@@ -38,7 +41,6 @@ const submissionStatus = computed(() => {
 })
 
 // Variables
-const loading = inject('Loader')
 
 // Declared Functions
 const back = () => {
@@ -46,13 +48,18 @@ const back = () => {
 }
 
 const submit = () => {
-    loading.show()
+
+    layoutStore.showLoading = true
     submissionOne.comment(props.submissionDetails.id).then(res => {
-        loading.hide()
+
+        customAlert('success', 'Successfully created!')
         emit('comment', { status: true, list: res.data.comments });
+        layoutStore.showLoading = false
     }).catch(() => {
-        loading.hide()
+
+        customAlert('warning', 'Server error!')
         emit('comment', { status: false});
+        layoutStore.showLoading = false
     })
 }
 

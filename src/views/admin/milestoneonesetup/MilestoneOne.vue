@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, inject } from 'vue'
+import { ref, reactive } from 'vue'
 import { mdiBallot, mdiPlus, mdiTableBorder } from '@mdi/js'
 
 import SectionMain from '@/components/SectionMain.vue'
@@ -15,26 +15,21 @@ import BaseButton from '@/components/BaseButton.vue'
 import BaseButtons from '@/components/BaseButtons.vue'
 import SectionTitle from '@/components/SectionTitle.vue'
 import SectionTitleBarSub from '@/components/SectionTitleBarSub.vue'
-import NotificationBar from '@/components/NotificationBar.vue'
 import MilestoneOneTable from '@/views/admin/milestoneonesetup/components/Table.vue'
+import { customAlert } from '@/alert.js'
 
 import { useMilestoneOneStore } from '@/stores/admin/milestoneone.js';
+import { useLayoutStore } from '@/stores/layout.js'
 
 
 const titleStack = ref(['Admin', 'Settings', 'Milestone One'])
 
 const milestoneStore = useMilestoneOneStore()
+const layoutStore = useLayoutStore()
 
 const modalShowCreate = ref(false)
 const modalShowUpdate = ref(false)
 const modalShowDelete = ref(false)
-
-const loading = inject('Loader')
-
-// Notification Hide Function
-const hideNotification = () => {
-  milestoneStore.status.status = true
-}
 
 // Get Data
 milestoneStore.fetch()
@@ -72,21 +67,31 @@ const selectDelete = (item) => {
 
 // Create function
 const create = () => {
-  loading.show()
+
+  layoutStore.showLoading = true
   milestoneStore.create().then(() => {
-    loading.hide()
+
+    customAlert('success', 'Successfully created!')
+    layoutStore.showLoading = false
   }).catch(() => {
-    loading.hide()
+
+    customAlert('warning', 'Check field required!')
+    layoutStore.showLoading = false
   })
 }
 
 // Update function
 const update = () => {
-  loading.show()
+
+  layoutStore.showLoading = true
   milestoneStore.update().then(() => {
-    loading.hide()
+
+    customAlert('success', 'Successfully updated!')
+    layoutStore.showLoading = false
   }).catch(() => {
-    loading.hide()
+
+    customAlert('warning', 'Check field required!')
+    layoutStore.showLoading = false
   })
 }
 
@@ -194,16 +199,6 @@ const update = () => {
   <SectionTitleBar :title-stack="titleStack" />
 
   <SectionMain>
-
-    <NotificationBar
-      v-if="!milestoneStore.status.status"
-      :isDismissed="milestoneStore.status.status"
-      :color="milestoneStore.status.success ? 'success' : 'danger'"
-      :icon="mdiTableBorder"
-      @hide-notification="hideNotification"
-    >
-      {{ milestoneStore.status.message }}
-    </NotificationBar>
 
     <CardBox
       title="Milestone One List"

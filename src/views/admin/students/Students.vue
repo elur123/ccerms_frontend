@@ -13,7 +13,6 @@ import BaseButton from '@/components/BaseButton.vue'
 import BaseButtons from '@/components/BaseButtons.vue'
 import SectionTitle from '@/components/SectionTitle.vue'
 import SectionTitleBarSub from '@/components/SectionTitleBarSub.vue'
-import NotificationBar from '@/components/NotificationBar.vue'
 
 import Create from '@/views/admin/students/components/Create.vue'
 import Update from '@/views/admin/students/components/Update.vue'
@@ -102,16 +101,6 @@ const selectDelete = (item) => {
   <SectionTitleBar :title-stack="titleStack" />
 
   <SectionMain>
-
-    <NotificationBar
-      v-if="!studentStore.status.status"
-      :isDismissed="studentStore.status.status"
-      :color="studentStore.status.success ? 'success' : 'danger'"
-      :icon="mdiTableBorder"
-      @hide-notification="hideNotification"
-    >
-      {{ studentStore.status.message }}
-    </NotificationBar>
 
     <!-- Create Section -->
     <Create 

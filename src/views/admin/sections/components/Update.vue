@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, inject } from 'vue'
+import { ref, computed } from 'vue'
 
 import BaseDivider from '@/components/BaseDivider.vue'
 import BaseButton from '@/components/BaseButton.vue'
@@ -10,14 +10,16 @@ import FormField from '@/components/FormField.vue'
 import FormFilePicker from '@/components/FormFilePicker.vue'
 import FormControl from '@/components/FormControl.vue'
 import BaseIcon from '@/components/BaseIcon.vue'
-import NotificationBar from '@/components/NotificationBar.vue'
+import { customAlert } from '@/alert.js'
 
 import { mdiArrowLeftBold, mdiPlus, mdiTrashCan, mdiTableBorder } from '@mdi/js'
 
 import { useSectionStore } from '@/stores/admin/sections.js';
 import { groupTypes, years_list } from '@/settings_data.js';
+import { useLayoutStore } from '@/stores/layout.js'
 
 const sectionStore = useSectionStore()
+const layoutStore = useLayoutStore()
 
 // Emits
 const emit = defineEmits(['back', 'addStudent', 'removeStudent', 'addGroup', 'removeGroup', 'sectionUpdate'])
@@ -30,8 +32,6 @@ const fullname = ref('');
 const groupname = ref('');
 const isShowDeleteModal = ref(false);
 const accountIndex = ref(null)
-
-const loading = inject('Loader')
 
 // Props
 const props = defineProps({
@@ -73,13 +73,18 @@ const back = () => {
 }
 
 const sectionUpdate = () => {
-    loading.show()
+
+     layoutStore.showLoading = true
     sectionStore.update().then(res => {
-        loading.hide()
+        
+        customAlert('success', 'Successfully updated!')
         emit('sectionUpdate', { status: true, list: res.data.sections });
+        layoutStore.showLoading = false
     }).catch(() => {
-        loading.hide()
+
+        customAlert('warning', 'Server error')
         emit('sectionUpdate', { status: false});
+        layoutStore.showLoading = false
     })
 }
 

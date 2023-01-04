@@ -13,7 +13,6 @@ import BaseButton from '@/components/BaseButton.vue'
 import BaseButtons from '@/components/BaseButtons.vue'
 import SectionTitle from '@/components/SectionTitle.vue'
 import SectionTitleBarSub from '@/components/SectionTitleBarSub.vue'
-import NotificationBar from '@/components/NotificationBar.vue'
 
 import Create from '@/views/admin/researcharchives/components/Create.vue'
 import Update from '@/views/admin/researcharchives/components/Update.vue'
@@ -110,16 +109,6 @@ const selectDelete = (item) => {
   <SectionTitleBar :title-stack="titleStack" />
 
   <SectionMain>
-
-    <NotificationBar
-      v-if="!researchStore.status.status"
-      :isDismissed="researchStore.status.status"
-      :color="researchStore.status.success ? 'success' : 'danger'"
-      :icon="mdiTableBorder"
-      @hide-notification="hideNotification"
-    >
-      {{ researchStore.status.message }}
-    </NotificationBar>
 
     <!-- Create Section -->
     <Create 

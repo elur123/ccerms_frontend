@@ -13,7 +13,6 @@ import BaseButton from '@/components/BaseButton.vue'
 import BaseButtons from '@/components/BaseButtons.vue'
 import SectionTitle from '@/components/SectionTitle.vue'
 import SectionTitleBarSub from '@/components/SectionTitleBarSub.vue'
-import NotificationBar from '@/components/NotificationBar.vue'
 
 import Create from '@/views/admin/sections/components/Create.vue'
 import Update from '@/views/admin/sections/components/Update.vue'
@@ -23,7 +22,6 @@ import { useSectionStore } from '@/stores/admin/sections.js';
 import { useUserStore  } from '@/stores/admin/users.js';
 import { useStudentStore  } from '@/stores/admin/students.js';
 import { useGroupStore  } from '@/stores/admin/groups.js';
-import { customAlert } from '@/alert.js'
 
 const titleStack = ref(['Admin', 'General', 'Sections'])
 
@@ -56,26 +54,30 @@ const showCreate = () => {
 }
 
 const addStudent = (student) => {
-
-    const index = studentStore.section_available.indexOf(student);
+    
+    const find = studentStore.section_available.find(e => e.id == student.id)
+    const index = studentStore.section_available.indexOf(find);
     studentStore.section_available[index].is_available = false
 }
 
 const removeStudent = (student) => {
-  
-    const index = studentStore.section_available.indexOf(student);
+
+    const find = studentStore.section_available.find(e => e.id == student.id)
+    const index = studentStore.section_available.indexOf(find);
     studentStore.section_available[index].is_available = true
 }
 
 const addGroup = (group) => {
 
-    const index = groupStore.section_available.indexOf(group);
+    const find = groupStore.section_available.find(e => e.id == group.id)
+    const index = groupStore.section_available.indexOf(find);
     groupStore.section_available[index].is_available = false
 }
 
 const removeGroup = (group) => {
-  
-    const index = groupStore.section_available.indexOf(group);
+
+    const find = groupStore.section_available.find(e => e.id == group.id)
+    const index = groupStore.section_available.indexOf(find);
     studentStore.section_available[index].is_available = true
 }
 
@@ -103,9 +105,19 @@ const showListSection = () => {
 
 // Select Course item function
 const select = (item) => {
+
+  item.sectionstudent.forEach(val => {
+    addStudent(val)
+  })
+
+  item.sectiongroup.forEach(val => {
+    addGroup(val)
+  })
+
   showUpdateSection.value = true
   showCreateSection.value = false
   sectionStore.select(item)
+
 }
 
 // Select Course item to delete function
@@ -133,16 +145,6 @@ const selectDelete = (item) => {
   <SectionTitleBar :title-stack="titleStack" />
 
   <SectionMain>
-
-    <NotificationBar
-      v-if="!sectionStore.status.status"
-      :isDismissed="sectionStore.status.status"
-      :color="sectionStore.status.success ? 'success' : 'danger'"
-      :icon="mdiTableBorder"
-      @hide-notification="hideNotification"
-    >
-      {{ sectionStore.status.message }}
-    </NotificationBar>
 
     <!-- Create Section -->
     <Create 

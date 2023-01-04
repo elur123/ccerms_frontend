@@ -13,27 +13,33 @@ import FormControl from '@/components/FormControl.vue'
 import BaseDivider from '@/components/BaseDivider.vue'
 import BaseButton from '@/components/BaseButton.vue'
 import BaseButtons from '@/components/BaseButtons.vue'
-import NotificationBar from '@/components/NotificationBar.vue'
+import { customAlert } from '@/alert.js'
 
 import { useAuthStore } from '@/stores/auth.js';
+import { useLayoutStore } from '@/stores/layout.js'
 
 import { url } from '@/config'
 
 const pinia = createPinia()
 
+const layoutStore = useLayoutStore()
 const authStore = useAuthStore()
 
 const router = useRouter()
 let loader = inject('Loader')
 
 const submit = () => {
-  loader.show();
+  layoutStore.showLoading = true
   authStore.login().then(res => {
-    loader.hide()
+    layoutStore.showLoading = false
     if (res.data.status === 200) {
+      customAlert('success', 'Welcome back user!')
       authStore.user = res.data.details
       authStore.clear()
       router.push('/admin/dashboard')
+    }
+    else {
+      customAlert('warning', 'Email password not match')
     }
   })
   
@@ -54,13 +60,7 @@ const submit = () => {
       form
       @submit.prevent="submit"
     >
-    <NotificationBar
-      v-if="authStore.status.status"
-      :color="authStore.status.success ? 'success' : 'danger'"
-      :icon="mdiTableBorder"
-    >
-      {{ authStore.status.message }}
-    </NotificationBar>
+
       <FormField
         label="Email"
         help="Please enter your email"

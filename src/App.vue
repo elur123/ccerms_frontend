@@ -8,6 +8,7 @@ import NavBar from '@/components/NavBar.vue'
 import AsideMenu from '@/components/AsideMenu.vue'
 import FooterBar from '@/components/FooterBar.vue'
 import OverlayLayer from '@/components/OverlayLayer.vue'
+import Loading from '@/components/Loading.vue'
 
 const layoutStore = useLayoutStore()
 const authStore = useAuthStore()
@@ -26,13 +27,14 @@ const menu = computed(() => {
 <template>
   <NavBar />
   <AsideMenu :menu="menu" />
-    <RouterView />
+  <RouterView />
   <FooterBar />
   <OverlayLayer
     v-show="isAsideLgActive"
     z-index="z-30"
     @overlay-click="overlayClick"
   />
+  <Loading v-if="layoutStore.showLoading" />
 </template>
 
 <style>
