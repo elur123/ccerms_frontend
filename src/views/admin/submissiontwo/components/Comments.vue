@@ -15,12 +15,12 @@ import { customAlert } from '@/alert.js'
 import NotificationBarInCard from '@/components/NotificationBarInCard.vue'
 import { mdiArrowLeftBold, mdiPlus, mdiTrashCan, mdiTableBorder } from '@mdi/js'
 
-import { useSubmissionOneStore } from '@/stores/admin/submissionone.js';
+import { useSubmissionTwoStore } from '@/stores/admin/submissiontwo.js';
 import { status } from '@/settings_data';
 import { useLayoutStore } from '@/stores/layout.js'
 
 
-const submissionOne = useSubmissionOneStore()
+const submissionOne = useSubmissionTwoStore()
 const layoutStore = useLayoutStore()
 
 // Emits

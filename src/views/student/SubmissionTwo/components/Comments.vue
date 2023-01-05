@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, inject } from 'vue'
 
 
 import BaseDivider from '@/components/BaseDivider.vue'
@@ -11,17 +11,13 @@ import FormField from '@/components/FormField.vue'
 import FormFilePicker from '@/components/FormFilePicker.vue'
 import FormControl from '@/components/FormControl.vue'
 import BaseIcon from '@/components/BaseIcon.vue'
-import { customAlert } from '@/alert.js'
+import NotificationBar from '@/components/NotificationBar.vue'
 import NotificationBarInCard from '@/components/NotificationBarInCard.vue'
 import { mdiArrowLeftBold, mdiPlus, mdiTrashCan, mdiTableBorder } from '@mdi/js'
 
-import { useSubmissionOneStore } from '@/stores/admin/submissionone.js';
-import { status } from '@/settings_data';
-import { useLayoutStore } from '@/stores/layout.js'
+import { useSubmissionTwoStore } from '@/stores/student/submissiontwo.js';
 
-
-const submissionOne = useSubmissionOneStore()
-const layoutStore = useLayoutStore()
+const submissionTwo = useSubmissionTwoStore()
 
 // Emits
 const emit = defineEmits(['back', 'comment'])
@@ -35,12 +31,8 @@ const props = defineProps({
   },
 })
 
-// Computed functions
-const submissionStatus = computed(() => {
-    return status.filter(e => e.id <= 3)
-})
-
 // Variables
+const loading = inject('Loader')
 
 // Declared Functions
 const back = () => {
@@ -48,18 +40,13 @@ const back = () => {
 }
 
 const submit = () => {
-
-    layoutStore.showLoading = true
-    submissionOne.comment(props.submissionDetails.id).then(res => {
-
-        customAlert('success', 'Successfully checked!')
-        emit('comment', { status: true, list: res.data.comments });
-        layoutStore.showLoading = false
+    loading.show()
+    submissionTwo.comment(props.submissionDetails.id).then(res => {
+        loading.hide()
+        emit('comment', { status: true, list: res.data });
     }).catch(() => {
-
-        customAlert('warning', 'Server error!')
+        loading.hide()
         emit('comment', { status: false});
-        layoutStore.showLoading = false
     })
 }
 
@@ -153,15 +140,11 @@ const submit = () => {
 
                     <div class="py-2">
                         <FormField label="Attached File" class="pb-2">
-                            <FormFilePicker v-model="submissionOne.request.file"/>
-                        </FormField>
-
-                        <FormField label="Status" class="pb-2">
-                            <FormControl v-model="submissionOne.request.status" :options="submissionStatus" />
+                            <FormFilePicker v-model="submissionTwo.request.comment.file"/>
                         </FormField>
 
                         <FormField label="Add Comments">
-                            <FormControl type="textarea" v-model="submissionOne.request.comment" />
+                            <FormControl type="textarea" v-model="submissionTwo.request.comment.comment" />
                         </FormField>
                     </div>
 

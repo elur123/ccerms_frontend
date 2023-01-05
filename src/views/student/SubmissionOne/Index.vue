@@ -7,7 +7,7 @@ import SectionTitleBar from '@/components/SectionTitleBar.vue'
 import CardBox from '@/components/CardBox.vue'
 import CardBoxModal from '@/components/CardBoxModal.vue'
 import BaseIcon from '@/components/BaseIcon.vue'
-import NotificationBar from '@/components/NotificationBar.vue'
+import { customAlert } from '@/alert.js'
 
 import Create from '@/views/student/SubmissionOne/components/Create.vue'
 import Update from '@/views/student/SubmissionOne/components/Update.vue'
@@ -135,6 +135,8 @@ const localDelete = () => {
   let index = submissinOne.submissions.indexOf(find);
 
   if (find != undefined) {
+
+    customAlert('success', 'Successfully deleted!')
     submissinOne.submissions.splice(index, 1);
     submissinOne.delete()
   }
@@ -146,16 +148,6 @@ const localDelete = () => {
 
   <SectionTitleBar :title-stack="titleStack" />
   <SectionMain>
-
-    <NotificationBar
-      v-if="!submissinOne.status.status"
-      :isDismissed="submissinOne.status.status"
-      :color="submissinOne.status.success ? 'success' : 'danger'"
-      :icon="mdiTableBorder"
-      @hide-notification="hideNotification"
-    >
-      {{ submissinOne.status.message }}
-    </NotificationBar>
 
     <!-- Delete Modal -->
     <CardBoxModal

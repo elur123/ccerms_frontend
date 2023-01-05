@@ -14,7 +14,6 @@ import BaseButtons from '@/components/BaseButtons.vue'
 import SectionTitle from '@/components/SectionTitle.vue'
 import SectionTitleBarSub from '@/components/SectionTitleBarSub.vue'
 
-import Check from '@/views/admin/submissionone/components/Check.vue'
 import Comments from '@/views/admin/submissionone/components/Comments.vue'
 import Table from '@/views/admin/submissionone/components/Table.vue'
 

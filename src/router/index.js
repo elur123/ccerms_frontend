@@ -74,6 +74,16 @@ const routes = [
     component: () => import('@/views/LoginView.vue')
   },
   {
+    beforeEnter: authenticate,
+    meta: {
+      title: 'Register',
+      fullScreen: true
+    },
+    path: '/register',
+    name: 'register',
+    component: () => import('@/views/RegisterView.vue')
+  },
+  {
     meta: {
       title: 'Account Hold',
       fullScreen: true
@@ -143,7 +153,7 @@ const routes = [
     },
     path: '/admin/submissions-two',
     name: 'admin-submissions-two',
-    component: () => import('@/views/admin/submissionone/SubmissionOne.vue')
+    component: () => import('@/views/admin/submissiontwo/SubmissionTwo.vue')
   },
   {
     beforeEnter: adminAuthenticated,

@@ -1,8 +1,6 @@
 <script setup>
 import { ref, reactive, } from 'vue'
 import { mdiBallot, mdiPlus, mdiTableBorder } from '@mdi/js'
-import { useLoading } from 'vue3-loading-overlay';
-import 'vue3-loading-overlay/dist/vue3-loading-overlay.css';
 
 import SectionMain from '@/components/SectionMain.vue'
 import SectionTitleBar from '@/components/SectionTitleBar.vue'

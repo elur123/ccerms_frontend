@@ -11,13 +11,15 @@ import FormField from '@/components/FormField.vue'
 import FormFilePicker from '@/components/FormFilePicker.vue'
 import FormControl from '@/components/FormControl.vue'
 import BaseIcon from '@/components/BaseIcon.vue'
-import NotificationBar from '@/components/NotificationBar.vue'
 import NotificationBarInCard from '@/components/NotificationBarInCard.vue'
 import { mdiArrowLeftBold, mdiPlus, mdiTrashCan, mdiTableBorder } from '@mdi/js'
+import { customAlert } from '@/alert.js'
 
 import { useSubmissionOneStore } from '@/stores/student/submissionone.js';
+import { useLayoutStore } from '@/stores/layout.js'
 
 const submissionOne = useSubmissionOneStore()
+const layoutStore = useLayoutStore()
 
 // Emits
 const emit = defineEmits(['back', 'submit'])
@@ -41,7 +43,6 @@ const props = defineProps({
 // Variables
 const isShowDeleteModal = ref(false);
 const accountIndex = ref(null)
-const loading = inject('Loader')
 
 // Computed Functions
 const personnels = computed(() => {
@@ -67,13 +68,18 @@ const back = () => {
 }
 
 const submit = () => {
-    loading.show()
+
+    layoutStore.showLoading = true
     submissionOne.create().then(res => {
-        loading.hide()
+
+        customAlert('success', 'Successfully submitted!')
         emit('submit', { status: true, list: res.data.submissions });
+        layoutStore.showLoading = false
     }).catch(() => {
-        loading.hide()
+        
+        customAlert('warning', 'Check field required!')
         emit('submit', { status: false});
+        layoutStore.showLoading = false
     })
 }
 

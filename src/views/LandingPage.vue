@@ -60,7 +60,7 @@ const searchResearch = () => {
         <div class="">
           <div class="ml-4 flex items-center md:ml-6">
             <button class="text-black hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium" @click="toLogin">Login</button>
-            <button class="text-black hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Register</button>
+            <button class="text-black hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium" @click="router.push('/register')">Register</button>
           </div>
         </div>
 
