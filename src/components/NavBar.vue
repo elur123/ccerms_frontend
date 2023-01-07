@@ -21,7 +21,8 @@ import {
   mdiGithub,
   mdiThemeLightDark,
   mdiMonitorShimmer,
-  mdiOpenInNew
+  mdiOpenInNew,
+  mdiBell
 } from '@mdi/js'
 import NavBarItem from '@/components/NavBarItem.vue'
 import NavBarItemLabel from '@/components/NavBarItemLabel.vue'
@@ -123,64 +124,20 @@ const logout = () => {
       <div
         class="max-h-screen-menu overflow-y-auto lg:overflow-visible lg:flex lg:items-stretch lg:justify-end lg:ml-auto"
       >
-        <!-- <div class="hidden lg:flex items-center">
-          <a
-            class="inline-flex items-center justify-center lg:mr-3 bg-blue-300 hover:bg-blue-400 transition-colors py-1 px-4 text-blue-700 hover:text-blue-800 text-sm rounded-full"
-            target="_blank"
-            href="https://tailwind-vue.justboil.me/"
-          >
-            <span class="mr-1">Check premium</span>
-            <BaseIcon
-              :path="mdiOpenInNew"
-              w="w-4"
-              h="h-4"
-            />
-          </a>
-        </div> -->
-        <!-- <NavBarItem
-          class="lg:hidden" 
-          target="_blank"
-          href="https://tailwind-vue.justboil.me/"
-        >
-          <NavBarItemLabel
-            :icon="mdiMonitorShimmer"
-            label="Premium version"
-          />
-        </NavBarItem> -->
-        <!-- <NavBarMenu has-divider>
-          <NavBarItemLabel
-            :icon="mdiMenu"
-            label="Sample menu"
-          />
-
-          <template #dropdown>
-            <NavBarItem>
-              <NavBarItemLabel
-                :icon="mdiClockOutline"
-                label="Item One"
-              />
-            </NavBarItem>
-            <NavBarItem>
-              <NavBarItemLabel
-                :icon="mdiCloud"
-                label="Item Two"
-              />
-            </NavBarItem>
-            <BaseDivider nav-bar />
-            <NavBarItem>
-              <NavBarItemLabel
-                :icon="mdiCrop"
-                label="Item Last"
-              />
-            </NavBarItem>
-          </template>
-        </NavBarMenu> -->
         <NavBarMenu has-divider>
           <NavBarItemLabel :label="userName">
             <UserAvatar :image="profile_picture" class="w-6 h-6 mr-3 inline-flex" />
           </NavBarItemLabel>
 
           <template #dropdown>
+            <NavBarItem to="/profile">
+              <NavBarItemLabel
+                :icon="mdiBell"
+                label="Notifications"
+              >
+                <div class="absolute top-1 left-2 rounded-full text-white text-xs bg-red-400 px-1">2</div>
+              </NavBarItemLabel>
+            </NavBarItem>
             <NavBarItem to="/profile">
               <NavBarItemLabel
                 :icon="mdiAccount"

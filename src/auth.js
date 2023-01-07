@@ -16,6 +16,12 @@ export const authenticate = (to, from, next) => {
 export const adminAuthenticated = (to, from, next) => {
   const user = JSON.parse(localStorage.getItem('user'))
   if (user !== null && user !== undefined) {
+
+    if (user.status_id == 1) {
+      next('/hold')
+      localStorage.removeItem('user')
+    }
+
     user.usertype_id !== 6 ? next() : next('/student/dashboard')
   } else {
     localStorage.removeItem('user')
@@ -26,6 +32,12 @@ export const adminAuthenticated = (to, from, next) => {
 export const studentAuthenticated = (to, from, next) => {
   const user = JSON.parse(localStorage.getItem('user'))
   if (user !== null && user !== undefined) {
+
+    if (user.status_id == 1) {
+      next('/hold')
+      localStorage.removeItem('user')
+    }
+    
     user.usertype_id === 6 ? next() : next('/admin/dashboard')
   } else {
     localStorage.removeItem('user')

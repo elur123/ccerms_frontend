@@ -84,6 +84,16 @@ const routes = [
     component: () => import('@/views/RegisterView.vue')
   },
   {
+    beforeEnter: authenticate,
+    meta: {
+      title: 'Register Successfully',
+      fullScreen: true
+    },
+    path: '/register-success',
+    name: 'register-success',
+    component: () => import('@/views/RegisterSuccess.vue')
+  },
+  {
     meta: {
       title: 'Account Hold',
       fullScreen: true
@@ -181,6 +191,15 @@ const routes = [
     path: '/admin/milestone/two',
     name: 'admin-milestonetwo',
     component: () => import('@/views/admin/milestonetwosetup/MilestoneTwo.vue')
+  },
+  {
+    beforeEnter: adminAuthenticated,
+    meta: {
+      title: 'Minute Setup'
+    },
+    path: '/admin/minutesetup',
+    name: 'admin-minutesetup',
+    component: () => import('@/views/admin/minutesetup/Index.vue')
   },
   {
     beforeEnter: adminAuthenticated,

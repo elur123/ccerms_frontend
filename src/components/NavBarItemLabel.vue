@@ -24,5 +24,7 @@ defineProps({
   <span
     class="px-2 transition-colors"
     :class="{ 'lg:hidden':isDesktopIconOnly && icon }"
-  >{{ label }}</span>
+  >
+    {{ label }}
+  </span>
 </template>

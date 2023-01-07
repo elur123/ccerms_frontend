@@ -76,6 +76,11 @@ export const adminMenu =  [
       ]
     },
     {
+      to: '/admin/minutesetup',
+      label: 'Minute Setup',
+      icon: mdiCog
+    },
+    {
       to: '/admin/researcharchives',
       label: 'Research Archives',
       icon: mdiCog

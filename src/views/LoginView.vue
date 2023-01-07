@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, inject } from 'vue'
+import { reactive } from 'vue'
 import { createPinia } from 'pinia'
 import { useRouter } from 'vue-router'
 import { mdiAccount, mdiAsterisk, mdiTableBorder } from '@mdi/js'
@@ -26,7 +26,6 @@ const layoutStore = useLayoutStore()
 const authStore = useAuthStore()
 
 const router = useRouter()
-let loader = inject('Loader')
 
 const submit = () => {
   layoutStore.showLoading = true
@@ -94,12 +93,12 @@ const submit = () => {
           color="warning"
           label="Login"
         />
-        <!-- <BaseButton
-          to="/dashboard"
+        <BaseButton
           color="info"
           outline
-          label="Back"
-        /> -->
+          label="Register"
+          @click="router.push('/register')"
+        />
       </BaseButtons>
     </CardBox>
   </SectionFullScreen>

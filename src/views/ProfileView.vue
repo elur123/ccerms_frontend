@@ -98,66 +98,6 @@ const submitPass = () => {
         </BaseButtons>
       </CardBox>
 
-      <CardBox
-        title="Change Password"
-        :icon="mdiLock"
-        form
-        @submit.prevent="submitPass"
-      >
-        <FormField
-          label="Current password"
-          help="Required. Your current password"
-        >
-          <FormControl
-            v-model="passwordForm.password_current"
-            :icon="mdiAsterisk"
-            name="password_current"
-            type="password"
-            required
-            autocomplete="current-password"
-          />
-        </FormField>
-
-        <BaseDivider />
-
-        <FormField
-          label="New password"
-          help="Required. New password"
-        >
-          <FormControl
-            v-model="passwordForm.password"
-            :icon="mdiFormTextboxPassword"
-            name="password"
-            type="password"
-            required
-            autocomplete="new-password"
-          />
-        </FormField>
-
-        <FormField
-          label="Confirm password"
-          help="Required. New password one more time"
-        >
-          <FormControl
-            v-model="passwordForm.password_confirmation"
-            :icon="mdiFormTextboxPassword"
-            name="password_confirmation"
-            type="password"
-            required
-            autocomplete="new-password"
-          />
-        </FormField>
-
-        <BaseDivider />
-
-        <BaseButtons>
-          <BaseButton
-            type="submit"
-            color="info"
-            label="Submit"
-          />
-        </BaseButtons>
-      </CardBox>
     </div>
   </SectionMain>
 </template>
