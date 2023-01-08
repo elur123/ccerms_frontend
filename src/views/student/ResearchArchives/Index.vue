@@ -30,6 +30,7 @@ const showCreateSection = ref(false)
 const showUpdateSection = ref(false)
 const modalShowUpdate = ref(false)
 const modalShowDelete = ref(false)
+const search_research = ref('')
 
 // Notification Hide Function
 const hideNotification = () => {
@@ -37,51 +38,13 @@ const hideNotification = () => {
 }
 
 // Get Data
-researchStore.fetch()
+researchStore.fetch('', 1)
 courseStore.fetch()
 
-
-// Show Create function
-const showCreate = () => {
-  showCreateSection.value = true
-  showUpdateSection.value = false
+// Search Research function
+const searchResearch = () => {
+  researchStore.fetch(search_research.value, 1)
 }
-
-const archivesCreate = (res) => {
-  if (res.status) {
-    researchStore.list = res.list
-    showCreateSection.value = false
-    showUpdateSection.value = false
-  }
-}
-
-const archivesUpdate = (res) => {
-  if (res.status) {
-    researchStore.list = res.list
-    showCreateSection.value = false
-    showUpdateSection.value = false
-  }
-}
-
-// Show Only List Section
-const showListSection = () => {
-  showCreateSection.value = false
-  showUpdateSection.value = false
-}
-
-// Select Course item function
-const select = (item) => {
-  showUpdateSection.value = true
-  showCreateSection.value = false
-  researchStore.select(item)
-}
-
-// Select Course item to delete function
-const selectDelete = (item) => {
-  modalShowDelete.value = true
-  researchStore.select(item)
-}
-
 
 
 </script>
@@ -102,32 +65,6 @@ const selectDelete = (item) => {
 
   <SectionMain>
 
-    <NotificationBar
-      v-if="!researchStore.status.status"
-      :isDismissed="researchStore.status.status"
-      :color="researchStore.status.success ? 'success' : 'danger'"
-      :icon="mdiTableBorder"
-      @hide-notification="hideNotification"
-    >
-      {{ researchStore.status.message }}
-    </NotificationBar>
-
-    <!-- Create Section -->
-    <Create 
-      v-if="showCreateSection"
-      :course="courseStore.list"
-      @back="showListSection" 
-      @archivesCreate="archivesCreate"
-    />
-
-    <!-- Update Section -->
-    <Update 
-      v-if="showUpdateSection"
-      :course="courseStore.list"
-      :item="researchStore.request"
-      @back="showListSection" 
-      @archivesUpdate="archivesUpdate"
-    />
 
     <!-- List Section -->
     <CardBox
@@ -136,12 +73,20 @@ const selectDelete = (item) => {
       :hasTable="true"
       :icon="mdiBallot"
     >
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="p-3 w-full">
+        <input class="w-full border-b border-b-1 border-0 focus:outline-none focus:ring-0 focus:border-yellow-400 focus:border-b-2" 
+          type="text" 
+          placeholder="Hit enter to search research..."
+          v-model="search_research"
+          @keyup.enter="searchResearch"
+        >
+      </div>
+    </div>
       
     <ResearchArchivesTable 
-      :data="researchStore.list"
-      @select-archive="select"
-      @destroy-archive="selectDelete"
-    />
+      :data="researchStore.list"/>
   
     </CardBox>
   </SectionMain>

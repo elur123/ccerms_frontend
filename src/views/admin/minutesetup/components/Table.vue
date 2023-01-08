@@ -109,19 +109,14 @@ const checked = (isChecked, client) => {
           v-if="props.checkable"
           @checked="checked($event, item)"
         />
-        <td data-label="Date">
-          {{ item.date }}
+        <td data-label="Title">
+          {{ item.title }}
         </td>
-        <td data-label="Panels">
-          <span v-for="pan in item.schedulepanels" :key="pan.id" class="bg-blue-100 text-blue-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800">
-                {{ pan.fullname }}
-          </span>
+        <td data-label="Datetime Created">
+          {{ item.created_at }}
         </td>
-        <td data-label="Status">
-          <span v-if="item.status_id == 4" class="p-1 bg-yellow-400 text-white text-sm rounded font-semibold ">{{ item.status.status }}</span>
-          <span v-else-if="item.status_id == 5" class="p-1 bg-lime-400 text-white text-sm rounded font-semibold ">{{ item.status.status }}</span>
-          <span v-else-if="item.status_id == 6 || item.status_id == 7" class="p-1 bg-red-400 text-white text-sm rounded font-semibold ">{{ item.status.status }}</span>
-          <span v-else class="p-1 bg-red-400 text-white text-sm rounded font-semibold ">{{ item.status.status }}</span>
+        <td data-label="Datetime Updated">
+          {{ item.updated_at }}
         </td>
         <td class="before:hidden lg:w-1 whitespace-nowrap">
           <BaseButtons

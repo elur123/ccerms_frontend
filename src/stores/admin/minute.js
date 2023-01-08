@@ -6,6 +6,7 @@ export const useMinuteStore = defineStore('minute', {
   state: () => ({
     list: [],
     request: {
+        id: null,
         title: '',
         list: [],
     },
@@ -43,12 +44,13 @@ export const useMinuteStore = defineStore('minute', {
       })
     },
     select(item) {
+      this.request.id = item.id
       this.request.title = item.title
-      this.request.list = item.list
+      this.request.list = item.lists
     },
     update() {
       return new Promise((resolve, reject) => {
-        axios.put(`${url}api/minutes/${this.id}`, this.request).then(res => {
+        axios.put(`${url}api/minutes/${this.request.id}`, this.request).then(res => {
           this.list = res.data.minutes
           this.status = {
             status: false,
@@ -67,11 +69,29 @@ export const useMinuteStore = defineStore('minute', {
         })
       })
     },
-    destroy() {
-      console.log(this.id);
+    destroy(id) {
+      return new Promise((resolve, reject) => {
+        axios.delete(`${url}api/minutes/list/${id}`).then(res => {
+          this.list = res.data.minutes
+          this.status = {
+            status: false,
+            success: res.data.status == 200 ? true : false,
+            message: res.data.message,
+          }
+          resolve(res)
+        }).catch(err => {
+          this.status = {
+            status: false,
+            success: false,
+            message: 'Server error!',
+          }
+          reject(err)
+        })
+      })
     },
     clear() {
        this.request = {
+        id: null,
         title: '',
         list: []
        }

@@ -22,7 +22,7 @@ const minuteStore = useMinuteStore()
 const layoutStore = useLayoutStore()
 
 // Emits
-const emit = defineEmits(['back', 'scheduleCreate'])
+const emit = defineEmits(['back', 'minuteCreate'])
 
 // Variables
 const isShowModal = ref(false);
@@ -50,64 +50,9 @@ const props = defineProps({
 })
 
 // Computed
-const teachers = computed(() => {
-   return props.teachers.map(item => {
-        return {
-            'id': item.id,
-            'label': item.fullname
-        }
-   })
-})
+const list_ordered = computed(() => {
 
-const groupTypesFiltered = computed(() => {
-    return groupTypes.filter(e => e.id < 3)
-})
-
-const capstoneOne = computed(() => {
-    var data = [];
-    
-    data = props.groups.map(item => {
-        return {
-            'id': item.id,
-            'label': item.groupname,
-            'type_id': item.type_id,
-            'panel': item.panel
-        }
-    })
-
-    data = data.filter(e => e.type_id == 1)
-
-    return data
-})
-
-const capstoneTwo = computed(() => {
-    var data = [];
-    
-    data = props.groups.map(item => {
-        return {
-            'id': item.id,
-            'label': item.groupname,
-            'type_id': item.type_id,
-            'panel': item.panel
-        }
-    })
-
-    data = data.filter(e => e.type_id == 2)
-
-    return data
-})
-
-const scheduleTypes = computed(() => {
-    return props.scheduleTypes.map(item => {
-        return {
-            'id': item.id,
-            'label': item.type
-        }
-    })
-})
-
-const statusFiltered = computed(() => {
-    return status.filter(e => e.id >= 4 && e.id <= 8)
+    return minuteStore.request.list.sort((a,b) => a.label_order - b.label_order)
 })
  
 // Declared Functions
@@ -115,18 +60,18 @@ const back = () => {
     emit('back', false);
 }
 
-const scheduleCreate = () => {
+const minuteCreate = () => {
 
     layoutStore.showLoading = true
     minuteStore.create().then(res => {
         
         customAlert('success', 'Successfully created!')
-        emit('scheduleCreate', { status: true, list: res.data.schedules });
+        emit('minuteCreate', { status: true, list: res.data.minutes });
         layoutStore.showLoading = false
     }).catch(() => {
 
         customAlert('warning', 'Check field required !')
-        emit('scheduleCreate', { status: false});
+        emit('minuteCreate', { status: false});
         layoutStore.showLoading = false
     })
 }
@@ -140,9 +85,21 @@ const showModal = (type) => {
 }
 
 const localCreate = () => {
+    let find = minuteStore.request.list.find(e => e.label_order == label_order.value)
+
     if(label.value == '') {
-        alert('Fullname required')
-        return;
+        customAlert('warning', 'Label field required !')
+        return true;
+    }
+
+    if(label_order.value == '') {
+        customAlert('warning', 'Label order field required !')
+        return true;
+    }
+
+    if(find != undefined) {
+        customAlert('warning', 'Label order already set!')
+        return true;
     }
 
     minuteStore.request.list.push({
@@ -150,37 +107,19 @@ const localCreate = () => {
         label: label.value,
         label_order: label_order.value
     })
+
+     customAlert('success', 'Successfully added!')
 }
 
-const showModalDelete = (index, type) => {
-    accountIndex.value = index
+const showModalDelete = (minute, type) => {
+    accountIndex.value = minuteStore.request.list.indexOf(minute)
     accountType.value = type
     isShowDeleteModal.value = true
 }
 
 const localDelete = () => {
     
-    minuteStore.request.list.splice(accountIndex, 1)
-}
-
-const changeGroup = (type) => {
-    const index = type == 1 ? capstoneOne.value.indexOf(capstoneOne.value.find(e => e.id == minuteStore.request.group)) 
-    : capstoneOne.value.indexOf(capstoneTwo.value.find(e => e.id == minuteStore.request.group))
-
-    const panels = type == 1 ? capstoneOne.value[index].panel : capstoneTwo.value[index].panel
-
-    minuteStore.request.panels = panels.map(item => {
-        return {
-            id: item.user.id,
-            fullname: `${item.user.firstname} ${item.user.middlename} ${item.user.lastname}`,
-            is_create: true
-        }
-    })
-}
-
-// Notification Hide Function
-const hideNotification = () => {
-  minuteStore.status.status = true
+    minuteStore.request.list.splice(accountIndex.value, 1)
 }
 
 
@@ -200,7 +139,7 @@ const hideNotification = () => {
         </FormField>
 
          <FormField label="Order Label">
-            <FormControl v-model="label_order"/>
+            <FormControl v-model="label_order" type="number"/>
         </FormField>
 
     </CardBoxModal>
@@ -229,7 +168,7 @@ const hideNotification = () => {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
                 <FormField label="Title">
-                    <FormControl v-model="minuteStore.request.label"/>
+                    <FormControl v-model="minuteStore.request.title"/>
                 </FormField>
             </div>
 
@@ -252,14 +191,14 @@ const hideNotification = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(pan, index) in minuteStore.request.list" :key="index">
-                                        <td>{{ pan.label }}</td>
-                                        <td>{{ pan.label_order }}</td>
+                                    <tr v-for="(min, index) in list_ordered" :key="index">
+                                        <td>{{ min.label }}</td>
+                                        <td>{{ min.label_order }}</td>
                                         <td>
                                             <BaseIcon
                                                 :path="mdiTrashCan"
                                                 class="cursor-pointer mr-3"
-                                                @click="showModalDelete(index, 'member')"
+                                                @click="showModalDelete(min, 'member')"
                                             />
                                         </td>
                                     </tr>
@@ -277,7 +216,7 @@ const hideNotification = () => {
             <BaseButton
                 label="Create"
                 color="info"
-                @click="scheduleCreate()"
+                @click="minuteCreate()"
             />
         </BaseButtons>
 

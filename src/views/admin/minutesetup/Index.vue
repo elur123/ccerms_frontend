@@ -19,17 +19,11 @@ import Create from '@/views/admin/minutesetup/components/Create.vue'
 import Update from '@/views/admin/minutesetup/components/Update.vue'
 import Table from '@/views/admin/minutesetup/components/Table.vue'
 
-import { useScheduleStore } from '@/stores/admin/schedules.js';
-import { useUserStore  } from '@/stores/admin/users.js';
-import { useGroupStore  } from '@/stores/admin/groups.js';
-import { useScheduleTypeStore  } from '@/stores/admin/scheduletype.js';
+import { useMinuteStore } from '@/stores/admin/minute.js';
 
 const titleStack = ref(['Admin', 'Events', 'Minute Setup'])
 
-const scheduleStore = useScheduleStore()
-const userStore = useUserStore()
-const groupStore = useGroupStore()
-const scheduletypeStore = useScheduleTypeStore()
+const minuteStore = useMinuteStore()
 
 const showCreateSchedule = ref(false)
 const showUpdateSchedule = ref(false)
@@ -38,34 +32,31 @@ const modalShowDelete = ref(false)
 
 // Notification Hide Function
 const hideNotification = () => {
-  scheduleStore.status.status = true
+  minuteStore.status.status = true
 }
 
 // Get Data
-scheduleStore.fetch()
-userStore.fetchAvailable()
-groupStore.fetch()
-scheduletypeStore.fetch()
+minuteStore.fetch()
 
 
 // Show Create function
 const showCreate = () => {
   showCreateSchedule.value = true
   showUpdateSchedule.value = false
-  scheduleStore.clear()
+  minuteStore.clear()
 }
 
-const scheduleCreate = (res) => {
+const minuteCreate = (res) => {
   if (res.status) {
-    scheduleStore.list = res.list
+    minuteStore.list = res.list
     showCreateSchedule.value = false
     showUpdateSchedule.value = false
   }
 }
 
-const scheduleUpdate = (res) => {
+const minuteUpdate = (res) => {
   if (res.status) {
-    scheduleStore.list = res.list
+    minuteStore.list = res.list
     showCreateSchedule.value = false
     showUpdateSchedule.value = false
   }
@@ -81,13 +72,13 @@ const showListSection = () => {
 const select = (item) => {
   showUpdateSchedule.value = true
   showCreateSchedule.value = false
-  scheduleStore.select(item)
+  minuteStore.select(item)
 }
 
 // Select Course item to delete function
 const selectDelete = (item) => {
   modalShowDelete.value = true
-  scheduleStore.select(item)
+  minuteStore.select(item)
 }
 
 
@@ -113,20 +104,15 @@ const selectDelete = (item) => {
     <!-- Create Section -->
     <Create 
       v-if="showCreateSchedule"
-      :teachers="userStore.subjectteacher_available"
-      :groups="groupStore.list"
-      :scheduleTypes="scheduletypeStore.list"
       @back="showListSection" 
-      @scheduleCreate="scheduleCreate"
+      @minuteCreate="minuteCreate"
     />
 
     <!-- Update Section -->
     <Update 
       v-if="showUpdateSchedule"
-      :groups="groupStore.list"
-      :scheduleTypes="scheduletypeStore.list"
       @back="showListSection" 
-      @scheduleUpdate="scheduleUpdate"
+      @minuteUpdate="minuteUpdate"
     />
 
     <!-- List Section -->
@@ -140,7 +126,7 @@ const selectDelete = (item) => {
     >
       
     <Table 
-      :data="scheduleStore.list"
+      :data="minuteStore.list"
       @select-section="select"
       @destroy-section="selectDelete"
     />

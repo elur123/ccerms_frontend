@@ -10,14 +10,16 @@ import FormField from '@/components/FormField.vue'
 import FormFilePicker from '@/components/FormFilePicker.vue'
 import FormControl from '@/components/FormControl.vue'
 import BaseIcon from '@/components/BaseIcon.vue'
-import NotificationBar from '@/components/NotificationBar.vue'
+import { customAlert } from '@/alert.js'
 
 import { mdiArrowLeftBold, mdiPlus, mdiTrashCan, mdiTableBorder } from '@mdi/js'
 
 import { useScheduleStore } from '@/stores/admin/schedules.js';
 import { groupTypes, years_list, status } from '@/settings_data.js';
+import { useLayoutStore } from '@/stores/layout.js'
 
 const scheduleStore = useScheduleStore()
+const layoutStore = useLayoutStore()
 
 // Emits
 const emit = defineEmits(['back', 'scheduleUpdate'])
@@ -113,13 +115,18 @@ const back = () => {
 }
 
 const scheduleUpdate = () => {
-    loading.show()
+
+    layoutStore.showLoading = true
     scheduleStore.update().then(res => {
-        loading.hide()
+        
+        customAlert('success', 'Successfully updated!')
         emit('scheduleUpdate', { status: true, list: res.data.schedules });
+        layoutStore.showLoading = false
     }).catch(() => {
-        loading.hide()
+        
+        customAlert('success', 'Server error!')
         emit('scheduleUpdate', { status: false});
+        layoutStore.showLoading = false
     })
 }
 
@@ -135,42 +142,25 @@ const localCreate = () => {
         alert('Fullname required')
         return;
     }
-    if (accountType.value == 'member') {
-        scheduleStore.request.member.push({
-            id: null,
-            fullname: fullname.value
-        })
-    }
-    else if (accountType.value == 'adviser') {
-        scheduleStore.request.adviser.push({
-            id: null,
-            fullname: fullname.value
-        })
-    }
-    else {
-        scheduleStore.request.panel.push({
-            id: null,
-            fullname: fullname.value
-        })
-    }
+    
+    scheduleStore.request.panels.push({
+        id: null,
+        fullname: fullname.value,
+        is_create: true
+    })
 }
 
 const showModalDelete = (index, type) => {
     accountIndex.value = index
-    accountType.value = type
     isShowDeleteModal.value = true
 }
 
 const localDelete = () => {
-    if (accountType.value == 'member') {
-        scheduleStore.request.member.splice(accountIndex, 1)
-    }
-    else if (accountType.value == 'adviser') {
-        scheduleStore.request.adviser.splice(accountIndex, 1)
-    }
-    else {
-        scheduleStore.request.panel.splice(accountIndex, 1)
-    }
+
+    let sched = scheduleStore.request.panels[accountIndex.value]
+    scheduleStore.request.panels.splice(accountIndex.value, 1)
+
+    scheduleStore.destroy_personnel(sched.id, 'schedulepanels')
 }
 
 const changeGroup = (type) => {
@@ -285,17 +275,18 @@ const hideNotification = () => {
                 <div>
                     <CardBox 
                         title="Panels"
-                       
+                        :headerIcon="mdiPlus"
+                        @header-icon-click="showModal('Panel')"
                     >
                         <div class="flex justify-center">
                             <ul class="bg-white rounded-lg w-96 text-gray-900">
                                 <li v-for="(pan, index) in scheduleStore.request.panels" :key="index" class="px-6 py-2 border-b border-gray-200 w-full flex justify-between">
                                     <p>{{ pan.fullname }}</p>
-                                    <!-- <BaseIcon
+                                    <BaseIcon
                                         :path="mdiTrashCan"
                                         class="cursor-pointer mr-3"
-                                        @click="showModalDelete(index, 'member')"
-                                    /> -->
+                                        @click="showModalDelete(index)"
+                                    />
                                 </li>
                             </ul>
                         </div>

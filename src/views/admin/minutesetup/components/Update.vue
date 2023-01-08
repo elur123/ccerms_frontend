@@ -10,23 +10,26 @@ import FormField from '@/components/FormField.vue'
 import FormFilePicker from '@/components/FormFilePicker.vue'
 import FormControl from '@/components/FormControl.vue'
 import BaseIcon from '@/components/BaseIcon.vue'
-import NotificationBar from '@/components/NotificationBar.vue'
+import { customAlert } from '@/alert.js'
 
 import { mdiArrowLeftBold, mdiPlus, mdiTrashCan, mdiTableBorder } from '@mdi/js'
 
-import { useScheduleStore } from '@/stores/admin/schedules.js';
+import { useMinuteStore } from '@/stores/admin/minute.js';
 import { groupTypes, years_list, status } from '@/settings_data.js';
+import { useLayoutStore } from '@/stores/layout.js'
 
-const scheduleStore = useScheduleStore()
+const minuteStore = useMinuteStore()
+const layoutStore = useLayoutStore()
 
 // Emits
-const emit = defineEmits(['back', 'scheduleUpdate'])
+const emit = defineEmits(['back', 'minuteUpdate'])
 
 // Variables
 const isShowModal = ref(false);
 const accountType = ref('');
 const titleModal = ref('');
-const fullname = ref('');
+const label = ref('');
+const label_order = ref('');
 const isShowDeleteModal = ref(false);
 const accountIndex = ref(null)
 
@@ -47,64 +50,9 @@ const props = defineProps({
 })
 
 // Computed
-const teachers = computed(() => {
-   return props.teachers.map(item => {
-        return {
-            'id': item.id,
-            'label': item.fullname
-        }
-   })
-})
+const list_ordered = computed(() => {
 
-const groupTypesFiltered = computed(() => {
-    return groupTypes.filter(e => e.id < 3)
-})
-
-const capstoneOne = computed(() => {
-    var data = [];
-    
-    data = props.groups.map(item => {
-        return {
-            'id': item.id,
-            'label': item.groupname,
-            'type_id': item.type_id,
-            'panel': item.panel
-        }
-    })
-
-    data = data.filter(e => e.type_id == 1)
-
-    return data
-})
-
-const capstoneTwo = computed(() => {
-    var data = [];
-    
-    data = props.groups.map(item => {
-        return {
-            'id': item.id,
-            'label': item.groupname,
-            'type_id': item.type_id,
-            'panel': item.panel
-        }
-    })
-
-    data = data.filter(e => e.type_id == 2)
-
-    return data
-})
-
-const scheduleTypes = computed(() => {
-    return props.scheduleTypes.map(item => {
-        return {
-            'id': item.id,
-            'label': item.type
-        }
-    })
-})
-
-const statusFiltered = computed(() => {
-    return status.filter(e => e.id >= 4 && e.id <= 8)
+    return minuteStore.request.list.sort((a,b) => a.label_order - b.label_order)
 })
  
 // Declared Functions
@@ -112,14 +60,19 @@ const back = () => {
     emit('back', false);
 }
 
-const scheduleUpdate = () => {
-    loading.show()
-    scheduleStore.update().then(res => {
-        loading.hide()
-        emit('scheduleUpdate', { status: true, list: res.data.schedules });
+const minuteUpdate = () => {
+
+    layoutStore.showLoading = true
+    minuteStore.update().then(res => {
+        
+        customAlert('success', 'Successfully updated!')
+        emit('minuteUpdate', { status: true, list: res.data.minutes });
+        layoutStore.showLoading = false
     }).catch(() => {
-        loading.hide()
-        emit('scheduleUpdate', { status: false});
+
+        customAlert('warning', 'Check field required !')
+        emit('minuteUpdate', { status: false});
+        layoutStore.showLoading = false
     })
 }
 
@@ -127,70 +80,53 @@ const showModal = (type) => {
     accountType.value = type
     titleModal.value = 'Add ' + type
     isShowModal.value = true
-    fullname.value = ''
+    label.value = ''
+    label_order.value = ''
 }
 
 const localCreate = () => {
-    if(fullname.value == '') {
-        alert('Fullname required')
-        return;
+    let find = minuteStore.request.list.find(e => e.label_order == label_order.value)
+
+    if(label.value == '') {
+        customAlert('warning', 'Label field required !')
+        return true;
     }
-    if (accountType.value == 'member') {
-        scheduleStore.request.member.push({
-            id: null,
-            fullname: fullname.value
-        })
+
+    if(label_order.value == '') {
+        customAlert('warning', 'Label order field required !')
+        return true;
     }
-    else if (accountType.value == 'adviser') {
-        scheduleStore.request.adviser.push({
-            id: null,
-            fullname: fullname.value
-        })
+
+    if(find != undefined) {
+        customAlert('warning', 'Label order already set!')
+        return true;
     }
-    else {
-        scheduleStore.request.panel.push({
-            id: null,
-            fullname: fullname.value
-        })
-    }
+
+    minuteStore.request.list.push({
+        id: null,
+        label: label.value,
+        label_order: label_order.value
+    })
 }
 
-const showModalDelete = (index, type) => {
-    accountIndex.value = index
+const showModalDelete = (minute, type) => {
+    accountIndex.value = minuteStore.request.list.indexOf(minute)
     accountType.value = type
     isShowDeleteModal.value = true
 }
 
 const localDelete = () => {
-    if (accountType.value == 'member') {
-        scheduleStore.request.member.splice(accountIndex, 1)
-    }
-    else if (accountType.value == 'adviser') {
-        scheduleStore.request.adviser.splice(accountIndex, 1)
-    }
-    else {
-        scheduleStore.request.panel.splice(accountIndex, 1)
-    }
-}
 
-const changeGroup = (type) => {
-    const index = type == 1 ? capstoneOne.value.indexOf(capstoneOne.value.find(e => e.id == scheduleStore.request.group)) 
-    : capstoneOne.value.indexOf(capstoneTwo.value.find(e => e.id == scheduleStore.request.group))
+    let min = minuteStore.request.list[accountIndex.value]
+    minuteStore.request.list.splice(accountIndex.value, 1)
 
-    const panels = type == 1 ? capstoneOne.value[index].panel : capstoneTwo.value[index].panel
+    minuteStore.destroy(min.id).then(res => {
+        
+        customAlert('success', 'Successfully deleted!')
+    }).catch(() => {
 
-    scheduleStore.request.panels = panels.map(item => {
-        return {
-            id: item.user.id,
-            fullname: `${item.user.firstname} ${item.user.middlename} ${item.user.lastname}`,
-            is_create: true
-        }
+        customAlert('warning', 'Check field required !')
     })
-}
-
-// Notification Hide Function
-const hideNotification = () => {
-  scheduleStore.status.status = true
 }
 
 
@@ -205,8 +141,12 @@ const hideNotification = () => {
         @confirm="localCreate()"
     >
 
-        <FormField label="Fullname">
-            <FormControl v-model="fullname"/>
+        <FormField label="Label">
+            <FormControl v-model="label"/>
+        </FormField>
+
+         <FormField label="Order Label">
+            <FormControl v-model="label_order" type="number"/>
         </FormField>
 
     </CardBoxModal>
@@ -225,7 +165,7 @@ const hideNotification = () => {
     </CardBoxModal>
 
     <CardBox
-      title="Create Schedule"
+      title="Update Minute"
       :form="true"
       :headerIcon="mdiArrowLeftBold" 
       @header-icon-click="back()"
@@ -233,49 +173,9 @@ const hideNotification = () => {
         <div class="space-y-3">
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField label="Schedule Date">
-                    <FormControl v-model="scheduleStore.request.date" type="date"/>
-                </FormField>
 
-                <FormField label="Schedule Venue">
-                    <FormControl v-model="scheduleStore.request.venue"/>
-                </FormField>
-
-                <FormField label="Group Type">
-                    <FormControl
-                        v-model="scheduleStore.request.grouptype"
-                        :options="groupTypesFiltered"
-                    />
-                </FormField>
-
-                <FormField label="Group">
-                    <FormControl
-                        v-model="scheduleStore.request.group"
-                        :options="scheduleStore.request.grouptype == 1 || scheduleStore.request.grouptype == '' ? capstoneOne : capstoneTwo"
-                        @change="changeGroup(1)"
-                    />
-                </FormField>
-
-                <FormField label="From Time">
-                    <FormControl v-model="scheduleStore.request.from_time" type="time"/>
-                </FormField>
-
-                <FormField label="To Time">
-                    <FormControl v-model="scheduleStore.request.to_time" type="time"/>
-                </FormField>
-
-                <FormField label="Schedule Type">
-                    <FormControl
-                        v-model="scheduleStore.request.scheduletype"
-                        :options="scheduleTypes"
-                    />
-                </FormField>
-
-                <FormField label="Status">
-                    <FormControl
-                        v-model="scheduleStore.request.status"
-                        :options="statusFiltered"
-                    />
+                <FormField label="Title">
+                    <FormControl v-model="minuteStore.request.title"/>
                 </FormField>
             </div>
 
@@ -284,20 +184,33 @@ const hideNotification = () => {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <CardBox 
-                        title="Panels"
-                       
+                        title="Comments and Suggestions Label"
+                        :headerIcon="mdiPlus"
+                        @header-icon-click="showModal('Comments and Suggestions Label')"
                     >
-                        <div class="flex justify-center">
-                            <ul class="bg-white rounded-lg w-96 text-gray-900">
-                                <li v-for="(pan, index) in scheduleStore.request.panels" :key="index" class="px-6 py-2 border-b border-gray-200 w-full flex justify-between">
-                                    <p>{{ pan.fullname }}</p>
-                                    <!-- <BaseIcon
-                                        :path="mdiTrashCan"
-                                        class="cursor-pointer mr-3"
-                                        @click="showModalDelete(index, 'member')"
-                                    /> -->
-                                </li>
-                            </ul>
+                        <div class="flex align-center">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Label</th>
+                                        <th>Order</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(min, index) in list_ordered" :key="index">
+                                        <td>{{ min.label }}</td>
+                                        <td>{{ min.label_order }}</td>
+                                        <td>
+                                            <BaseIcon
+                                                :path="mdiTrashCan"
+                                                class="cursor-pointer mr-3"
+                                                @click="showModalDelete(min, 'member')"
+                                            />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </CardBox>
                 </div>
@@ -310,7 +223,7 @@ const hideNotification = () => {
             <BaseButton
                 label="Update"
                 color="info"
-                @click="scheduleUpdate()"
+                @click="minuteUpdate()"
             />
         </BaseButtons>
 

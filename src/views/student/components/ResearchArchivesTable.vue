@@ -140,25 +140,6 @@ const checked = (isChecked, client) => {
             {{ pan.fullname.toUpperCase() }}
           </span>
         </td>
-        <td class="before:hidden lg:w-1 whitespace-nowrap">
-          <BaseButtons
-            type="justify-start lg:justify-end"
-            no-wrap
-          >
-            <BaseButton
-              color="info"
-              :icon="mdiEye"
-              small
-              @click="select(item)"
-            />
-            <BaseButton
-              color="danger"
-              :icon="mdiTrashCan"
-              small
-              @click="destroy(item)"
-            />
-          </BaseButtons>
-        </td>
       </tr>
     </tbody>
     <tbody v-else>

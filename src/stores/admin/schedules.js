@@ -17,11 +17,19 @@ export const useScheduleStore = defineStore('schedules', {
         status: 4,
         panels: [],
     },
+    minute: {
+      id: null,
+      group: null,
+      schedule: null,
+      prepared: null,
+      list: [],
+    },
     status: {
       status: true,
       success: false,
       message: '',
-    }
+    },
+    hasMinute: false,
   }),
   actions: {
     fetch() {
@@ -67,6 +75,24 @@ export const useScheduleStore = defineStore('schedules', {
         status: item.status_id,
         panels: item.schedulepanels
       }
+
+      this.minute.schedule = item.id
+      this.minute.group = item.group
+      this.hasMinute = false
+
+      if (item.scheduleminute !== null) {
+        
+        this.hasMinute = true
+        this.minute.list = item.scheduleminute.lists.map(function(e) {
+          return {
+            id: e.id,
+            label: e.minutelist.label,
+            label_order: e.minutelist.label_order,
+            comment: e.comment
+          }
+        })
+      }
+  
     },
     update() {
       return new Promise((resolve, reject) => {
@@ -100,6 +126,32 @@ export const useScheduleStore = defineStore('schedules', {
     destroy_personnel(id, prefix) {
       axios.delete(`${url}api/${prefix}/${id}`)
     },
+    create_minute() {
+      return new Promise((resolve, reject) => {
+
+        axios.post(`${url}api/schedules/minute`, this.minute,
+        { 
+          headers: { 'Content-Type': 'application/json' } 
+        }
+        ).then(res => {
+          this.list = res.data.schedules
+          this.status = {
+            status: false,
+            success: res.data.status == 200 ? true : false,
+            message: res.data.message,
+          }
+          this.clear()
+          resolve(res)
+        }).catch(err => {
+          this.status = {
+            status: false,
+            success: false,
+            message: 'Server error!',
+          }
+          reject(err)
+        })
+      })
+    },
     clear() {
         this.request = {
             id: '',
@@ -113,6 +165,16 @@ export const useScheduleStore = defineStore('schedules', {
             status: 4,
             panels: [],
         }
+
+        this.minute = {
+          id: null,
+          schedule: null,
+          prepared: null,
+          group: null,
+          list: [],
+        }
+
+        this.hasMinute = false
     },
   }
 })

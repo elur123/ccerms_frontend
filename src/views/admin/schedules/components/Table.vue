@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { mdiEye, mdiTrashCan } from '@mdi/js'
+import { mdiEye, mdiTrashCan, mdiApplicationEditOutline } from '@mdi/js'
 import CardBoxModal from '@/components/CardBoxModal.vue'
 import TableCheckboxCell from '@/components/TableCheckboxCell.vue'
 import BaseLevel from '@/components/BaseLevel.vue'
@@ -16,7 +16,7 @@ const props = defineProps({
   checkable: Boolean
 })
 
-const emit = defineEmits(['select-section', 'destroy-section'])
+const emit = defineEmits(['select-section', 'select-minute', 'destroy-section'])
 
 const items = computed(() => props.data)
 
@@ -48,6 +48,10 @@ const pagesList = computed(() => {
 
 const select = item => {
   emit('select-section', item);
+}
+
+const selectMinute = item => {
+  emit('select-minute', item);
 }
 
 const destroy = item => {
@@ -153,6 +157,13 @@ const checked = (isChecked, client) => {
               :icon="mdiEye"
               small
               @click="select(item)"
+            />
+            <BaseButton
+              v-if="item.status_id >= 5 && item.status_id <= 7"
+              color="info"
+              :icon="mdiApplicationEditOutline"
+              small
+              @click="selectMinute(item)"
             />
             <BaseButton
               color="danger"

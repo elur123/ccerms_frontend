@@ -142,42 +142,21 @@ const localCreate = () => {
         alert('Fullname required')
         return;
     }
-    if (accountType.value == 'member') {
-        scheduleStore.request.member.push({
-            id: null,
-            fullname: fullname.value
-        })
-    }
-    else if (accountType.value == 'adviser') {
-        scheduleStore.request.adviser.push({
-            id: null,
-            fullname: fullname.value
-        })
-    }
-    else {
-        scheduleStore.request.panel.push({
-            id: null,
-            fullname: fullname.value
-        })
-    }
+    
+    scheduleStore.request.panels.push({
+        id: null,
+        fullname: fullname.value,
+        is_create: true
+    })
 }
 
-const showModalDelete = (index, type) => {
+const showModalDelete = (index) => {
     accountIndex.value = index
-    accountType.value = type
     isShowDeleteModal.value = true
 }
 
 const localDelete = () => {
-    if (accountType.value == 'member') {
-        scheduleStore.request.member.splice(accountIndex, 1)
-    }
-    else if (accountType.value == 'adviser') {
-        scheduleStore.request.adviser.splice(accountIndex, 1)
-    }
-    else {
-        scheduleStore.request.panel.splice(accountIndex, 1)
-    }
+    scheduleStore.request.panels.splice(accountIndex.value, 1)
 }
 
 const changeGroup = (type) => {
@@ -292,17 +271,18 @@ const hideNotification = () => {
                 <div>
                     <CardBox 
                         title="Panels"
-                       
+                        :headerIcon="mdiPlus"
+                        @header-icon-click="showModal('Panel')"
                     >
                         <div class="flex justify-center">
                             <ul class="bg-white rounded-lg w-96 text-gray-900">
                                 <li v-for="(pan, index) in scheduleStore.request.panels" :key="index" class="px-6 py-2 border-b border-gray-200 w-full flex justify-between">
                                     <p>{{ pan.fullname }}</p>
-                                    <!-- <BaseIcon
+                                    <BaseIcon
                                         :path="mdiTrashCan"
                                         class="cursor-pointer mr-3"
-                                        @click="showModalDelete(index, 'member')"
-                                    /> -->
+                                        @click="showModalDelete(index)"
+                                    />
                                 </li>
                             </ul>
                         </div>
