@@ -28,7 +28,7 @@ const menu = computed(() => {
   <NavBar />
   <AsideMenu :menu="menu" />
   <RouterView />
-  <FooterBar />
+  <!-- <FooterBar /> -->
   <OverlayLayer
     v-show="isAsideLgActive"
     z-index="z-30"

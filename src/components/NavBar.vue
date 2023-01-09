@@ -144,7 +144,7 @@ const logout = () => {
                 label="My Profile"
               />
             </NavBarItem>
-            <NavBarItem>
+            <NavBarItem to="/message">
               <NavBarItemLabel
                 :icon="mdiEmail"
                 label="Messages"

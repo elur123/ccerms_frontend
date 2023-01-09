@@ -16,22 +16,6 @@ const routes = [
   },
   {
     meta: {
-      title: 'Tables'
-    },
-    path: '/tables',
-    name: 'tables',
-    component: () => import('@/views/TablesView.vue')
-  },
-  {
-    meta: {
-      title: 'Forms'
-    },
-    path: '/forms',
-    name: 'forms',
-    component: () => import('@/views/FormsView.vue')
-  },
-  {
-    meta: {
       title: 'Profile'
     },
     path: '/profile',
@@ -40,28 +24,11 @@ const routes = [
   },
   {
     meta: {
-      title: 'Ui'
+      title: 'Messages'
     },
-    path: '/ui',
-    name: 'ui',
-    component: () => import('@/views/UiView.vue')
-  },
-  {
-    meta: {
-      title: 'Responsive layout'
-    },
-    path: '/responsive',
-    name: 'responsive',
-    component: () => import('@/views/ResponsiveView.vue')
-  },
-  {
-    meta: {
-      title: 'Error',
-      fullScreen: true
-    },
-    path: '/error',
-    name: 'error',
-    component: () => import('@/views/ErrorView.vue')
+    path: '/message',
+    name: 'message',
+    component: () => import('@/components/Message/Index.vue')
   },
   {
     beforeEnter: authenticate,
