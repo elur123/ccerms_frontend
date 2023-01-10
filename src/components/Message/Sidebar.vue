@@ -1,3 +1,27 @@
+<script setup>
+import Participant from '@/components/Message/Participant.vue'
+
+const emit = defineEmits(['select'])
+
+// Props
+const props = defineProps({
+  auth_id: {
+    type: Number,
+    default: null
+  },
+  chats: {
+    type: Array,
+    default: []
+  }
+})
+
+const select = (chat) => {
+
+    emit('select', { chat: chat, auth_id: props.auth_id});
+}
+
+</script>
+
 <template>
     <div class="sidebar w-full md:w-3/12 h-full border-r-2">
         <div class="header overflow-hidden flex items-center h-20 px-2">
@@ -5,24 +29,12 @@
             <input class="flex-1 rounded-lg border-transparent focus:border-transparent focus:ring-0" type="text" placeholder="Search User">
         </div>
         <div class="chats">
-            <div class="recipients flex items-center p-2 mb-3 cursor-pointer hover:bg-slate-100">
-                <div class="image-wrapper w-12 h-12 rounded-full mr-3">
-                    <img class="rounded-full" src="https://via.placeholder.com/150.png?text=CCERMS" alt="User profile">
-                </div>
-                <div class="details">
-                    <h2 class="name font-bold">Profile Name</h2>
-                    <p>email@gmail.com</p>
-                </div>
-            </div>
-            <div class="recipients flex items-center p-2 mb-3 cursor-pointer hover:bg-slate-100">
-                <div class="image-wrapper w-12 h-12 rounded-full mr-3">
-                    <img class="rounded-full" src="https://via.placeholder.com/150.png?text=CCERMS" alt="User profile">
-                </div>
-                <div class="details">
-                    <h2 class="name font-bold">Profile Name</h2>
-                    <p>email@gmail.com</p>
-                </div>
-            </div>
+            
+            <Participant v-for="chat in chats" :key="chat.id" 
+              img="img.png" 
+              :subject="chat.subject"
+              @click="select(chat)"
+            />
         </div>
     </div>
 </template>
